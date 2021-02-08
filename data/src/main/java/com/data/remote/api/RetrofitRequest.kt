@@ -1,6 +1,7 @@
 package com.data.remote.api
 
 import android.util.Log
+import androidx.annotation.RestrictTo
 import com.data.remote.api.services.GeoService
 import com.data.remote.api.services.Service
 import com.data.remote.api.services.WeatherService
@@ -29,10 +30,8 @@ class LoadCitiesRetrofitRequest(params: Params) : RetrofitRequest<CityResponse>(
     override fun createService() = GeoService.create()
 
     override suspend fun loadData(): Response<CityResponse> {
-        Log.d(
-            "Tag", "$coroutineContext"
-        )
         params as LoadCitiesParams
+        Log.d("Tagg", (params.namePrefix))
         return (service as GeoService).loadCities(
             namePrefix = params.namePrefix, location = params.location,
             radius = params.radius,
@@ -46,11 +45,13 @@ class LoadCitiesRetrofitRequest(params: Params) : RetrofitRequest<CityResponse>(
             apiKey = params.apiKey
         )
     }
-
+    // даже если нам вернулось 0 городов - результат HTTP считается успешным
     override fun validate(response: Response<CityResponse>): CityResponse {
         if (response.isSuccessful)
             response.body()?.let { if (it.metadata.totalCount > 0) return it }
-        throw Exception("ошибка валидации ${(params as LoadCitiesParams).namePrefix}")
+        throw Exception("ошибка валидации ${(params as LoadCitiesParams).namePrefix} | " +
+                response.message()
+        )
     }
 }
 

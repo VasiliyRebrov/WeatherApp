@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.domain
+package com.data.common
 
 import androidx.lifecycle.MutableLiveData
-import com.domain.Result.Success
+import com.data.common.Result.*
 
 /**
  * A generic class that holds a value with its loading status.

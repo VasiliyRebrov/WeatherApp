@@ -14,7 +14,7 @@ class ViewModelFactory(
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = when (name) {
         "AddCityViewModel" -> AddCityViewModel(
-            application, AddCityRepo()
+            application, AddCityRepo(application)
         )
         else -> throw Exception()
     } as T

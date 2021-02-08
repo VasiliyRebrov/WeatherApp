@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/generalFragment">
+    <fragment
+        android:id="@+id/citiesManagerFragment"
+        android:name="com.weather.view.CitiesManagerFragment"
+        android:label="fragment_cities_manager"
+        tools:layout="@layout/fragment_cities_manager">
+        <action
+            android:id="@+id/action_citiesManagerFragment_to_addCityFragment"
+            app:destination="@id/addCityFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.weather.view.SettingsFragment"
+        android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/generalFragment"
+        android:name="com.weather.view.GeneralFragment"
+        android:label="general_fragment"
+        tools:layout="@layout/general_fragment">
+        <action
+            android:id="@+id/action_generalFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_generalFragment_to_citiesManagerFragment"
+            app:destination="@id/citiesManagerFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/addCityFragment"
+        android:name="com.weather.view.AddCityFragment"
+        android:label="AddCityFragment" />
+</navigation>

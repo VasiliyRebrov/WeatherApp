@@ -31,20 +31,20 @@ abstract class UseCase<in P, R>(private val coroutineDispatcher: CoroutineDispat
      *
      * @param parameters the input parameters to run the use case with
      */
-    suspend operator fun invoke(parameters: P): Result<R> {
+    suspend operator fun invoke(parameters: P): com.data.common.Result<R> {
         return try {
             // Moving all use case's executions to the injected dispatcher
             // In production code, this is usually the Default dispatcher (background thread)
             // In tests, this becomes a TestCoroutineDispatcher
             withContext(coroutineDispatcher) {
                 execute(parameters).let {
-                    Result.Success(it)
+                    com.data.common.Result.Success(it)
                 }
             }
         } catch (e: Exception) {
 //            Timber.d(e)
             Log.d("Tag", e.toString())
-            Result.Error(e)
+            com.data.common.Result.Error(e)
         }
     }
 

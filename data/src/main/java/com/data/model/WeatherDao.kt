@@ -8,6 +8,14 @@ import kotlinx.coroutines.flow.Flow
 interface WeatherDao {
     @Query("select * from cities")
     fun getLiveCityList(): Flow<List<City>>
+
+    @Query("select * from cities")
+    suspend fun getCityList(): List<City>
+
+    @Insert
+    suspend fun insertCity(city: City)
+
+
 //    //    @Transaction
 ////    @Query("SELECT * FROM cities")
 ////    fun getFullWeather(): List<CityAndFullWeather>

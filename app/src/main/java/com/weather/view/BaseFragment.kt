@@ -10,8 +10,8 @@ abstract class BaseFragment : Fragment() {
         ViewModelFactory("MainViewModel", requireActivity().application)
     }
 
-//    protected fun showDialogFragment(alertType: DialogAlertType) {
-//        MyDialogFragment.newInstance(alertType).show(childFragmentManager, "dialog")
-//    }
+    protected fun showDialogFragment(alertType: DialogAlertType) {
+        MyDialogFragment.newInstance(alertType).show(childFragmentManager, "dialog")
+    }
 
 }

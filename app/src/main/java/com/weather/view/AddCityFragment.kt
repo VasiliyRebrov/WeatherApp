@@ -1,11 +1,14 @@
 package com.weather.view
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -24,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_add_city.*
 
 private const val REQUEST_CODE_LOCATION_PERMISSION = 999
 
-class AddCityFragment : Fragment() {
+class AddCityFragment : BaseFragment() {
     private val viewModel: AddCityViewModel by viewModels {
         ViewModelFactory("AddCityViewModel", requireActivity().application)
     }
@@ -58,15 +61,49 @@ class AddCityFragment : Fragment() {
         viewModel.myLD.observe(viewLifecycleOwner) {
             Log.d("MyTag", "$it | ${it.data}")
         }
-//        et_add_city_find_by_name.addTextChangedListener {
-//            viewModel.search(it.toString())
-//        }
+        initButton()
     }
 
     private fun initBar() {
         with(requireActivity() as AppCompatActivity) {
             setSupportActionBar(tb_add_city)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
+    private fun initButton() {
+        but_add_city_find_by_location.setOnClickListener {
+            checkAndRequestGeoPermission()
+        }
+    }
+
+    private fun checkAndRequestGeoPermission() {
+        val permissionCheck = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED)
+            viewModel.defineLocation()
+        else
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_CODE_LOCATION_PERMISSION
+            )
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isNotEmpty()) {
+            if (requestCode == REQUEST_CODE_LOCATION_PERMISSION) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) viewModel.defineLocation()
+                else if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
+                    showDialogFragment(DialogAlertType.ALLOW_LOCATION_PERMISSION)
+            }
         }
     }
 }

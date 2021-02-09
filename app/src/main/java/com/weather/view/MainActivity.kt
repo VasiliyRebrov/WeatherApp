@@ -1,11 +1,12 @@
-package com.weather
+package com.weather.view
 
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
+import com.weather.R
 import com.weather.viewmodel.MainViewModel
-import kotlinx.android.synthetic.main.activity_main.*
+import com.weather.viewmodel.ViewModelFactory
 
 class MainActivity : AppCompatActivity() {
     val viewModel: MainViewModel by viewModels {

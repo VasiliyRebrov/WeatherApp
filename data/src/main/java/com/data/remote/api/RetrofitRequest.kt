@@ -31,7 +31,7 @@ class LoadCitiesRetrofitRequest(params: Params) : RetrofitRequest<CityResponse>(
 
     override suspend fun loadData(): Response<CityResponse> {
         params as LoadCitiesParams
-        Log.d("Tagg", (params.namePrefix))
+        Log.d("MyTag", (params.namePrefix))
         return (service as GeoService).loadCities(
             namePrefix = params.namePrefix, location = params.location,
             radius = params.radius,

@@ -11,23 +11,26 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
-class AddCityRepo(private val ctx: Context) {
-     fun fetchCitiesByName(name: String): Flow<Result<List<City>>> {
-        return flow {
-            emit(Result.Loading)
-            if (checkInternetAccess(ctx)) {
-                val params = LoadCitiesParams.createParamsByName(name)
-                val retrofitRequest = LoadCitiesRetrofitRequest(params)
-                val cities = retrofitRequest.execute().data
-                emit(Result.Success(cities))
-            } else
-                throw NoNetworkException()
-        }
-    }
+class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
+//    fun fetchCitiesByName(name: String): Flow<Result<List<City>>> {
+//        return flow {
+//            emit(Result.Loading)
+//            if (checkInternetAccess(ctx)) {
+//                val params = LoadCitiesParams.createParamsByName(name)
+//                val retrofitRequest = LoadCitiesRetrofitRequest(params)
+//                val cities = retrofitRequest.execute().data
+//                emit(Result.Success(cities))
+//            } else
+//                throw NoNetworkException()
+//        }
+//    }
 
-    suspend fun ffetchCitiesByName(name: String): List<City> {
-        val params = LoadCitiesParams.createParamsByName(name)
-        val retrofitRequest = LoadCitiesRetrofitRequest(params)
-        return retrofitRequest.execute().data
+    suspend fun fetchCitiesByName(name: String): List<City> {
+        if (checkInternetAccess(ctx)) {
+            val params = LoadCitiesParams.createParamsByName(name)
+            val retrofitRequest = LoadCitiesRetrofitRequest(params)
+            return retrofitRequest.execute().data
+        } else
+            throw NoNetworkException()
     }
 }

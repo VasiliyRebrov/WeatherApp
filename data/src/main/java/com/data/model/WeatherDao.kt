@@ -13,7 +13,7 @@ interface WeatherDao {
     suspend fun getCityList(): List<City>
 
     @Insert
-    suspend fun insertCity(city: City)
+    suspend fun insertCity(city: City):Long
 
 
 //    //    @Transaction

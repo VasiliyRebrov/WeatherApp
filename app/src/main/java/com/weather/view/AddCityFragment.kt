@@ -11,13 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.data.common.AddCityUseCases
-import com.data.common.NetworkProviderDisabledException
 import com.data.common.data
 import com.weather.R
 import com.weather.databinding.FragmentAddCityBinding
@@ -58,9 +52,20 @@ class AddCityFragment : BaseFragment() {
         et_add_city_find_by_name.addTextChangedListener {
             viewModel.search(it.toString())
         }
-        viewModel.myLD.observe(viewLifecycleOwner) {
-            Log.d("MyTag", "$it | ${it.data}")
+        viewModel.findCityUseCaseLiveData.observe(viewLifecycleOwner) {
+            Log.d("MyTag", "FIND UC: $it | ${it.data ?: "NULL"}")
+
         }
+        viewModel.defineLocationUseCaseLiveData.observe(viewLifecycleOwner) {
+            Log.d("MyTag", " LOCATION UC: $it | ${it.data ?: "NULL"}")
+        }
+        viewModel.addCityByLocationUseCaseLiveData.observe(viewLifecycleOwner) {
+            Log.d("MyTag", " ADD BY LOCATION UC: $it | ${it.data ?: "NULL"}")
+        }
+
+//        viewModel.searchResultLiveData.observe(viewLifecycleOwner) {
+//            Log.d("MyTag", "$it | ${it.data}")
+//        }
         initButton()
     }
 

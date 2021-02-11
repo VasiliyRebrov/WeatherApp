@@ -8,4 +8,5 @@ import com.data.common.Result
 
 class CitiesManagerViewModel(application: Application, private val repo: CitiesManagerRepo) :
     BaseViewModel<Unit>(application, repo) {
+
 }

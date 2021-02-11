@@ -68,25 +68,31 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
     private val _defineLocationUseCaseLiveData = MutableLiveData<Result<Unit>>()
     val defineLocationUseCaseLiveData: LiveData<Result<Unit>> = _defineLocationUseCaseLiveData
 
-    //вносить не только статус загрузки, но и определение, что это за юз-кейс
-    //это для того, чтобы в прогрессе писать текстом, что происходит
-    //можно прямо тут забить, но это хардкодинг
-    //с другой стороны, все равно хардкодишь, когда приходится вносить каждый юзкейс в каждом ViewModel
-    private val _progressLiveData = MediatorLiveData<Boolean>().apply {
-        addSource(_addCityUseCaseLiveData) { switchProgress(it) }
-        addSource(_findCityUseCaseLiveData) { switchProgress(it) }
-        addSource(_addCityByLocationUseCaseLiveData) { switchProgress(it) }
-        addSource(_defineLocationUseCaseLiveData) { switchProgress(it) }
+    init {
+        initProgress {
+            addSource(_addCityUseCaseLiveData) { switchProgress(it) }
+            addSource(_findCityUseCaseLiveData) { switchProgress(it) }
+            addSource(_addCityByLocationUseCaseLiveData) { switchProgress(it) }
+            addSource(_defineLocationUseCaseLiveData) { switchProgress(it) }
+        }
     }
-    val progressLiveData: LiveData<Boolean> = _progressLiveData
 
-    private val _errorEvent = MediatorSingleLiveEvent<Result.Error>().apply {
-        addSource(_findCityUseCaseLiveData) { setError(it) }
-        addSource(_addCityUseCaseLiveData) { setError(it) }
-        addSource(_addCityByLocationUseCaseLiveData) { setError(it) }
-        addSource(_defineLocationUseCaseLiveData) { setError(it) }
-    }
-    val errorEvent: LiveData<Result.Error> = _errorEvent
+
+//    private val _progressLiveData = MediatorLiveData<Boolean>().apply {
+//        addSource(_addCityUseCaseLiveData) { switchProgress(it) }
+//        addSource(_findCityUseCaseLiveData) { switchProgress(it) }
+//        addSource(_addCityByLocationUseCaseLiveData) { switchProgress(it) }
+//        addSource(_defineLocationUseCaseLiveData) { switchProgress(it) }
+//    }
+//    val progressLiveData: LiveData<Boolean> = _progressLiveData
+//
+//    private val _errorEvent = MediatorSingleLiveEvent<Result.Error>().apply {
+//        addSource(_findCityUseCaseLiveData) { setError(it) }
+//        addSource(_addCityUseCaseLiveData) { setError(it) }
+//        addSource(_addCityByLocationUseCaseLiveData) { setError(it) }
+//        addSource(_defineLocationUseCaseLiveData) { setError(it) }
+//    }
+//    val errorEvent: LiveData<Result.Error> = _errorEvent
 
 
     private fun switchProgress(result: Result<List<City>>) {
@@ -137,6 +143,8 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         override fun onProviderEnabled(provider: String?) {}
         override fun onProviderDisabled(provider: String?) {}
     }
+
+
 }
 
 //каждый метод, где запускается юзкейс - он шаблонный. сделать один и передавать ему нужные данные?

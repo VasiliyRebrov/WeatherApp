@@ -8,4 +8,5 @@ import com.weather.viewmodel.BaseViewModel
 
 class MainViewModel(application: Application, private val repo: MainRepo) :
     BaseViewModel<Unit>(application, repo){
-    }
+
+}

@@ -65,9 +65,9 @@ class AddCityFragment : BaseFragment() {
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
             Log.d("MyTag", "PROGRESS STATUS: $it")
         }
-        viewModel.errorEvent.observe(viewLifecycleOwner) {
-            Log.d("MyTag", "ERROR: $it")
-        }
+//        viewModel.errorEvent.observe(viewLifecycleOwner) {
+//            Log.d("MyTag", "ERROR: $it")
+//        }
         initButton()
     }
 

@@ -10,4 +10,5 @@ class GeneralViewModel(application: Application, private val repo: GeneralRepo) 
     application,
     repo
 ) {
+
 }

@@ -11,4 +11,5 @@ class SettingsViewModel(application: Application, private val repo: SettingsRepo
         application,
         repo
     ){
-    }
+
+}

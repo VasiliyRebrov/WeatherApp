@@ -62,10 +62,12 @@ class AddCityFragment : BaseFragment() {
         viewModel.addCityByLocationUseCaseLiveData.observe(viewLifecycleOwner) {
             Log.d("MyTag", " ADD BY LOCATION UC: $it | ${it.data ?: "NULL"}")
         }
-
-//        viewModel.searchResultLiveData.observe(viewLifecycleOwner) {
-//            Log.d("MyTag", "$it | ${it.data}")
-//        }
+        viewModel.progressLiveData.observe(viewLifecycleOwner) {
+            Log.d("MyTag", "PROGRESS STATUS: $it")
+        }
+        viewModel.errorEvent.observe(viewLifecycleOwner) {
+            Log.d("MyTag", "ERROR: $it")
+        }
         initButton()
     }
 

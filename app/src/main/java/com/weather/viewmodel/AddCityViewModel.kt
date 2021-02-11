@@ -8,6 +8,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import androidx.lifecycle.*
 import com.data.common.AddCityUseCases
+import com.data.common.MediatorSingleLiveEvent
 import com.data.common.Result
 import com.data.model.City
 import com.data.repo.AddCityRepo
@@ -25,6 +26,7 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
     val addCityUseCase by lazy { AddCityUseCase(repo) }
     val addCityByLocationUseCase by lazy { AddCityByLocationUseCase(repo) }
     val defineLocationUseCase by lazy { DefineLocationUseCase(repo, locManager, locListener) }
+
 
     private val _searchQuery = MutableStateFlow("")
     private val _searchResultLiveData = _searchQuery.asStateFlow()
@@ -65,6 +67,27 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
 
     private val _defineLocationUseCaseLiveData = MutableLiveData<Result<Unit>>()
     val defineLocationUseCaseLiveData: LiveData<Result<Unit>> = _defineLocationUseCaseLiveData
+
+    //вносить не только статус загрузки, но и определение, что это за юз-кейс
+    //это для того, чтобы в прогрессе писать текстом, что происходит
+    //можно прямо тут забить, но это хардкодинг
+    //с другой стороны, все равно хардкодишь, когда приходится вносить каждый юзкейс в каждом ViewModel
+    private val _progressLiveData = MediatorLiveData<Boolean>().apply {
+        addSource(_addCityUseCaseLiveData) { switchProgress(it) }
+        addSource(_findCityUseCaseLiveData) { switchProgress(it) }
+        addSource(_addCityByLocationUseCaseLiveData) { switchProgress(it) }
+        addSource(_defineLocationUseCaseLiveData) { switchProgress(it) }
+    }
+    val progressLiveData: LiveData<Boolean> = _progressLiveData
+
+    private val _errorEvent = MediatorSingleLiveEvent<Result.Error>().apply {
+        addSource(_findCityUseCaseLiveData) { setError(it) }
+        addSource(_addCityUseCaseLiveData) { setError(it) }
+        addSource(_addCityByLocationUseCaseLiveData) { setError(it) }
+        addSource(_defineLocationUseCaseLiveData) { setError(it) }
+    }
+    val errorEvent: LiveData<Result.Error> = _errorEvent
+
 
     private fun switchProgress(result: Result<List<City>>) {
         _findCityUseCaseLiveData.value = result

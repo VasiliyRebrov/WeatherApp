@@ -7,32 +7,28 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import androidx.lifecycle.*
-import com.data.common.AddCityUseCases
-import com.data.common.MediatorSingleLiveEvent
 import com.data.common.Result
 import com.data.model.City
 import com.data.repo.AddCityRepo
-import com.domain.AddCityByLocationUseCase
-import com.domain.AddCityUseCase
-import com.domain.DefineLocationUseCase
-import com.domain.FindCityByNameUseCase
+import com.domain.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class AddCityViewModel(application: Application, private val repo: AddCityRepo) :
-    BaseViewModel<AddCityUseCases>(application, repo) {
-    val findCityUseCase by lazy { FindCityByNameUseCase(repo) }
-    val addCityUseCase by lazy { AddCityUseCase(repo) }
-    val addCityByLocationUseCase by lazy { AddCityByLocationUseCase(repo) }
-    val defineLocationUseCase by lazy { DefineLocationUseCase(repo, locManager, locListener) }
-
+    BaseViewModel(application, repo) {
+    private val findCityUseCase by lazy { FindCityByNameUseCase(repo) }
+    private val addCityUseCase by lazy { AddCityUseCase(repo) }
+    private val addCityByLocationUseCase by lazy { AddCityByLocationUseCase(repo) }
+    private val defineLocationUseCase by lazy {
+        DefineLocationUseCase(repo, locManager, locListener)
+    }
 
     private val _searchQuery = MutableStateFlow("")
     private val _searchResultLiveData = _searchQuery.asStateFlow()
         /**
          * первый map отвечает за отображение прогресса в зависимости от кол-ва символов
-         * и затем просто пропускает значение дальше
+         * и затем просто пропускает аргумент дальше
          */
         .map {
             /**
@@ -68,33 +64,6 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
     private val _defineLocationUseCaseLiveData = MutableLiveData<Result<Unit>>()
     val defineLocationUseCaseLiveData: LiveData<Result<Unit>> = _defineLocationUseCaseLiveData
 
-    init {
-        initProgress {
-            addSource(_addCityUseCaseLiveData) { switchProgress(it) }
-            addSource(_findCityUseCaseLiveData) { switchProgress(it) }
-            addSource(_addCityByLocationUseCaseLiveData) { switchProgress(it) }
-            addSource(_defineLocationUseCaseLiveData) { switchProgress(it) }
-        }
-    }
-
-
-//    private val _progressLiveData = MediatorLiveData<Boolean>().apply {
-//        addSource(_addCityUseCaseLiveData) { switchProgress(it) }
-//        addSource(_findCityUseCaseLiveData) { switchProgress(it) }
-//        addSource(_addCityByLocationUseCaseLiveData) { switchProgress(it) }
-//        addSource(_defineLocationUseCaseLiveData) { switchProgress(it) }
-//    }
-//    val progressLiveData: LiveData<Boolean> = _progressLiveData
-//
-//    private val _errorEvent = MediatorSingleLiveEvent<Result.Error>().apply {
-//        addSource(_findCityUseCaseLiveData) { setError(it) }
-//        addSource(_addCityUseCaseLiveData) { setError(it) }
-//        addSource(_addCityByLocationUseCaseLiveData) { setError(it) }
-//        addSource(_defineLocationUseCaseLiveData) { setError(it) }
-//    }
-//    val errorEvent: LiveData<Result.Error> = _errorEvent
-
-
     private fun switchProgress(result: Result<List<City>>) {
         _findCityUseCaseLiveData.value = result
     }
@@ -105,33 +74,28 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
 
 
     fun addCity(city: City) {
-        viewModelScope.launch {
-            addCityUseCase(city).collect {
-                // обработка при добавлении города
-                _addCityUseCaseLiveData.value = it
-            }
+        launchUseCase(addCityUseCase, city) {
+            // обработка при добавлении города
+            _addCityUseCaseLiveData.value = it
         }
     }
 
     fun addCity(location: Location) {
-        viewModelScope.launch {
-            addCityByLocationUseCase(location).collect {
-                // обработка при добавлении города по локации
-                _addCityByLocationUseCaseLiveData.value = it
-            }
+        launchUseCase(addCityByLocationUseCase, location) {
+            // обработка при добавлении города по локации
+            _addCityByLocationUseCaseLiveData.value = it
         }
     }
 
     //вызывается при нажатии кнопки
     fun defineLocation() {
-        viewModelScope.launch {
-            defineLocationUseCase(Unit).collect {
-                // обработка определения локации
-                // при получении локации, юзкейс доб. города вызовется автоматически. см. Listener
-                _defineLocationUseCaseLiveData.value = it
-            }
+        launchUseCase(defineLocationUseCase, Unit) {
+            // обработка определения локации
+            // при получении локации, юзкейс доб. города вызовется автоматически. см. Listener
+            _defineLocationUseCaseLiveData.value = it
         }
     }
+
 
     private val locManager by lazy { application.getSystemService(Context.LOCATION_SERVICE) as LocationManager }
     private val locListener = object : LocationListener {
@@ -144,7 +108,12 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         override fun onProviderDisabled(provider: String?) {}
     }
 
-
+    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
+        add(_addCityUseCaseLiveData)
+        add(_findCityUseCaseLiveData)
+        add(_addCityByLocationUseCaseLiveData)
+        add(_defineLocationUseCaseLiveData)
+    } as Set<LiveData<Result<*>>>
 }
 
 //каждый метод, где запускается юзкейс - он шаблонный. сделать один и передавать ему нужные данные?

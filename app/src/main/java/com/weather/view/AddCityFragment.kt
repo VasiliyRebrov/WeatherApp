@@ -48,6 +48,7 @@ class AddCityFragment : BaseFragment() {
     }
 
     private fun initComponents() {
+
         initBar()
         et_add_city_find_by_name.addTextChangedListener {
             viewModel.search(it.toString())
@@ -64,6 +65,9 @@ class AddCityFragment : BaseFragment() {
         }
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
             Log.d("MyTag", "PROGRESS STATUS: $it")
+        }
+        viewModel.errorEvent.observe(viewLifecycleOwner) {
+            Log.d("MyTag", "ERROR: $it")
         }
 //        viewModel.errorEvent.observe(viewLifecycleOwner) {
 //            Log.d("MyTag", "ERROR: $it")

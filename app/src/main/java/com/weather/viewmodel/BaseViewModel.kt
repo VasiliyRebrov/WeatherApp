@@ -5,28 +5,65 @@ import androidx.lifecycle.*
 import com.data.common.MediatorSingleLiveEvent
 import com.data.common.Result
 import com.data.repo.BaseRepo
+import com.domain.FlowUseCase
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<T>(application: Application, private val repo: BaseRepo) :
+abstract class BaseViewModel(application: Application, private val repo: BaseRepo) :
     AndroidViewModel(application) {
+    /** все нижние объекты имеют ленивую инициализацию
+     * Дело в том, что их инициализация зависит от ливдат в субклассах,
+     * но объекты субклассов инициализируются после родительских.
+     * Решение: тк здесь объекты Lazy - они будут созданы при подписки на них
+     * а объекты-ливдаты субклассов будут созданы сразу
+     **/
 
-    private val _progressLiveData = MediatorLiveData<Boolean>()
-    val progressLiveData: LiveData<Boolean> = _progressLiveData
+    /** это контейнер всех ливдат, которые обрабатывают юзкейсы*/
+    private val liveDataContainer: Set<LiveData<Result<*>>> by lazy { initLiveDataContainer() }
 
-    protected fun initProgress(action: MediatorLiveData<Boolean>.() -> Unit) {
-        _progressLiveData.action()
+    /** это ливдата отображения прогресса.
+     * она слушает все ливдаты в контейнере*/
+    private val _progressLiveData by lazy {
+        MediatorLiveData<Boolean>().apply {
+            liveDataContainer.forEach { liveData ->
+                addSource(liveData) { result -> switchProgress(result) }
+            }
+        }
     }
+    val progressLiveData: LiveData<Boolean> by lazy { _progressLiveData }
 
-//    private val _errorEvent = MediatorSingleLiveEvent<Result.Error>()
-//    private val errorEvent: LiveData<Result.Error> = _errorEvent
+    /** это ливдата отображения ошибок.
+     * она слушает все ливдаты в контейнере*/
+    private val _errorEvent by lazy {
+        MediatorSingleLiveEvent<Result.Error>().apply {
+            liveDataContainer.forEach { liveData ->
+                addSource(liveData) { result -> setError(result) }
+            }
+        }
+    }
+    val errorEvent: LiveData<Result.Error> by lazy { _errorEvent }
 
+    /** фабричный метод по инициализации контейнера ливдат*/
+    protected abstract fun initLiveDataContainer(): Set<LiveData<Result<*>>>
 
-    protected fun MediatorLiveData<Boolean>.switchProgress(source: Result<*>?) {
+    /** утилитарные методы-расширения для верхний ливдат*/
+    private fun MediatorLiveData<Boolean>.switchProgress(source: Result<*>) {
         value = source is Result.Loading
     }
 
-    protected fun MediatorLiveData<Result.Error>.setError(source: Result<*>) {
+    private fun MediatorLiveData<Result.Error>.setError(source: Result<*>) {
         if (source is Result.Error) value = source
     }
 
+    /** метод для запуска юз-кейсов, возвращающих Flow
+    корутина начинает работу в Main-потоке. Но возможнсть смены предусмотрена в юз-кейсе
+    стоит ли и сюда добавлять возможность указания потока? - вряд ли*/
+    protected fun <P, R> launchUseCase(
+        useCase: FlowUseCase<P, R>,
+        parameters: P,
+        collectorBlock: suspend (Result<R>) -> Unit
+    ) {
+        viewModelScope.launch { useCase(parameters).collect(collectorBlock) }
+    }
 }
 

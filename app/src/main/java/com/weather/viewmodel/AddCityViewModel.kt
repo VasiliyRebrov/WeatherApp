@@ -7,6 +7,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import androidx.lifecycle.*
+import com.data.common.InvalidArgsException
 import com.data.common.Result
 import com.data.model.City
 import com.data.repo.AddCityRepo
@@ -29,14 +30,19 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         /**
          * первый map отвечает за отображение прогресса в зависимости от кол-ва символов
          * и затем просто пропускает аргумент дальше
+         * какой способ корректнее?
          */
         .map {
-            /**
-             * Error должен хранить ошибку "нет текста или типо того"
-             */
-            val result = if (it.length > 1) Result.Loading else Result.Error(Exception())
+            val result = try {
+                if (it.length > 1) Result.Loading else throw InvalidArgsException()
+            } catch (exc: Exception) {
+                Result.Error(exc)
+            }
             switchProgress(result)
             it
+//            val result = if (it.length > 1) Result.Loading else Result.Error(InvalidArgsException())
+//            switchProgress(result)
+//            it
         }
         .debounce(1200)
         .filter { it.length > 1 }

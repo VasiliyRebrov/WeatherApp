@@ -2,6 +2,7 @@ package com.data.remote.api
 
 import android.util.Log
 import androidx.annotation.RestrictTo
+import com.data.common.CitiesNotFoundException
 import com.data.remote.api.services.GeoService
 import com.data.remote.api.services.Service
 import com.data.remote.api.services.WeatherService
@@ -45,13 +46,15 @@ class LoadCitiesRetrofitRequest(params: Params) : RetrofitRequest<CityResponse>(
             apiKey = params.apiKey
         )
     }
-    // даже если нам вернулось 0 городов - результат HTTP считается успешным
+
+    /**даже если вернулось 0 городов - результат HTTP считается 'OK' (успешным)*/
     override fun validate(response: Response<CityResponse>): CityResponse {
         if (response.isSuccessful)
             response.body()?.let { if (it.metadata.totalCount > 0) return it }
-        throw Exception("ошибка валидации ${(params as LoadCitiesParams).namePrefix} | " +
-                response.message()
-        )
+        /** В первом кейсе просто не найдены города по заданному параметру*/
+        if (response.message() == "OK") throw CitiesNotFoundException()
+        /** иначе, если не ОК, описать подробно ошибку*/
+        else throw Exception("${response.message()} | ${response.errorBody()}")
     }
 }
 
@@ -69,6 +72,6 @@ class LoadWeatherRetrofitRequest(params: Params) :
 
     override fun validate(response: Response<WeatherResponsePOJO>): WeatherResponsePOJO {
         if (response.isSuccessful) response.body()?.let { return it }
-        throw Exception("ошибка валидации")
+        throw Exception("${response.message()} | ${response.errorBody()}")
     }
 }

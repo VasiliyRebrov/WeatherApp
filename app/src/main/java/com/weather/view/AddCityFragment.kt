@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.data.common.data
 import com.weather.R
 import com.weather.databinding.FragmentAddCityBinding
@@ -48,11 +50,11 @@ class AddCityFragment : BaseFragment() {
     }
 
     private fun initComponents() {
-
         initBar()
-        et_add_city_find_by_name.addTextChangedListener {
-            viewModel.search(it.toString())
-        }
+        initInputField()
+        initButton()
+        initRecycler()
+
         viewModel.findCityUseCaseLiveData.observe(viewLifecycleOwner) {
             Log.d("MyTag", "FIND UC: $it | ${it.data ?: "NULL"}")
 
@@ -62,6 +64,11 @@ class AddCityFragment : BaseFragment() {
         }
         viewModel.addCityByLocationUseCaseLiveData.observe(viewLifecycleOwner) {
             Log.d("MyTag", " ADD BY LOCATION UC: $it | ${it.data ?: "NULL"}")
+            findNavController().popBackStack()
+        }
+        viewModel.addCityUseCaseLiveData.observe(viewLifecycleOwner) {
+            Log.d("MyTag", " ADD UC: $it | ${it.data ?: "NULL"}")
+            findNavController().popBackStack()
         }
         viewModel.progressLiveData.observe(viewLifecycleOwner) {
             Log.d("MyTag", "PROGRESS STATUS: $it")
@@ -69,10 +76,12 @@ class AddCityFragment : BaseFragment() {
         viewModel.errorEvent.observe(viewLifecycleOwner) {
             Log.d("MyTag", "ERROR: $it")
         }
-//        viewModel.errorEvent.observe(viewLifecycleOwner) {
-//            Log.d("MyTag", "ERROR: $it")
-//        }
-        initButton()
+    }
+
+    private fun initInputField() {
+        et_add_city_find_by_name.addTextChangedListener {
+            viewModel.search(it.toString())
+        }
     }
 
     private fun initBar() {
@@ -85,6 +94,16 @@ class AddCityFragment : BaseFragment() {
     private fun initButton() {
         but_add_city_find_by_location.setOnClickListener {
             checkAndRequestGeoPermission()
+        }
+    }
+
+    private fun initRecycler() {
+        with(recycler_add_city_results) {
+            adapter = RvRemoteCitiesAdapter {
+                viewModel.addCity(it)
+            }
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
         }
     }
 

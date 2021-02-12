@@ -49,11 +49,6 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         .mapLatest { name ->
             return@mapLatest findCityUseCase(name)
         }
-        /**
-         * ошибки здесь не обрабатываются, потому что все обрабатывается в usecase, где они
-         * просто оборачиваются в Result
-         * если использовать catch здесь - прервется flow.
-         */
         .asLiveData()
 
     private val _findCityUseCaseLiveData = MediatorLiveData<Result<List<City>>>().apply {
@@ -121,5 +116,3 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         add(_defineLocationUseCaseLiveData)
     } as Set<LiveData<Result<*>>>
 }
-
-//каждый метод, где запускается юзкейс - он шаблонный. сделать один и передавать ему нужные данные?

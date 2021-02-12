@@ -10,6 +10,7 @@ import com.data.common.data
 import com.data.common.succeeded
 import com.data.model.City
 import org.w3c.dom.Text
+import java.lang.Error
 
 
 @BindingAdapter("app:update")
@@ -22,23 +23,41 @@ fun update(view: RecyclerView, result: Result<List<City>>) {
 }
 
 @BindingAdapter("android:text")
-fun setText(view: TextView, error: Result<*>) {
-    if (error is Result.Error){
-        view.visibility = View.VISIBLE
-        view.text = error.exception.message
+fun setText(view: TextView, result: Result<*>) {
+    when (result) {
+        is Result.Success -> {
+            view.visibility = View.GONE
+        }
+        is Result.Loading -> {
+            view.visibility = View.VISIBLE
+            view.text = "..."
+        }
+        is Result.Error -> {
+            view.visibility = View.VISIBLE
+            view.text = result.exception.message
+        }
     }
 }
 
-@BindingAdapter("android:progress")
-fun setProgress(view: TextView, isLoading: Boolean) {
-    if (isLoading) {
-        view.visibility = View.VISIBLE
-        view.text = "..."
-    } else if (view.text == "...")
-        view.visibility = View.GONE
-    //если ошибка придет раньше прогресса - она сначала отобразится, а потом прогресс исчезнет
-    //поэтому нужно убелиться, что у нас последним был активен прогресс, с его '...'
-}
+
+//@BindingAdapter("android:text")
+//fun setText(view: TextView, error: Result<*>) {
+//    if (error is Result.Error){
+//        view.visibility = View.VISIBLE
+//        view.text = error.exception.message
+//    }
+//}
+//
+//@BindingAdapter("android:progress")
+//fun setProgress(view: TextView, isLoading: Boolean) {
+//    if (isLoading) {
+//        view.visibility = View.VISIBLE
+//        view.text = "..."
+//    } else if (view.text == "...")
+//        view.visibility = View.GONE
+//    //если ошибка придет раньше прогресса - она сначала отобразится, а потом прогресс исчезнет
+//    //поэтому нужно убелиться, что у нас последним был активен прогресс, с его '...'
+//}
 
 //    if (progressStatus == ProgressStatus.LOADING) {
 //        view.text = "..."

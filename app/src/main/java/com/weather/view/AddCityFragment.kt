@@ -70,11 +70,8 @@ class AddCityFragment : BaseFragment() {
             Log.d("MyTag", " ADD UC: $it | ${it.data ?: "NULL"}")
             findNavController().popBackStack()
         }
-        viewModel.progressLiveData.observe(viewLifecycleOwner) {
-            Log.d("MyTag", "PROGRESS STATUS: $it")
-        }
         viewModel.errorEvent.observe(viewLifecycleOwner) {
-            Log.d("MyTag", "ERROR: $it")
+            Log.d("MyTag", " ERROR EVENT: $it")
         }
     }
 

@@ -95,15 +95,12 @@ class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
                             android.Manifest.permission.ACCESS_FINE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED
                     ) {
-                        //переключаемся на главный, чтобы работал слушатель
-//                        withContext(Dispatchers.Main) {
                         locManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             0,
                             0f,
                             locListener
                         )
-//                        }
                     }
                     emit(Result.Success(Unit))
                 } else

@@ -69,6 +69,9 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         _findCityUseCaseLiveData.value = result
     }
 
+    /** проблема: при onResume() считывание EditText происходит автоматически. вызывается этот метод
+     * решение: источник, принимающий параметр - stateFlow. В случае передачи тех же данных, которые
+     * в нем уже находятся, он их не примет. Следовательно, никаких повторных запросов не происходит*/
     fun search(name: String) {
         _searchQuery.value = name
     }

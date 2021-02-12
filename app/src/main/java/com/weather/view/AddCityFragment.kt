@@ -3,7 +3,6 @@ package com.weather.view
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.data.common.data
+import com.data.common.succeeded
 import com.weather.R
 import com.weather.databinding.FragmentAddCityBinding
 import com.weather.viewmodel.AddCityViewModel
@@ -54,24 +53,21 @@ class AddCityFragment : BaseFragment() {
         initInputField()
         initButton()
         initRecycler()
+        initObservers()
 
-        viewModel.findCityUseCaseLiveData.observe(viewLifecycleOwner) {
-            Log.d("MyTag", "FIND UC: $it | ${it.data ?: "NULL"}")
+    }
 
-        }
-        viewModel.defineLocationUseCaseLiveData.observe(viewLifecycleOwner) {
-            Log.d("MyTag", " LOCATION UC: $it | ${it.data ?: "NULL"}")
-        }
-        viewModel.addCityByLocationUseCaseLiveData.observe(viewLifecycleOwner) {
-            Log.d("MyTag", " ADD BY LOCATION UC: $it | ${it.data ?: "NULL"}")
-            findNavController().popBackStack()
-        }
-        viewModel.addCityUseCaseLiveData.observe(viewLifecycleOwner) {
-            Log.d("MyTag", " ADD UC: $it | ${it.data ?: "NULL"}")
-            findNavController().popBackStack()
-        }
-        viewModel.errorEvent.observe(viewLifecycleOwner) {
-            Log.d("MyTag", " ERROR EVENT: $it")
+    private fun initObservers() {
+        with(viewModel) {
+            /** подписывается на главную LD, просто чтобы отслеживатьв логах каждый шаг всех ливдат-юзкейсов*/
+            baseLiveData.observeWithLogging()
+            /** подписывается на конкретные LD, чтобы обрабатывать конкретные ситуации*/
+            addCityUseCaseLiveData.observeWithLogging {
+                if (it.succeeded) findNavController().popBackStack()
+            }
+            addCityByLocationUseCaseLiveData.observeWithLogging {
+                if (it.succeeded) findNavController().popBackStack()
+            }
         }
     }
 

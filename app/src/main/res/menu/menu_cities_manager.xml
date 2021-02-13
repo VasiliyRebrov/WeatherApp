@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.suleiman.material.activities.TabsHeaderActivity">
+    <item
+        android:id="@+id/action_add_city"
+        android:orderInCategory="1"
+        android:title="add city"
+        android:icon="@drawable/baseline_add_white_24dp"
+        app:showAsAction="always" />
+</menu>

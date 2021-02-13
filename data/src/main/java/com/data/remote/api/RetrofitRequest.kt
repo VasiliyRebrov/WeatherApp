@@ -27,7 +27,7 @@ abstract class RetrofitRequest<T>(protected val params: Params) {
     protected abstract fun validate(response: Response<T>): T
 }
 
-class LoadCitiesRetrofitRequest(params: Params) : RetrofitRequest<CityResponse>(params) {
+class LoadCitiesRetrofitRequest(params: LoadCitiesParams) : RetrofitRequest<CityResponse>(params) {
     override fun createService() = GeoService.create()
 
     override suspend fun loadData(): Response<CityResponse> {
@@ -58,7 +58,7 @@ class LoadCitiesRetrofitRequest(params: Params) : RetrofitRequest<CityResponse>(
     }
 }
 
-class LoadWeatherRetrofitRequest(params: Params) :
+class LoadWeatherRetrofitRequest(params: LoadWeatherParams) :
     RetrofitRequest<WeatherResponsePOJO>(params) {
     override fun createService() = WeatherService.create()
 

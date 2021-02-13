@@ -1,6 +1,5 @@
 package com.data.model
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
@@ -13,8 +12,63 @@ interface WeatherDao {
     suspend fun getCityList(): List<City>
 
     @Insert
-    suspend fun insertCity(city: City):Long
+    suspend fun insertCity(city: City): Long
 
+    @Transaction
+    suspend fun insertWeather(vararg weatherData: Triple<CurrentWeatherData, HourlyWeatherData, DailyWeatherData>) {
+        weatherData.forEach {
+            insertCurrentWeather(it.first)
+            insertHourlyWeather(it.second)
+            insertDailyWeather(it.third)
+        }
+    }
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCurrentWeather(first: CurrentWeatherData)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHourlyWeather(second: HourlyWeatherData)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDailyWeather(third: DailyWeatherData)
+
+    ///
+
+//    @Transaction
+//    fun deleteCityAndSort(city: City, sortedList: MutableList<City>? = null) {
+//        deleteCity(city)
+//        deleteCurrentWeatherData(city.cityId)
+//        deleteHourlyWeatherData(city.cityId)
+//        deleteDailyWeatherData(city.cityId)
+//        sortedList?.let { insert(*sortedList.toTypedArray()) }
+//    }
+
+//    @Delete
+//    fun deleteCity(city: City)
+
+    //возможность замены предусмотрена, тк. сюда приходят города после пересортировки
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    fun insert(vararg city: City): List<Long>
+
+    @Transaction
+    fun deleteWeatherData(vararg cityId: Int) {
+        cityId.forEach {
+            deleteCurrentWeatherData(it)
+            deleteHourlyWeatherData(it)
+            deleteDailyWeatherData(it)
+        }
+    }
+
+    @Query("delete from current_weather_data where cityId=:cityId")
+    fun deleteCurrentWeatherData(vararg cityId: Int)
+
+    @Query("delete from hourly_weather_data where cityId=:cityId")
+    fun deleteHourlyWeatherData(vararg cityId: Int)
+
+    @Query("delete from daily_weather_data where cityId=:cityId")
+    fun deleteDailyWeatherData(vararg cityId: Int)
+
+//
 
 //    //    @Transaction
 ////    @Query("SELECT * FROM cities")

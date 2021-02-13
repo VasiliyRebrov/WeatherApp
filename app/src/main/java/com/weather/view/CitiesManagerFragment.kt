@@ -1,60 +1,98 @@
 package com.weather.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.data.model.City
+import com.weather.MyListener
 import com.weather.R
+import com.weather.SimpleItemTouchHelperCallback
+import com.weather.databinding.FragmentCitiesManagerBinding
+import com.weather.viewmodel.CitiesManagerViewModel
+import com.weather.viewmodel.ViewModelFactory
+import kotlinx.android.synthetic.main.fragment_cities_manager.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class CitiesManagerFragment : BaseFragment(), MyListener {
+    private val viewModel: CitiesManagerViewModel by viewModels {
+        ViewModelFactory("CitiesManagerViewModel", requireActivity().application)
+    }
+    private var mItemTouchHelper: ItemTouchHelper? = null
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CitiesManagerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class CitiesManagerFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_cities_manager, menu)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_cities_manager, container, false)
+        val binding: FragmentCitiesManagerBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_cities_manager, container, false)
+        binding.lifecycleOwner = this
+        binding.viewmodel = viewModel
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CitiesManagerFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CitiesManagerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init()
+    }
+
+
+    private fun init() {
+        initObservers()
+        initBar()
+        initRecycler()
+    }
+
+    private fun initObservers() {
+        sharedViewModel.localCitiesLiveData.observe(viewLifecycleOwner) {
+            if (it.isEmpty())
+                findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)
+        }
+    }
+
+    private fun initBar() {
+        with(requireActivity() as AppCompatActivity) {
+            setSupportActionBar(tb_cities_manager)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
+
+    private fun initRecycler() {
+        val adapter = RvLocalCitiesAdapter(this)
+        rv_local_cities.adapter = adapter
+        rv_local_cities.layoutManager = LinearLayoutManager(requireContext())
+        rv_local_cities.setHasFixedSize(true)
+        val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
+        mItemTouchHelper = ItemTouchHelper(callback)
+        mItemTouchHelper!!.attachToRecyclerView(rv_local_cities)
+
+    }
+
+    // эти 2 метода нужны, чтобы вызвать перетаскивание/свайп кнопками
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
+        mItemTouchHelper!!.startDrag(viewHolder!!)
+    }
+
+    override fun onStartSwipe(viewHolder: RecyclerView.ViewHolder?) {
+        mItemTouchHelper!!.startSwipe(viewHolder!!)
+    }
+
+    //а эти 2 метода нужны, чтобы адаптер сообщал, что нужно сделать, после выполнения перетаскивания/свайпа
+    //хз, разумно ли их пихать в один интерфейс с верхними методами
+    override fun sortList(cities: List<City>) {
+//        viewModel.resortCities(cities)
+    }
+
+    override fun deleteCityAndSort(city: City, sortedList: MutableList<City>) {
+//        viewModel.deleteCity(city, sortedList)
     }
 }

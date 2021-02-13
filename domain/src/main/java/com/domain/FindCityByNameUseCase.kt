@@ -7,6 +7,7 @@ import com.data.common.Result
 import com.data.common.succeeded
 import com.data.model.City
 import com.data.repo.AddCityRepo
+import com.data.repo.MainRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -49,6 +50,30 @@ class FindCityByNameUseCase(
 //) : UseCase<City, Int>(coroutineDispatcher) {
 //    override suspend fun execute(parameters: City) = repo.addCity(parameters)
 //}
+
+
+class GetLocalCitiesUseCase(
+    private val repo: MainRepo,
+    coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+) : FlowUseCase<Unit, List<City>>(coroutineDispatcher) {
+    override fun execute(parameters: Unit): Flow<Result<List<City>>> {
+        /** полученный список городов сортируется по id.*/
+        return repo.localCities.map {
+            val cities = it.sortedBy { city -> city.cityId }
+            Result.Success(cities)
+        }
+    }
+}
+
+class RefreshWeatherDataUseCase(
+    private val repo: MainRepo,
+    coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
+) : FlowUseCase<Pair<List<City>, List<City>>, String>(coroutineDispatcher) {
+    override fun execute(parameters: Pair<List<City>, List<City>>): Flow<Result<String>> {
+        return repo.refreshWeatherData(parameters.first, parameters.second)
+    }
+
+}
 
 class AddCityUseCase(
     private val repo: AddCityRepo,

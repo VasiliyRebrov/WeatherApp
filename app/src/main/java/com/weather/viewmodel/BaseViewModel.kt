@@ -2,7 +2,6 @@ package com.weather.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.data.common.MediatorSingleLiveEvent
 import com.data.common.Result
 import com.data.common.SingleLiveEvent
 import com.data.repo.BaseRepo
@@ -47,8 +46,12 @@ abstract class BaseViewModel(application: Application, private val repo: BaseRep
     protected fun <P, R> launchUseCase(
         useCase: FlowUseCase<P, R>,
         parameters: P,
-        collectorBlock: suspend (Result<R>) -> Unit
+        collect: suspend (Result<R>) -> Unit
     ) {
-        viewModelScope.launch { useCase(parameters).collect(collectorBlock) }
+        viewModelScope.launch { useCase(parameters).collect(collect) }
     }
 }
+
+/**
+ * возможно, сделать shared/state flow.
+ * */

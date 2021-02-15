@@ -1,10 +1,10 @@
-package com.weather
+package com.weather.components
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.color.MaterialColors.ALPHA_FULL
 
-class SimpleItemTouchHelperCallback(val mAdapter: ItemTouchHelperAdapter) :
+class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter) :
     ItemTouchHelper.Callback() {
     override fun getMovementFlags(
         recyclerView: RecyclerView,
@@ -20,8 +20,6 @@ class SimpleItemTouchHelperCallback(val mAdapter: ItemTouchHelperAdapter) :
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        // Notify the adapter of the move
-
         // Notify the adapter of the move
         mAdapter.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
         return true

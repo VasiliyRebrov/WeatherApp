@@ -1,4 +1,4 @@
-package com.weather.view
+package com.weather.components
 
 import androidx.recyclerview.widget.DiffUtil
 import com.data.model.CityAndCurrentWeather

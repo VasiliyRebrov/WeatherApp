@@ -1,16 +1,11 @@
-package com.weather.view
+package com.weather.components
 
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.data.common.AddCityUseCases
 import com.data.common.Result
-import com.data.common.data
-import com.data.common.succeeded
 import com.data.model.City
-import org.w3c.dom.Text
-import java.lang.Error
 
 
 @BindingAdapter("app:update")

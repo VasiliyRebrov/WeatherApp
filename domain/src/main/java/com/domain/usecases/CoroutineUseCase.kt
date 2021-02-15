@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.domain
+package com.domain.usecases
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher

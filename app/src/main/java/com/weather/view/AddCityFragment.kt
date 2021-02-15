@@ -15,6 +15,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.data.common.succeeded
 import com.weather.R
+import com.weather.components.DialogAlertType
+import com.weather.components.RvRemoteCitiesAdapter
 import com.weather.databinding.FragmentAddCityBinding
 import com.weather.viewmodel.AddCityViewModel
 import com.weather.viewmodel.ViewModelFactory

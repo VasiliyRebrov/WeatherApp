@@ -7,8 +7,8 @@ import com.data.common.Result
 import com.data.common.data
 import com.data.model.City
 import com.data.repo.MainRepo
-import com.domain.GetLocalCitiesUseCase
-import com.domain.RefreshWeatherDataUseCase
+import com.domain.usecases.main.GetLocalCitiesUseCase
+import com.domain.usecases.main.RefreshWeatherDataUseCase
 import kotlinx.coroutines.flow.SharingStarted.Companion.Lazily
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
+import com.weather.components.DialogAlertType
 import com.weather.viewmodel.MainViewModel
 import com.weather.viewmodel.ViewModelFactory
 

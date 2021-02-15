@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import com.data.common.Result
 import com.data.common.SingleLiveEvent
 import com.data.repo.BaseRepo
-import com.domain.FlowUseCase
+import com.domain.usecases.FlowUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.lang.Exception

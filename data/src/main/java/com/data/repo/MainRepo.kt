@@ -10,8 +10,7 @@ import java.lang.Exception
 import java.lang.StringBuilder
 
 class MainRepo(ctx: Context) : BaseRepo(ctx) {
-    val localCities
-        get() = dao.getLiveCityList()
+    val localCities = dao.getLiveCityList()
 
     fun refreshWeatherData(newCities: List<City>, oldCities: List<City>) = flow {
         try {

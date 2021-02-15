@@ -22,7 +22,7 @@ data class City(
     val name: String,
     val region: String,
     val regionCode: String,
-    var serialNumber: Int = 0
+    var position: Int = 0
 ) {
     override fun equals(other: Any?): Boolean {
         val obj = other as? City ?: return false

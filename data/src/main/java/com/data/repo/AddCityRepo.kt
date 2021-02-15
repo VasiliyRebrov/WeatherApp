@@ -5,17 +5,14 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Bundle
 import androidx.core.content.ContextCompat
 import com.data.common.*
 import com.data.model.City
 import com.data.remote.api.LoadCitiesParams
 import com.data.remote.api.LoadCitiesRetrofitRequest
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import java.lang.Exception
 
 
@@ -37,7 +34,7 @@ class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
                 val localCities = dao.getCityList()
                 localCities.firstOrNull { it.cityId == city.cityId }
                     ?.let { throw CityAlreadyExistException() }
-                city.serialNumber = localCities.size
+                city.position = localCities.size
                 dao.insertCity(city)
                 emit(Result.Success(city.cityId))
             } catch (exc: Exception) {

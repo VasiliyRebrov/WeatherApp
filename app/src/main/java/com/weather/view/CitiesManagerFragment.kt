@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.data.model.City
-import com.weather.MyListener
 import com.weather.R
-import com.weather.SimpleItemTouchHelperCallback
+import com.weather.components.MyListener
+import com.weather.components.RvLocalCitiesAdapter
+import com.weather.components.SimpleItemTouchHelperCallback
 import com.weather.databinding.FragmentCitiesManagerBinding
 import com.weather.viewmodel.CitiesManagerViewModel
 import com.weather.viewmodel.ViewModelFactory
@@ -31,7 +32,7 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding: FragmentCitiesManagerBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_cities_manager, container, false)
         binding.lifecycleOwner = this
@@ -74,10 +75,10 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
         val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
         mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper!!.attachToRecyclerView(rv_local_cities)
-
     }
 
     // эти 2 метода нужны, чтобы вызвать перетаскивание/свайп кнопками
+    //адаптер их не вызывает. пока что ненужные
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
         mItemTouchHelper!!.startDrag(viewHolder!!)
     }
@@ -86,13 +87,12 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
         mItemTouchHelper!!.startSwipe(viewHolder!!)
     }
 
-    //а эти 2 метода нужны, чтобы адаптер сообщал, что нужно сделать, после выполнения перетаскивания/свайпа
-    //хз, разумно ли их пихать в один интерфейс с верхними методами
-    override fun sortList(cities: List<City>) {
-//        viewModel.resortCities(cities)
+    //а эти нужные. тут конкретный юзкейс
+    override fun deleteCity(city: City) {
+        viewModel.deleteCity(city)
     }
 
-    override fun deleteCityAndSort(city: City, sortedList: MutableList<City>) {
-//        viewModel.deleteCity(city, sortedList)
+    override fun reorderLocalCities(reorderedCities: List<City>) {
+        viewModel.reorderLocalCities(reorderedCities)
     }
 }

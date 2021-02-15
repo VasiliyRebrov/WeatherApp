@@ -1,5 +1,6 @@
 package com.data.model
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
@@ -7,6 +8,10 @@ import kotlinx.coroutines.flow.Flow
 interface WeatherDao {
     @Query("select * from cities")
     fun getLiveCityList(): Flow<List<City>>
+
+    @Transaction
+    @Query("select * from cities")
+    fun getItemsData(): Flow<List<CityAndCurrentWeather>>
 
     @Query("select * from cities")
     suspend fun getCityList(): List<City>
@@ -50,6 +55,10 @@ interface WeatherDao {
 //    @Insert(onConflict = OnConflictStrategy.REPLACE)
 //    fun insert(vararg city: City): List<Long>
 
+    @Delete
+    suspend fun deleteCity(city: City)
+
+    //до сих пор не suspend
     @Transaction
     fun deleteWeatherData(vararg cityId: Int) {
         cityId.forEach {
@@ -67,6 +76,14 @@ interface WeatherDao {
 
     @Query("delete from daily_weather_data where cityId=:cityId")
     fun deleteDailyWeatherData(vararg cityId: Int)
+
+    /**
+     * вызывается только от usecase: ReorderLocalCities
+     * поэтому предусмотрена возможность REPLACE
+     * */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun reorderLocalCities(vararg city: City): List<Long>
+
 
 //
 
@@ -154,7 +171,7 @@ interface WeatherDao {
 //    @Query("select * from cities")
 //    fun getCityList(): List<City>
 //
-//    //возможность замены предусмотрена, тк. сюда приходят города после пересортировки
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insert(vararg city: City): List<Long>
+//
+//
+//
 }

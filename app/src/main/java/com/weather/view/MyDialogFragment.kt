@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.weather.R
+import com.weather.components.DialogAlertType
 import kotlinx.android.synthetic.main.fragment_blank.*
 
 private const val ALERT_TYPE = "ALERT_TYPE"

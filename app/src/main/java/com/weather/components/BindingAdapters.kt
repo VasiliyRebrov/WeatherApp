@@ -38,9 +38,11 @@ fun setText(view: TextView, result: Result<*>) {
 }
 
 @BindingAdapter("app:update2")
-fun update2(view: RecyclerView, result: Result<List<CityCurrentWeatherRelation>>) {
-    if (result is Result.Success && result.data.isNotEmpty()) {
-        (view.adapter as RvLocalCitiesAdapter).updateList(result.data)
+fun update2(view: RecyclerView, result: Result<List<CityCurrentWeatherRelation>>?) {
+    result?.let {
+        if (result is Result.Success && result.data.isNotEmpty()) {
+            (view.adapter as RvLocalCitiesAdapter).updateList(result.data)
+        }
     }
 }
 

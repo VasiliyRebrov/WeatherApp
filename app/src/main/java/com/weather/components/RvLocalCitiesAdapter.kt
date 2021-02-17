@@ -15,7 +15,7 @@ class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
     private val citiesList = mutableListOf<CityCurrentWeatherRelation>()
 
     //    var lastAction: ItemTouchAction = ItemTouchAction.DEFAULT
-    private var blockFlag = false
+    private var blockcount = 0
 
     inner class ViewHolder(private val binding: CardLicalCitiesItemBinding) :
         RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
@@ -28,7 +28,7 @@ class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
         override fun onItemClear() {
             with(getReorderedCities()) {
                 if (isNotEmpty()) {
-                    blockFlag = true
+                    blockcount++
                     mDragStartListener.reorderLocalCities(this)
                 }
             }
@@ -77,13 +77,13 @@ class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
         val city = citiesList[position]
         citiesList.removeAt(position)
         notifyItemRemoved(position)
-        blockFlag = true
+        blockcount += 2
         mDragStartListener.deleteCity(city.city)
     }
 
     fun updateList(newList: List<CityCurrentWeatherRelation>) {  //сделать DiffUtil
-        if (blockFlag)
-            blockFlag = false
+        if (blockcount>0)
+            blockcount--
         else {
             val diffUtil = LocalCitiesDiffUtilCallback(citiesList, newList)
             val diffResult = DiffUtil.calculateDiff(diffUtil, false)

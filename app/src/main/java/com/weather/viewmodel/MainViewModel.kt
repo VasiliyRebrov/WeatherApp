@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.stateIn
 class MainViewModel(application: Application, private val repo: MainRepo) :
     BaseViewModel(application, repo) {
 
+    suspend fun isExistCities() = repo.isExistCities()
+
+
     val getLocalCitiesUseCase = GetLocalCitiesUseCase(repo)
     val refreshWeatherDataUseCase = RefreshWeatherDataUseCase(repo)
 
@@ -53,7 +56,7 @@ class MainViewModel(application: Application, private val repo: MainRepo) :
      * */
     private fun observeCities(localCities: Result<List<City>>) {
         Log.d("myTag", "observeCities : $localCities")
-        if (localCities is Result.Success && localCities.data.isNotEmpty()) {
+        if (localCities is Result.Success) {
             val pair = defineDifference(localCities.data)
             refreshData(pair)
         }

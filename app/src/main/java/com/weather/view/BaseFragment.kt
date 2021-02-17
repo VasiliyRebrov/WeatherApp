@@ -15,12 +15,14 @@ import com.weather.components.DialogAlertType
 import com.weather.viewmodel.BaseViewModel
 import com.weather.viewmodel.MainViewModel
 import com.weather.viewmodel.ViewModelFactory
+import kotlinx.coroutines.runBlocking
 
 abstract class BaseFragment : Fragment() {
     val sharedViewModel: MainViewModel by activityViewModels {
         ViewModelFactory("MainViewModel", requireActivity().application)
     }
     abstract val viewModel: BaseViewModel
+
     protected fun showDialogFragment(alertType: DialogAlertType) {
         MyDialogFragment.newInstance(alertType).show(childFragmentManager, "dialog")
     }
@@ -33,20 +35,12 @@ abstract class BaseFragment : Fragment() {
         this.observe(viewLifecycleOwner, loggingObserver)
     }
 
-    fun navigateIfCitiesNotExist(navigateAction: Int) {
-        findNavController().navigate(navigateAction)
-//        sharedViewModel.isEmpty.observe(viewLifecycleOwner) {
-//            when {
-//                it == null ->
-//                    println()
-//                it ->
-//                    println()
-//                else ->
-//                    println()
-//            }
-//            if (it is Result.Success && it.data.isEmpty())
-//                findNavController().navigate(navigateAction)
-
-//        }
+    fun isExistCities(navResId: Int) {
+        runBlocking {
+            if (!sharedViewModel.isExistCities())
+                findNavController().navigate(navResId)
+            else
+                println()
+        }
     }
 }

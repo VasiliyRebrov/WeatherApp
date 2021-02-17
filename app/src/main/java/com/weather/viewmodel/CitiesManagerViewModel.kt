@@ -28,11 +28,7 @@ class CitiesManagerViewModel(application: Application, private val repo: CitiesM
     //возможное решение - преобразовывать с помощью SHAREDflow с 1-эл. кэшем(не state, потому что нам не надо
     // отбрасывать, если результат одинаковый.)
     val cityCurrentWeatherRelationListLiveData =
-        getCityCurrentWeatherRelationListUseCase(Unit).stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            Result.Loading
-        ).asLiveData().
+        getCityCurrentWeatherRelationListUseCase(Unit).asLiveData()
 
 //    val localCitiesLiveData =
 //        getLocalCitiesUseCase(Unit).map {

@@ -22,6 +22,7 @@ import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_cities_manager.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class CitiesManagerFragment : BaseFragment(), MyListener {
     private var mItemTouchHelper: ItemTouchHelper? = null
@@ -38,8 +39,7 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-//        navigateIfCitiesNotExist(R.id.action_citiesManagerFragment_to_addCityFragment)
+        isExistCities(R.id.action_citiesManagerFragment_to_addCityFragment)
         val binding: FragmentCitiesManagerBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_cities_manager, container, false)
         binding.lifecycleOwner = this

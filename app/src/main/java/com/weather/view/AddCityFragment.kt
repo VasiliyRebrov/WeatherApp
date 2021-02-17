@@ -3,6 +3,7 @@ package com.weather.view
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,13 +20,14 @@ import com.weather.components.DialogAlertType
 import com.weather.components.RvRemoteCitiesAdapter
 import com.weather.databinding.FragmentAddCityBinding
 import com.weather.viewmodel.AddCityViewModel
+import com.weather.viewmodel.BaseViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_add_city.*
 
 private const val REQUEST_CODE_LOCATION_PERMISSION = 999
 
 class AddCityFragment : BaseFragment() {
-    private val viewModel: AddCityViewModel by viewModels {
+    override val viewModel: AddCityViewModel by viewModels {
         ViewModelFactory("AddCityViewModel", requireActivity().application)
     }
 
@@ -65,7 +67,10 @@ class AddCityFragment : BaseFragment() {
             baseLiveData.observeWithLogging()
             /** подписывается на конкретные LD, чтобы обрабатывать конкретные ситуации*/
             addCityUseCaseLiveData.observeWithLogging {
-                if (it.succeeded) findNavController().popBackStack()
+                if (it.succeeded) {
+                    Log.d("checkk", "закрытие после добавления")
+                    findNavController().popBackStack()
+                }
             }
             addCityByLocationUseCaseLiveData.observeWithLogging {
                 if (it.succeeded) findNavController().popBackStack()

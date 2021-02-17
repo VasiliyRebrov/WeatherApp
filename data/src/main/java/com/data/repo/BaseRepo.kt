@@ -26,4 +26,7 @@ open class BaseRepo(protected val ctx: Context) {
             }
         } else throw NoNetworkException()
     }
+
+    suspend fun getLocalCities() = dao.getCityList()
+
 }

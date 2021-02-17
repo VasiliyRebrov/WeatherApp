@@ -44,6 +44,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_local_cities"
             android:layout_width="match_parent"
+            app:update2="@{viewmodel.cityCurrentWeatherRelationListLiveData}"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
    />

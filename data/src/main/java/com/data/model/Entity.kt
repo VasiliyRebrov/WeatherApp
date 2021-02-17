@@ -231,7 +231,7 @@ data class Daily(
 interface WeatherEntity
 
 //для localCitiesList
-data class CityAndCurrentWeather(
+data class CityCurrentWeatherRelation(
     @Embedded val city: City,
     @Relation(
         parentColumn = "cityId",

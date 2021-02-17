@@ -1,16 +1,16 @@
 package com.data.repo
 
 import android.content.Context
-import androidx.lifecycle.asLiveData
 import com.data.common.Result
 import com.data.model.City
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import java.lang.Exception
 import java.lang.StringBuilder
 
 class MainRepo(ctx: Context) : BaseRepo(ctx) {
-    val localCities = dao.getLiveCityList()
+    val localCities = dao.getFlowCityList()
+
+    fun gett()=dao.getFlowCityList()
 
     fun refreshWeatherData(newCities: List<City>, oldCities: List<City>) = flow {
         try {

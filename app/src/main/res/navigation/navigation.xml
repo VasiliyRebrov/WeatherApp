@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/addCityFragment">
+    app:startDestination="@id/citiesManagerFragment">
     <fragment
         android:id="@+id/citiesManagerFragment"
         android:name="com.weather.view.CitiesManagerFragment"

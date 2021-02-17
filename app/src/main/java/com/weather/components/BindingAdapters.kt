@@ -5,7 +5,10 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.data.common.Result
+import com.data.common.data
+import com.data.common.succeeded
 import com.data.model.City
+import com.data.model.CityCurrentWeatherRelation
 
 
 @BindingAdapter("app:update")
@@ -31,6 +34,13 @@ fun setText(view: TextView, result: Result<*>) {
             view.visibility = View.VISIBLE
             view.text = result.exception.message
         }
+    }
+}
+
+@BindingAdapter("app:update2")
+fun update2(view: RecyclerView, result: Result<List<CityCurrentWeatherRelation>>) {
+    if (result is Result.Success && result.data.isNotEmpty()) {
+        (view.adapter as RvLocalCitiesAdapter).updateList(result.data)
     }
 }
 

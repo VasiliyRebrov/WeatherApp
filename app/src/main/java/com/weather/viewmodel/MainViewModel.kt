@@ -5,12 +5,15 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.data.common.Result
 import com.data.common.data
+import com.data.common.succeeded
 import com.data.model.City
 import com.data.repo.MainRepo
 import com.domain.usecases.main.GetLocalCitiesUseCase
 import com.domain.usecases.main.RefreshWeatherDataUseCase
+import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.SharingStarted.Companion.Lazily
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel(application: Application, private val repo: MainRepo) :
@@ -25,14 +28,19 @@ class MainViewModel(application: Application, private val repo: MainRepo) :
     private val currentCities = mutableListOf<City>()
 
     /**
-     * перехватить где-нибудь, если идет пустой список (при инициализации он идет)
-     * сейчас перехват в методе
+     * в начале вернет Loading благодаря stateFlow
+     * stateFlow здесь фильтрует на уникальное значение. Единственный полезный для этого случай
+     * - пересортировка.
+     * Когда она происходит - меняется поле pos. Но его не охватывают проверки equals, а также
+     * здесь список сортируется по id(в usecase). Это значит, про при пересортировке мы получаем
+     * одинаковый список. stateFlow его не примет, и следовательно, наблюдатели не сработают
+     *
      */
     val localCitiesLiveData =
-        getLocalCitiesUseCase(Unit).map { it.data!! }.stateIn(viewModelScope, Lazily, listOf())
-            .asLiveData()
+        getLocalCitiesUseCase(Unit).stateIn(viewModelScope, Lazily, Result.Loading).asLiveData()
 
-    private val observer = Observer<List<City>> { localCities -> observeCities(localCities) }
+    private val observer =
+        Observer<Result<List<City>>> { localCities -> observeCities(localCities) }
 
     init {
         localCitiesLiveData.observeForever(observer)
@@ -41,12 +49,12 @@ class MainViewModel(application: Application, private val repo: MainRepo) :
     /**
      * метод будет вызван только когда содержание списка изменилось (добавление/удаление)
      * не будет вызван, когда была пересортировка элементов
-     * также будет вызван с пустым списком (при инициализации)
+     * также будет вызван с Loading при инициализации
      * */
-    private fun observeCities(localCities: List<City>) {
+    private fun observeCities(localCities: Result<List<City>>) {
         Log.d("myTag", "observeCities : $localCities")
-        if (localCities.isNotEmpty()) {
-            val pair = defineDifference(localCities)
+        if (localCities is Result.Success && localCities.data.isNotEmpty()) {
+            val pair = defineDifference(localCities.data)
             refreshData(pair)
         }
     }

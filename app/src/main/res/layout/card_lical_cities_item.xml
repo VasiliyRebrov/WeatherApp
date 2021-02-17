@@ -6,7 +6,7 @@
 
         <variable
             name="data"
-            type="com.data.model.CityAndCurrentWeather" />
+            type="com.data.model.CityCurrentWeatherRelation" />
 
     </data>
 

@@ -5,21 +5,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.data.model.City
-import com.data.model.CityAndCurrentWeather
+import com.data.model.CityCurrentWeatherRelation
 import com.weather.databinding.CardLicalCitiesItemBinding
 import java.util.*
 
 class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
     RecyclerView.Adapter<RvLocalCitiesAdapter.ViewHolder>(), ItemTouchHelperAdapter {
 
-    private val citiesList = mutableListOf<CityAndCurrentWeather>()
+    private val citiesList = mutableListOf<CityCurrentWeatherRelation>()
 
     //    var lastAction: ItemTouchAction = ItemTouchAction.DEFAULT
     private var blockFlag = false
 
     inner class ViewHolder(private val binding: CardLicalCitiesItemBinding) :
         RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
-        fun bind(data: CityAndCurrentWeather) {
+        fun bind(data: CityCurrentWeatherRelation) {
             binding.data = data
             binding.executePendingBindings()
         }
@@ -81,7 +81,7 @@ class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
         mDragStartListener.deleteCity(city.city)
     }
 
-    fun updateList(newList: List<CityAndCurrentWeather>) {  //сделать DiffUtil
+    fun updateList(newList: List<CityCurrentWeatherRelation>) {  //сделать DiffUtil
         if (blockFlag)
             blockFlag = false
         else {

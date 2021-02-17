@@ -1,15 +1,17 @@
 package com.weather.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.data.model.City
+import com.data.repo.CitiesManagerRepo
 import com.weather.R
 import com.weather.components.MyListener
 import com.weather.components.RvLocalCitiesAdapter
@@ -18,21 +20,26 @@ import com.weather.databinding.FragmentCitiesManagerBinding
 import com.weather.viewmodel.CitiesManagerViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_cities_manager.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CitiesManagerFragment : BaseFragment(), MyListener {
-    private val viewModel: CitiesManagerViewModel by viewModels {
-        ViewModelFactory("CitiesManagerViewModel", requireActivity().application)
-    }
     private var mItemTouchHelper: ItemTouchHelper? = null
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_cities_manager, menu)
     }
 
+    override val viewModel: CitiesManagerViewModel by viewModels {
+        ViewModelFactory("CitiesManagerViewModel", requireActivity().application)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+//        navigateIfCitiesNotExist(R.id.action_citiesManagerFragment_to_addCityFragment)
         val binding: FragmentCitiesManagerBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_cities_manager, container, false)
         binding.lifecycleOwner = this
@@ -47,17 +54,10 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
 
 
     private fun init() {
-        initObservers()
         initBar()
         initRecycler()
     }
 
-    private fun initObservers() {
-        sharedViewModel.localCitiesLiveData.observe(viewLifecycleOwner) {
-            if (it.isEmpty())
-                findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)
-        }
-    }
 
     private fun initBar() {
         with(requireActivity() as AppCompatActivity) {

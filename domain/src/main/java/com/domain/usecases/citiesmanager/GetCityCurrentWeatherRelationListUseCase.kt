@@ -1,23 +1,21 @@
 package com.domain.usecases.citiesmanager
 
 import com.data.common.Result
-import com.data.model.City
-import com.data.model.CityAndCurrentWeather
+import com.data.model.CityCurrentWeatherRelation
 import com.data.repo.CitiesManagerRepo
-import com.data.repo.MainRepo
 import com.domain.usecases.FlowUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class GetLocalCitiesWithCurrentWeatherDataUseCase(
+class GetCityCurrentWeatherRelationListUseCase(
     private val repo: CitiesManagerRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-) : FlowUseCase<Unit, List<CityAndCurrentWeather>>(coroutineDispatcher) {
-    override fun execute(parameters: Unit): Flow<Result<List<CityAndCurrentWeather>>> {
+) : FlowUseCase<Unit, List<CityCurrentWeatherRelation>>(coroutineDispatcher) {
+    override fun execute(parameters: Unit): Flow<Result<List<CityCurrentWeatherRelation>>> {
         /** полученный список городов сортируется по position.*/
-        return repo.cityAndCurrentWeatherList.map { list ->
+        return repo.cityCurrentWeatherRelationList.map { list ->
             val citiesWithDataList = list.sortedBy { it.city.position }
             Result.Success(citiesWithDataList)
         }

@@ -1,17 +1,16 @@
 package com.data.model
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WeatherDao {
     @Query("select * from cities")
-    fun getLiveCityList(): Flow<List<City>>
+    fun getFlowCityList(): Flow<List<City>>
 
     @Transaction
     @Query("select * from cities")
-    fun getItemsData(): Flow<List<CityAndCurrentWeather>>
+    fun getFlowCityCurrentWeatherRelationList(): Flow<List<CityCurrentWeatherRelation>>
 
     @Query("select * from cities")
     suspend fun getCityList(): List<City>
@@ -60,7 +59,7 @@ interface WeatherDao {
 
     //до сих пор не suspend
     @Transaction
-    fun deleteWeatherData(vararg cityId: Int) {
+    suspend fun deleteWeatherData(vararg cityId: Int) {
         cityId.forEach {
             deleteCurrentWeatherData(it)
             deleteHourlyWeatherData(it)
@@ -69,20 +68,20 @@ interface WeatherDao {
     }
 
     @Query("delete from current_weather_data where cityId=:cityId")
-    fun deleteCurrentWeatherData(vararg cityId: Int)
+    suspend fun deleteCurrentWeatherData(vararg cityId: Int)
 
     @Query("delete from hourly_weather_data where cityId=:cityId")
-    fun deleteHourlyWeatherData(vararg cityId: Int)
+    suspend fun deleteHourlyWeatherData(vararg cityId: Int)
 
     @Query("delete from daily_weather_data where cityId=:cityId")
-    fun deleteDailyWeatherData(vararg cityId: Int)
+    suspend fun deleteDailyWeatherData(vararg cityId: Int)
 
     /**
      * вызывается только от usecase: ReorderLocalCities
      * поэтому предусмотрена возможность REPLACE
      * */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun reorderLocalCities(vararg city: City): List<Long>
+    suspend fun reorderLocalCities(vararg city: City): List<Long>
 
 
 //

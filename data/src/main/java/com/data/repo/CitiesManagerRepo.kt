@@ -1,15 +1,17 @@
 package com.data.repo
 
 import android.content.Context
-import android.database.SQLException
 import com.data.common.Result
 import com.data.model.City
-import com.data.repo.BaseRepo
 import kotlinx.coroutines.flow.flow
 import java.lang.Exception
 
 class CitiesManagerRepo(ctx: Context) : BaseRepo(ctx) {
-    val cityAndCurrentWeatherList=dao.getItemsData()
+    val cityCurrentWeatherRelationList=dao.getFlowCityCurrentWeatherRelationList()
+
+    suspend fun getCity(): List<City> {
+       return dao.getCityList()
+    }
     fun deleteCity(city: City) = flow {
         try {
             emit(Result.Loading)

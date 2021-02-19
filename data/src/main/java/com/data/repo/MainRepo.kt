@@ -13,7 +13,6 @@ class MainRepo(ctx: Context) : BaseRepo(ctx) {
     fun gett()=dao.getFlowCityList()
 
     fun refreshWeatherData(newCities: List<City>, oldCities: List<City>) = flow {
-        try {
             emit(Result.Loading)
             val resultString = StringBuilder()
             if (newCities.isNotEmpty()) {
@@ -26,9 +25,6 @@ class MainRepo(ctx: Context) : BaseRepo(ctx) {
                 resultString.append("deleted: ${oldCities.size} elements\n")
             }
             emit(Result.Success(resultString.toString()))
-        } catch (exc: Exception) {
-            emit(Result.Error(exc))
-        }
     }
 
     //заглушка

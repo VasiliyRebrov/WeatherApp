@@ -17,12 +17,12 @@ class DefineLocationUseCase(
     private val locListener: LocationListener,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : FlowUseCase<Unit, Unit>(coroutineDispatcher) {
+    /** используем маппинг, преобразуя успешный результат в результат загрузки
+     * причина: когда успешно прекращается данный юзкейс, автоматически начинается другой - добавление города
+     *но интервал между окончанием выполнения этого юзкейса и началом выполнения нового - он очень велик
+     * потому что мы ждем, когда найдется локация и location listener начнет новый юзкейс
+     * этот интервал ожидания должен сопровождаться загрузкой*/
     override fun execute(parameters: Unit): Flow<Result<Unit>> {
-        /** используем маппинг, преобразуя успешный результат в результат загрузки
-         * причина: когда успешно прекращается данный юзкейс, автоматически начинается другой - добавление города
-         *но интервал между окончанием выполнения этого юзкейса и началом выполнения нового - он очень велик
-         * потому что мы ждем, когда найдется локация и location listener начнет новый юзкейс
-         * этот интервал ожидания должен сопровождаться загрузкой*/
         return repo.defineLocation(locManager, locListener).map { result ->
             return@map if (result.succeeded) Result.Loading
             else result

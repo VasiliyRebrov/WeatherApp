@@ -121,4 +121,8 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         add(_addCityByLocationUseCaseLiveData)
         add(_defineLocationUseCaseLiveData)
     } as Set<LiveData<Result<*>>>
+
+    override fun onCleared() {
+        super.onCleared()
+    }
 }

@@ -26,20 +26,26 @@ abstract class BaseViewModel(application: Application, private val repo: BaseRep
     /** фабричный метод по инициализации контейнера ливдат*/
     protected abstract fun initLiveDataContainer(): Set<LiveData<Result<*>>>
 
+    /***
+     * обращайся сюда, если результат выполнения юзкейсов являет состояние
+     */
     private val _baseLiveData by lazy {
         MediatorLiveData<Result<*>>().apply {
             liveDataContainer.forEach { liveData ->
                 addSource(liveData) { result ->
                     value = result
-                    if (result is Result.Error) _errorEvent.value = result.exception
+                    if (result !is Result.Loading) _usecaseEvent.value = result
                 }
             }
         }
     }
     val baseLiveData: LiveData<Result<*>> by lazy { _baseLiveData }
 
-    private val _errorEvent = SingleLiveEvent<Exception>()
-    val errorEvent: LiveData<Exception> = _errorEvent
+    /** event handler для события юзкейсов - успех. неудача
+     * обращайся сюда, если результат выполнения юзкейсов являет событие
+     * */
+    private val _usecaseEvent = SingleLiveEvent<Result<*>>()
+    val usecaseEvent: LiveData<Result<*>> = _usecaseEvent
 
     /** метод для запуска юз-кейсов, возвращающих Flow
     корутина начинает работу в Main-потоке. Но возможнсть смены предусмотрена в юз-кейсе*/

@@ -4,8 +4,15 @@
     tools:context="com.suleiman.material.activities.TabsHeaderActivity">
     <item
         android:id="@+id/action_add_city"
+        android:icon="@drawable/baseline_add_white_24dp"
         android:orderInCategory="1"
         android:title="add city"
-        android:icon="@drawable/baseline_add_white_24dp"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/baseline_settings_applications_white_24dp"
+        android:orderInCategory="100"
+        android:title="add city2"
         app:showAsAction="always" />
 </menu>

@@ -24,22 +24,8 @@ class CitiesManagerViewModel(application: Application, private val repo: CitiesM
 
     val getCityCurrentWeatherRelationListUseCase = GetCityCurrentWeatherRelationListUseCase(repo)
 
-    // вне зависимости от нижней реализации, первым livdata шлет null
-    //возможное решение - преобразовывать с помощью SHAREDflow с 1-эл. кэшем(не state, потому что нам не надо
-    // отбрасывать, если результат одинаковый.)
     val cityCurrentWeatherRelationListLiveData =
         getCityCurrentWeatherRelationListUseCase(Unit).asLiveData()
-
-//    val localCitiesLiveData =
-//        getLocalCitiesUseCase(Unit).map {
-//            val text = when (it) {
-//                is Result.Success -> "Success"
-//                is Result.Error -> "Error"
-//                is Result.Loading -> "Loading"
-//            }
-//            return@map it.data?: listOf()
-//        }.stateIn(viewModelScope, SharingStarted.Lazily, listOf())
-//            .asLiveData()
 
 
     private val deleteCityUseCase = DeleteCityUseCase(repo)
@@ -66,7 +52,11 @@ class CitiesManagerViewModel(application: Application, private val repo: CitiesM
     }
 
     override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-        add(_deleteCityUseCaseLD)
-        add(_reorderLocalCitiesUseCaseLD)
+        add(deleteCityUseCaseLD)
+        add(reorderLocalCitiesUseCaseLD)
     } as Set<LiveData<Result<*>>>
+
+    override fun onCleared() {
+        super.onCleared()
+    }
 }

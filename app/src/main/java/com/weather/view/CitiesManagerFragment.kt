@@ -1,17 +1,17 @@
 package com.weather.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.data.common.Result
 import com.data.model.City
-import com.data.repo.CitiesManagerRepo
 import com.weather.R
 import com.weather.components.MyListener
 import com.weather.components.RvLocalCitiesAdapter
@@ -20,26 +20,47 @@ import com.weather.databinding.FragmentCitiesManagerBinding
 import com.weather.viewmodel.CitiesManagerViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_cities_manager.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class CitiesManagerFragment : BaseFragment(), MyListener {
+    override val navResId: Int = R.id.action_citiesManagerFragment_to_addCityFragment
     private var mItemTouchHelper: ItemTouchHelper? = null
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_cities_manager, menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                findNavController().navigateUp()
+                true
+            }
+            R.id.action_settings -> {
+                findNavController().navigate(R.id.action_citiesManagerFragment_to_settingsFragment)
+                true
+            }
+            R.id.action_add_city -> {
+                findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
     override val viewModel: CitiesManagerViewModel by viewModels {
         ViewModelFactory("CitiesManagerViewModel", requireActivity().application)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        isExistCities(R.id.action_citiesManagerFragment_to_addCityFragment)
+        super.onCreateView(inflater, container, savedInstanceState)
         val binding: FragmentCitiesManagerBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_cities_manager, container, false)
         binding.lifecycleOwner = this
@@ -49,15 +70,14 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        init()
+        initComponents()
     }
 
-
-    private fun init() {
+    private fun initComponents() {
         initBar()
         initRecycler()
+        initObservers()
     }
-
 
     private fun initBar() {
         with(requireActivity() as AppCompatActivity) {
@@ -65,7 +85,6 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
     }
-
 
     private fun initRecycler() {
         val adapter = RvLocalCitiesAdapter(this)
@@ -75,6 +94,18 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
         val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
         mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper!!.attachToRecyclerView(rv_local_cities)
+    }
+
+
+    private fun initObservers() {
+        viewModel.usecaseEvent.observe(viewLifecycleOwner) {
+            val text: String = if (it is Result.Success) it.data.toString()
+            else (it as Result.Error).exception.toString()
+            Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
+        }
+        viewModel.baseLiveData.observe(viewLifecycleOwner) {
+
+        }
     }
 
     // эти 2 метода нужны, чтобы вызвать перетаскивание/свайп кнопками

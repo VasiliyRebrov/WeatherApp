@@ -18,10 +18,6 @@ import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel(application: Application, private val repo: MainRepo) :
     BaseViewModel(application, repo) {
-
-    suspend fun isExistCities() = repo.isExistCities()
-
-
     val getLocalCitiesUseCase = GetLocalCitiesUseCase(repo)
     val refreshWeatherDataUseCase = RefreshWeatherDataUseCase(repo)
 
@@ -31,7 +27,7 @@ class MainViewModel(application: Application, private val repo: MainRepo) :
     private val currentCities = mutableListOf<City>()
 
     /**
-     * в начале вернет Loading благодаря stateFlow
+     * в начале вернет по умолчанию Loading благодаря stateFlow
      * stateFlow здесь фильтрует на уникальное значение. Единственный полезный для этого случай
      * - пересортировка.
      * Когда она происходит - меняется поле pos. Но его не охватывают проверки equals, а также
@@ -40,7 +36,7 @@ class MainViewModel(application: Application, private val repo: MainRepo) :
      *
      */
     val localCitiesLiveData =
-        getLocalCitiesUseCase(Unit).stateIn(viewModelScope, Lazily, Result.Loading).asLiveData()
+        getLocalCitiesUseCase(Unit).stateIn(viewModelScope, Eagerly, Result.Loading).asLiveData()
 
     private val observer =
         Observer<Result<List<City>>> { localCities -> observeCities(localCities) }

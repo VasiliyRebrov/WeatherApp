@@ -34,13 +34,6 @@
                 app:layout_scrollFlags="scroll|enterAlways" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <ProgressBar
-            android:id="@+id/progress_main"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_gravity="center"
-            />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_local_cities"
             android:layout_width="match_parent"

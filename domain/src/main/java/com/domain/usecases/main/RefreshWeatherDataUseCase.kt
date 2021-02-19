@@ -15,5 +15,4 @@ class RefreshWeatherDataUseCase(
     override fun execute(parameters: Pair<List<City>, List<City>>): Flow<Result<String>> {
         return repo.refreshWeatherData(parameters.first, parameters.second)
     }
-
 }

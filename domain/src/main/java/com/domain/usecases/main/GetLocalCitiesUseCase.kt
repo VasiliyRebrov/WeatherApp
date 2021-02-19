@@ -14,13 +14,12 @@ class GetLocalCitiesUseCase(
     private val repo: MainRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : FlowUseCase<Unit, List<City>>(coroutineDispatcher) {
+    /** полученный список городов сортируется по id.*/
+    /** сортировка по id позволяет исключить изменения, после юзкейса пересортировки,
+     * когда меняется поле pos */
     override fun execute(parameters: Unit): Flow<Result<List<City>>> {
-        /** полученный список городов сортируется по id.*/
-        /** сортировка по id позволяет исключить изменения, после юзкейса пересортировки,
-         * когда меняется поле pos */
-        return repo.localCities.map {
-            val cities = it.sortedBy { city -> city.cityId }
-            Result.Success(cities)
+        return repo.localCities.map { resultList ->
+            Result.Success(resultList.sortedBy { city -> city.cityId })
         }
     }
 }

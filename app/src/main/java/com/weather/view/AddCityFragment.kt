@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,16 @@ private const val REQUEST_CODE_LOCATION_PERMISSION = 999
 class AddCityFragment : BaseFragment() {
     override val viewModel: AddCityViewModel by viewModels {
         ViewModelFactory("AddCityViewModel", requireActivity().application)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+//            if (sharedViewModel.cities.value!!.isEmpty()) requireActivity().finish()
+//            else
+            findNavController().popBackStack()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

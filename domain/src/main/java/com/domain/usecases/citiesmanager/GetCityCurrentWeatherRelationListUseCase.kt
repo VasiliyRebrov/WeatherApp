@@ -15,23 +15,8 @@ class GetCityCurrentWeatherRelationListUseCase(
 ) : FlowUseCase<Unit, List<CityCurrentWeatherRelation>>(coroutineDispatcher) {
     override fun execute(parameters: Unit): Flow<Result<List<CityCurrentWeatherRelation>>> {
         /** полученный список городов сортируется по position.*/
-        return repo.cityCurrentWeatherRelationList.map { list ->
-            val citiesWithDataList = list.sortedBy { it.city.position }
-            Result.Success(citiesWithDataList)
+        return repo.cityCurrentWeatherRelationList.map { resultList ->
+            Result.Success(resultList.sortedBy { it.city.position })
         }
     }
 }
-
-//class GetLocalCitiesUseCase(
-//    private val repo: MainRepo,
-//    coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-//) : FlowUseCase<Unit, List<City>>(coroutineDispatcher) {
-//    override fun execute(parameters: Unit): Flow<Result<List<City>>> {
-//        /** полученный список городов сортируется по id.*/
-//        return repo.localCities.map {
-//            val cities = it.sortedBy { city -> city.cityId }
-//            Result.Success(cities)
-//        }
-//    }
-//}
-//

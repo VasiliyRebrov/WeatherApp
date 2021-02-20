@@ -1,5 +1,6 @@
 package com.data.model
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
@@ -84,5 +85,6 @@ interface WeatherDao {
     @Query("select * from daily_weather_data")
     suspend fun getDaily(): List<DailyWeatherData>
 
-
+    @Query("select * from current_weather_data where cityId=:cityId")
+    fun getCurrentWeather(cityId: Int): Flow<CurrentWeatherData>
 }

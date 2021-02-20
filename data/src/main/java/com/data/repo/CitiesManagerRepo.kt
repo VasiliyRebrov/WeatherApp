@@ -4,10 +4,12 @@ import android.content.Context
 import com.data.common.Result
 import com.data.model.City
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import java.lang.Exception
 
 class CitiesManagerRepo(ctx: Context) : BaseRepo(ctx) {
-    val cityCurrentWeatherRelationList = dao.getFlowCityCurrentWeatherRelationList()
+    val cityCurrentWeatherRelationList =
+        dao.getFlowCityCurrentWeatherRelationList().map { Result.Success(it) }
 
     suspend fun getCity(): List<City> {
         return dao.getCityList()

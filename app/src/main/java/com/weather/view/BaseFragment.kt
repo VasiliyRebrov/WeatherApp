@@ -31,6 +31,12 @@ abstract class BaseFragment : Fragment() {
     }
     abstract val viewModel: BaseViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    //сделать шаблонным
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,7 +65,7 @@ abstract class BaseFragment : Fragment() {
             sharedViewModel.localCitiesLiveData.observe(viewLifecycleOwner) { result ->
                 Log.d("cxz", result.toString())
                 if (result is Result.Success && result.data.isEmpty())
-                findNavController().navigate(resId)
+                    findNavController().navigate(resId)
             }
         }
     }

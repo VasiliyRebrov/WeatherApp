@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.weather.viewmodel.CityItemViewModel" />
+
+        <variable
+            name="sharedviewmodel"
+            type="com.weather.viewmodel.MainViewModel" />
+    </data>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_city_item_to_refresh_weather_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:progress="@{viewmodel.baseLiveData}">
+
+        <TextView
+            android:id="@+id/tv_city_item_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{viewmodel.currentWeatherLD.toString()}"
+            android:textSize="50dp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</layout>

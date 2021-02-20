@@ -15,8 +15,7 @@ class GetCityCurrentWeatherRelationListUseCase(
 ) : FlowUseCase<Unit, List<CityCurrentWeatherRelation>>(coroutineDispatcher) {
     override fun execute(parameters: Unit): Flow<Result<List<CityCurrentWeatherRelation>>> {
         /** полученный список городов сортируется по position.*/
-        return repo.cityCurrentWeatherRelationList.map { resultList ->
-            Result.Success(resultList.sortedBy { it.city.position })
-        }
+        //убрать сортировку во viewmodel
+        return repo.cityCurrentWeatherRelationList
     }
 }

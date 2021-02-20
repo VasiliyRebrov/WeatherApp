@@ -8,32 +8,5 @@ import java.lang.Exception
 import java.lang.StringBuilder
 
 class MainRepo(ctx: Context) : BaseRepo(ctx) {
-    val localCities = dao.getFlowCityList()
 
-    fun gett()=dao.getFlowCityList()
-
-    fun refreshWeatherData(newCities: List<City>, oldCities: List<City>) = flow {
-            emit(Result.Loading)
-            val resultString = StringBuilder()
-            if (newCities.isNotEmpty()) {
-                val weatherData = loadWeatherData(newCities)
-                dao.insertWeather(*weatherData.toTypedArray())
-                resultString.append("added: ${newCities.size} elements\n")
-            }
-            if (oldCities.isNotEmpty()) {
-                dao.deleteWeatherData(*oldCities.map { it.cityId }.toIntArray())
-                resultString.append("deleted: ${oldCities.size} elements\n")
-            }
-            emit(Result.Success(resultString.toString()))
-    }
-
-    //заглушка
-    suspend fun isExistCities()=dao.getCityList().isNotEmpty()
-
-//    val cities = dao.getLiveCityList().map { it.sortedBy { city -> city.serialNumber } }
-    //сейчас здесь просто преобразование
-    //но что если учесть случай, когда у нас простая пересортировка списка, и не следует слать в ливдату новые данные
-    //попытаться текущий flow сначала пересортировать, но не по serialnumber, а по id, а потом учесть distinct.
-    //получится так, что пересортированный список, тк. для нас он не менялся, не будет поступать дальше
-    //это пока предположение. мб и нет смысла. ничего не стоит, просто перепроверить в методе
 }

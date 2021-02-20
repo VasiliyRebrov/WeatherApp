@@ -35,8 +35,16 @@ class MainViewModel(application: Application, private val repo: MainRepo) :
      * одинаковый список. stateFlow его не примет, и следовательно, наблюдатели не сработают
      *
      */
-    val localCitiesLiveData =
-        getLocalCitiesUseCase(Unit).stateIn(viewModelScope, Eagerly, Result.Loading).asLiveData()
+
+    /** полученный список городов сортируется по id.*/
+    /** сортировка по id позволяет исключить изменения, после юзкейса пересортировки,
+     * когда меняется поле pos */
+    val localCitiesLiveData = getLocalCitiesUseCase(Unit)
+        .map {
+            return@map if (it is Result.Success && it.data.isNotEmpty()) {
+                Result.Success(it.data.sortedBy { city -> city.cityId })
+            } else it
+        }.stateIn(viewModelScope, Eagerly, Result.Loading).asLiveData()
 
     private val observer =
         Observer<Result<List<City>>> { localCities -> observeCities(localCities) }

@@ -25,8 +25,11 @@ class CitiesManagerViewModel(application: Application, private val repo: CitiesM
     val getCityCurrentWeatherRelationListUseCase = GetCityCurrentWeatherRelationListUseCase(repo)
 
     val cityCurrentWeatherRelationListLiveData =
-        getCityCurrentWeatherRelationListUseCase(Unit).asLiveData()
-
+        getCityCurrentWeatherRelationListUseCase(Unit).map { result ->
+            return@map if (result is Result.Success && result.data.isNotEmpty()) {
+                Result.Success(result.data.sortedBy { it.city.position })
+            } else result
+        }.asLiveData()
 
     private val deleteCityUseCase = DeleteCityUseCase(repo)
     private val _deleteCityUseCaseLD = MutableLiveData<Result<Int>>()

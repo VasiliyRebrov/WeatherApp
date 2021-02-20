@@ -51,10 +51,7 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
         ViewModelFactory("CitiesManagerViewModel", requireActivity().application)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

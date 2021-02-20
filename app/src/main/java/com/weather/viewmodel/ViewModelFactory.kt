@@ -16,7 +16,8 @@ class ViewModelFactory(
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = when (name) {
         "CityItemViewModel" -> CityItemViewModel(
             application,
-            CityItemRepo(application, city!!)
+            city!!,
+            CityItemRepo(application)
         )
         "GeneralViewModel" -> GeneralViewModel(
             application,

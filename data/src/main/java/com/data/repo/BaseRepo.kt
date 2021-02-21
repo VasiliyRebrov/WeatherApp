@@ -1,6 +1,8 @@
 package com.data.repo
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.location.Location
 import com.data.common.Config
 import com.data.common.NoNetworkException
 import com.data.common.Result
@@ -49,6 +51,11 @@ open class BaseRepo(protected val ctx: Context) {
         } else throw NoNetworkException()
     }
 
-    suspend fun getLocalCities() = dao.getCityList()
-
+    protected fun refreshShared(isExist: Boolean) {
+        val sharedPref = ctx.getSharedPreferences("STORAGE", MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean("isExistCitiesList", isExist)
+            apply()
+        }
+    }
 }

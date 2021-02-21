@@ -25,5 +25,4 @@ class SettingsRepo(ctx: Context) : BaseRepo(ctx) {
         dao.insertWeathe(current, hourly, daily)
         emit(Result.Success(Unit))
     }
-
 }

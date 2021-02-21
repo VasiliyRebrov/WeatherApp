@@ -17,7 +17,6 @@ import java.lang.Exception
 
 
 class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
-
     suspend fun fetchCitiesByName(name: String) =
         if (checkInternetAccess(ctx)) {
             val params = LoadCitiesParams.createParamsByName(name)
@@ -34,6 +33,8 @@ class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
             ?.let { throw CityAlreadyExistException() }
         city.position = localCities.size
         dao.insertCity(city)
+        refreshShared(true)
+        kotlinx.coroutines.delay(1000)
         emit(Result.Success(city.cityId))
     }
 

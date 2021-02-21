@@ -43,7 +43,7 @@ class GeneralFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
+        checkExistCitiesList(R.id.action_generalFragment_to_citiesManagerFragment)
         val binding: FragmentGeneralBinding =
             DataBindingUtil.inflate(
                 inflater,

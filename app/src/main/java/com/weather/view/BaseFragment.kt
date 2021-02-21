@@ -1,5 +1,6 @@
 package com.weather.view
 
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,16 +37,6 @@ abstract class BaseFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    //сделать шаблонным
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        observeSharedCities()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     protected fun showDialogFragment(alertType: DialogAlertType) {
         MyDialogFragment.newInstance(alertType).show(childFragmentManager, "dialog")
     }
@@ -60,13 +51,11 @@ abstract class BaseFragment : Fragment() {
 
     //сейчас так. в дальнейшем юзать sharedPref для моментального выявления состояния списка
     //а эта подписка будет перенесена к остальным методам
-    fun observeSharedCities() {
-        navResId?.let { resId ->
-            sharedViewModel.localCitiesLiveData.observe(viewLifecycleOwner) { result ->
-                Log.d("cxz", result.toString())
-                if (result is Result.Success && result.data.isEmpty())
-                    findNavController().navigate(resId)
-            }
-        }
+
+    protected fun checkExistCitiesList(resID: Int) {
+        val sharedPref = requireActivity().getSharedPreferences("STORAGE", MODE_PRIVATE)
+        val isExist = sharedPref.getBoolean("isExistCitiesList", false)
+        if (!isExist)
+            findNavController().navigate(resID)
     }
 }

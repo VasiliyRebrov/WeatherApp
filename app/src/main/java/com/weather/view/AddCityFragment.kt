@@ -1,6 +1,7 @@
 package com.weather.view
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -78,10 +79,7 @@ class AddCityFragment : BaseFragment() {
             baseLiveData.observeWithLogging()
             /** подписывается на конкретные LD, чтобы обрабатывать конкретные ситуации*/
             addCityUseCaseLiveData.observeWithLogging {
-                if (it.succeeded) {
-                    Log.d("checkk", "закрытие после добавления")
-                    findNavController().popBackStack()
-                }
+                if (it.succeeded) findNavController().popBackStack()
             }
             addCityByLocationUseCaseLiveData.observeWithLogging {
                 if (it.succeeded) findNavController().popBackStack()

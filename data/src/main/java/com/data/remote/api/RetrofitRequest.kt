@@ -14,26 +14,24 @@ import retrofit2.Response
 import java.lang.Exception
 import kotlin.coroutines.coroutineContext
 
-abstract class RetrofitRequest<T>(protected val params: Params) {
-    protected val service: Service by lazy { createService() }
-
+abstract class RetrofitRequest<T> {
+    protected abstract val params: Params
+    protected abstract val service: Service
     suspend fun execute(): T {
         val response = loadData()
         return validate(response)
     }
 
-    protected abstract fun createService(): Service
     protected abstract suspend fun loadData(): Response<T>
     protected abstract fun validate(response: Response<T>): T
 }
 
-class LoadCitiesRetrofitRequest(params: LoadCitiesParams) : RetrofitRequest<CityResponse>(params) {
-    override fun createService() = GeoService.create()
+class LoadCitiesRetrofitRequest(override val params: LoadCitiesParams) :
+    RetrofitRequest<CityResponse>() {
+    override val service = GeoService.create()
 
     override suspend fun loadData(): Response<CityResponse> {
-        params as LoadCitiesParams
-        Log.d("MyTag", (params.namePrefix))
-        return (service as GeoService).loadCities(
+        return service.loadCities(
             namePrefix = params.namePrefix, location = params.location,
             radius = params.radius,
             distanceUnit = params.distanceUnit,
@@ -58,13 +56,12 @@ class LoadCitiesRetrofitRequest(params: LoadCitiesParams) : RetrofitRequest<City
     }
 }
 
-class LoadWeatherRetrofitRequest(params: LoadWeatherParams) :
-    RetrofitRequest<WeatherResponsePOJO>(params) {
-    override fun createService() = WeatherService.create()
+class LoadWeatherRetrofitRequest(override val params: LoadWeatherParams) :
+    RetrofitRequest<WeatherResponsePOJO>() {
+    override val service = WeatherService.create()
 
     override suspend fun loadData(): Response<WeatherResponsePOJO> {
-        params as LoadWeatherParams
-        return (service as WeatherService).loadWeather(
+        return service.loadWeather(
             params.lat, params.lon, params.exclude,
             params.apiKey, params.units, params.lang
         )

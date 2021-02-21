@@ -51,13 +51,11 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
         ViewModelFactory("CitiesManagerViewModel", requireActivity().application)
     }
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        super.onCreateView(inflater, container, savedInstanceState)
+        checkExistCitiesList(R.id.action_citiesManagerFragment_to_addCityFragment)
         val binding: FragmentCitiesManagerBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_cities_manager, container, false)
         binding.lifecycleOwner = this
@@ -68,7 +66,7 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initComponents()
-    }
+}
 
     private fun initComponents() {
         initBar()
@@ -102,6 +100,10 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
         }
         viewModel.baseLiveData.observe(viewLifecycleOwner) {
 
+        }
+        sharedViewModel.localCitiesLiveData.observe(viewLifecycleOwner) {
+            if (it is Result.Success && it.data.isEmpty())
+                findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)
         }
     }
 

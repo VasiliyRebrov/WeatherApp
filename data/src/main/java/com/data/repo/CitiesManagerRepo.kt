@@ -11,13 +11,10 @@ class CitiesManagerRepo(ctx: Context) : BaseRepo(ctx) {
     val cityCurrentWeatherRelationList =
         dao.getFlowCityCurrentWeatherRelationList().map { Result.Success(it) }
 
-    suspend fun getCity(): List<City> {
-        return dao.getCityList()
-    }
-
     fun deleteCity(city: City) = flow {
         emit(Result.Loading)
         dao.deleteCity(city)
+        if (dao.getCityList().isEmpty()) refreshShared(false)
         emit(Result.Success(city.cityId))
     }
 

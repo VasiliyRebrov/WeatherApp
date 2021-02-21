@@ -3,10 +3,7 @@ package com.data.repo
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.util.Log
-import com.data.common.NoNetworkException
-import com.data.common.Result
-import com.data.common.checkInternetAccess
-import com.data.common.createWeatherEntity
+import com.data.common.*
 import com.data.model.*
 import com.data.remote.api.*
 import com.data.remote.entity.WeatherResponsePOJO
@@ -20,27 +17,22 @@ open class BaseRepo(protected val ctx: Context) {
 
     val localCities = dao.getFlowCityList().map { Result.Success(it) }
 
-    fun refreshWeatherData(
-        newCities: List<City>,
-        oldCities: List<City>,
-        unitMeasurePref: String = "Metric"
-    ) =
+    fun refreshWeatherData(unitMeasurePref: String, newCities: List<City>, oldCities: List<City>) =
         flow {
             emit(Result.Loading)
             val start = Date()
             val resultString = StringBuilder()
-            withContext(Dispatchers.IO) {
+            coroutineScope {
                 if (newCities.isNotEmpty()) {
                     async {
-                        Log.d("checkTime", "start async newCities ${Date().time}")
-                        val weatherData = loadWeatherData(newCities, unitMeasurePref)
-                        dao.insertWeather(*weatherData.toTypedArray())
-                        resultString.append("added: ${weatherData.size} elements\n")
+                        with(loadWeatherData(newCities, unitMeasurePref)) {
+                            dao.insertWeather(*this.toTypedArray())
+                            resultString.append("added: ${this.size} elements\n")
+                        }
                     }.start()
                 }
                 if (oldCities.isNotEmpty()) {
                     async {
-                        Log.d("checkTime", "start async oldCities ${Date().time}")
                         dao.deleteWeatherData(*oldCities.map { it.cityId }.toIntArray())
                         resultString.append("deleted: ${oldCities.size} elements\n")
                     }.start()
@@ -51,15 +43,12 @@ open class BaseRepo(protected val ctx: Context) {
             emit(Result.Success(resultString.toString()))
         }
 
-    private suspend fun loadWeatherData(
-        cities: List<City>,
-        unitMeasurePref: String
-    ): List<Triple<CurrentWeatherData, HourlyWeatherData, DailyWeatherData>> {
-        return withContext(Dispatchers.IO) {
-            return@withContext if (checkInternetAccess(ctx)) {
-                val def = cities.map { city ->
+
+    private suspend fun loadWeatherData(cities: List<City>, unitMeasurePref: String) =
+        coroutineScope {
+            return@coroutineScope if (checkInternetAccess(ctx)) {
+                cities.map { city ->
                     async {
-                        Log.d("checkTime", "start async load weather ${Date().time}")
                         val result =
                             executeRequest(
                                 Params.WeatherParams.createParams(
@@ -69,30 +58,11 @@ open class BaseRepo(protected val ctx: Context) {
                             ) as WeatherResponsePOJO
                         createWeatherEntity(city.cityId, result)
                     }
-                }
-                def.awaitAll()
+                }.awaitAll()
             } else throw NoNetworkException()
         }
-    }
-//    private suspend fun loadWeatherData(
-//        cities: List<City>,
-//        unitMeasurePref: String
-//    ): List<Triple<CurrentWeatherData, HourlyWeatherData, DailyWeatherData>> {
-//        return if (checkInternetAccess(ctx)) {
-//            cities.map { city ->
-//                val result =
-//                    executeRequest(
-//                        Params.WeatherParams.createParams(
-//                            city,
-//                            unitMeasurePref
-//                        )
-//                    ) as WeatherResponsePOJO
-//                createWeatherEntity(city.cityId, result)
-//            }
-//        } else throw NoNetworkException()
-//    }
 
-    protected fun refreshShared(isExist: Boolean) {
+    protected fun switchLocalCitiesStatus(isExist: Boolean) {
         val sharedPref = ctx.getSharedPreferences("STORAGE", MODE_PRIVATE)
         with(sharedPref.edit()) {
             putBoolean("isExistCitiesList", isExist)

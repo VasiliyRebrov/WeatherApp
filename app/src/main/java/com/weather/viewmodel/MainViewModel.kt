@@ -3,14 +3,18 @@ package com.weather.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import com.data.common.Result
 import com.data.model.City
 import com.data.repo.MainRepo
+import com.domain.RefreshWeatherParams
 import com.domain.usecases.GetLocalCitiesUseCase
 import com.domain.usecases.RefreshWeatherDataUseCase
+import com.weather.components.Config
 import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import java.util.*
 
 class MainViewModel(application: Application, private val repo: MainRepo) :
     BaseViewModel(application, repo) {
@@ -57,8 +61,8 @@ class MainViewModel(application: Application, private val repo: MainRepo) :
     private fun observeCities(localCities: Result<List<City>>) {
         Log.d("myTag", "observeCities : $localCities")
         if (localCities is Result.Success) {
-            val pair = defineDifference(localCities.data)
-            refreshData(pair)
+            val (newCities, oldCities) = defineDifference(localCities.data)
+            refreshData(newCities, oldCities)
         }
     }
 
@@ -72,8 +76,13 @@ class MainViewModel(application: Application, private val repo: MainRepo) :
         return Pair(newCities, oldCities)
     }
 
-    private fun refreshData(pair: Pair<List<City>, List<City>>) {
-        launchUseCase(refreshWeatherDataUseCase, pair) {
+    private fun refreshData(newCities: List<City>, oldCities: List<City>) {
+        val params = RefreshWeatherParams(
+            Config.getInstance(getApplication()).unitMeasurePref,
+            newCities,
+            oldCities
+        )
+        launchUseCase(refreshWeatherDataUseCase, params) {
             //обработка обновление погодных данных
             _refreshWeatherDataUseCaseLD.value = it
         }

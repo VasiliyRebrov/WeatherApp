@@ -5,7 +5,6 @@ import com.data.common.Result
 import com.data.model.City
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import java.lang.Exception
 
 class CitiesManagerRepo(ctx: Context) : BaseRepo(ctx) {
     val cityCurrentWeatherRelationList =
@@ -14,7 +13,7 @@ class CitiesManagerRepo(ctx: Context) : BaseRepo(ctx) {
     fun deleteCity(city: City) = flow {
         emit(Result.Loading)
         dao.deleteCity(city)
-        if (dao.getCityList().isEmpty()) refreshShared(false)
+        if (dao.getCityList().isEmpty()) switchLocalCitiesStatus(false)
         emit(Result.Success(city.cityId))
     }
 

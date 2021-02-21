@@ -30,7 +30,7 @@ class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
             ?.let { throw CityAlreadyExistException() }
         city.position = localCities.size
         dao.insertCity(city)
-        refreshShared(true)
+        switchLocalCitiesStatus(true)
         kotlinx.coroutines.delay(1000)
         emit(Result.Success(city.cityId))
     }

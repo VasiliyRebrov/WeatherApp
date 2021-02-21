@@ -16,7 +16,7 @@ class GetLocalCitiesUseCase(
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : FlowUseCase<Unit, List<City>>(coroutineDispatcher) {
 
-    override fun execute(parameters: Unit): Flow<Result<List<City>>> {
+    override fun execute(params: Unit): Flow<Result<List<City>>> {
         return repo.localCities
     }
 }

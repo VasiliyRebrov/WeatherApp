@@ -6,9 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import com.data.common.Result
 import com.data.model.City
+import com.data.model.WeatherEntity
 import com.data.repo.CityItemRepo
+import com.domain.RefreshWeatherParams
 import com.domain.usecases.GetCurrentWeatherUseCase
 import com.domain.usecases.RefreshWeatherDataUseCase
+import com.weather.components.Config
 
 class CityItemViewModel(
     application: Application,
@@ -24,9 +27,11 @@ class CityItemViewModel(
     val refreshDataLD: LiveData<Result<String>> = _refreshDataLD
 
     fun refreshWeatherData() {
-        val newCities = listOf(city)
-        val oldCities = listOf<City>()
-        launchUseCase(refreshWeatherDataUseCase, Pair(newCities, oldCities)) {
+        val params = RefreshWeatherParams(
+            Config.getInstance(getApplication()).unitMeasurePref,
+            listOf(city)
+        )
+        launchUseCase(refreshWeatherDataUseCase, params) {
             _refreshDataLD.value = it
         }
     }

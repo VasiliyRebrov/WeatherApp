@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.data.common.Result
 import com.data.repo.SettingsRepo
 import com.domain.usecases.ReConfigDataUseCase
+import com.weather.components.Config
 
 class SettingsViewModel(application: Application, private val repo: SettingsRepo) :
     BaseViewModel(application, repo) {
@@ -14,7 +15,7 @@ class SettingsViewModel(application: Application, private val repo: SettingsRepo
     val reconfigDataLD: LiveData<Result<Unit>> = _reconfigDataLD
 
     fun reConfig() {
-        launchUseCase(reConfigDataUseCase, Unit) {
+        launchUseCase(reConfigDataUseCase, Config.getInstance(getApplication()).unitMeasurePref) {
             //обработка результата пересортировки
             _reconfigDataLD.value = it
         }

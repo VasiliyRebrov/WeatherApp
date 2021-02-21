@@ -22,7 +22,7 @@ class DefineLocationUseCase(
      *но интервал между окончанием выполнения этого юзкейса и началом выполнения нового - он очень велик
      * потому что мы ждем, когда найдется локация и location listener начнет новый юзкейс
      * этот интервал ожидания должен сопровождаться загрузкой*/
-    override fun execute(parameters: Unit): Flow<Result<Unit>> {
+    override fun execute(params: Unit): Flow<Result<Unit>> {
         return repo.defineLocation(locManager, locListener).map { result ->
             return@map if (result.succeeded) Result.Loading
             else result

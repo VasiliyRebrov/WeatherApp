@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.Flow
 
 class ReConfigDataUseCase(
     private val repo: SettingsRepo,
-    coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-) :FlowUseCase<Unit,Unit>(coroutineDispatcher){
-    override fun execute(parameters: Unit): Flow<Result<Unit>> {
-       return repo.reConfig()
+    coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : FlowUseCase<String, Unit>(coroutineDispatcher) {
+    override fun execute(params: String): Flow<Result<Unit>> {
+        return repo.reConfig(params)
     }
 }

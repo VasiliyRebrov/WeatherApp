@@ -3,10 +3,8 @@ package com.weather.viewmodel
 import android.app.Application
 import androidx.lifecycle.*
 import com.data.common.Result
-import com.data.model.City
 import com.data.repo.GeneralRepo
-import com.domain.usecases.main.GetLocalCitiesUseCase
-import com.weather.viewmodel.BaseViewModel
+import com.domain.usecases.GetLocalCitiesUseCase
 import kotlinx.coroutines.flow.map
 
 class GeneralViewModel(application: Application, private val repo: GeneralRepo) :

@@ -2,15 +2,13 @@ package com.weather.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import com.data.common.Result
 import com.data.model.City
 import com.data.repo.CityItemRepo
-import com.domain.usecases.cityitem.GetCurrentWeatherUseCase
-import com.domain.usecases.main.RefreshWeatherDataUseCase
-import com.weather.viewmodel.BaseViewModel
+import com.domain.usecases.GetCurrentWeatherUseCase
+import com.domain.usecases.RefreshWeatherDataUseCase
 
 class CityItemViewModel(
     application: Application,

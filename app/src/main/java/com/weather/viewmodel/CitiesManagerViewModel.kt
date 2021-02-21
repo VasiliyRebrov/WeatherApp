@@ -5,18 +5,12 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.data.common.Result
-import com.data.common.data
 import com.data.model.City
-import com.data.model.CityCurrentWeatherRelation
-import com.domain.usecases.citiesmanager.DeleteCityUseCase
-import com.domain.usecases.citiesmanager.GetCityCurrentWeatherRelationListUseCase
-import com.domain.usecases.citiesmanager.ReorderLocalCitiesUseCase
-import kotlinx.coroutines.flow.SharingStarted
+import com.domain.usecases.DeleteCityUseCase
+import com.domain.usecases.GetCityCurrentWeatherRelationListUseCase
+import com.domain.usecases.ReorderLocalCitiesUseCase
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.stateIn
 
 
 class CitiesManagerViewModel(application: Application, private val repo: CitiesManagerRepo) :

@@ -8,20 +8,17 @@ import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import com.data.common.*
 import com.data.model.City
-import com.data.remote.api.LoadCitiesParams
-import com.data.remote.api.LoadCitiesRetrofitRequest
+import com.data.remote.api.Params
+import com.data.remote.entity.city.CityResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import java.lang.Exception
 
 
 class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
     suspend fun fetchCitiesByName(name: String) =
         if (checkInternetAccess(ctx)) {
-            val params = LoadCitiesParams.createParamsByName(name)
-            val retrofitRequest = LoadCitiesRetrofitRequest(params)
-            retrofitRequest.execute().data
+            (executeRequest(Params.CitiesParams.createParamsByName(name)) as CityResponse).data
         } else
             throw NoNetworkException()
 
@@ -38,13 +35,12 @@ class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
         emit(Result.Success(city.cityId))
     }
 
-    fun addCityByLocation(location: Location) = flow {
+    fun addCityByLocation(loc: Location) = flow {
         emit(Result.Loading)
         if (checkInternetAccess(ctx)) {
-            val params = LoadCitiesParams.createParamsByLocation(location)
-            val retrofitRequest = LoadCitiesRetrofitRequest(params)
-            val nearCity = retrofitRequest.execute().data[0]
-            emitAll(addCity(nearCity))
+            val result =
+                (executeRequest(Params.CitiesParams.createParamsByLoc(loc)) as CityResponse).data[0]
+            emitAll(addCity(result))
         } else
             throw NoNetworkException()
     }

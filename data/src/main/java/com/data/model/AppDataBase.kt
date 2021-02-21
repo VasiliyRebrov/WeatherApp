@@ -16,7 +16,7 @@ import com.data.common.SingletonHolder
 abstract class AppDataBase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
 
-    companion object : SingletonHolder<AppDataBase, Context>({
-        Room.databaseBuilder(it.applicationContext, AppDataBase::class.java, "app.db").build()
+    companion object : SingletonHolder<AppDataBase, Context>({ ctx ->
+        Room.databaseBuilder(ctx.applicationContext, AppDataBase::class.java, "app.db").build()
     })
 }

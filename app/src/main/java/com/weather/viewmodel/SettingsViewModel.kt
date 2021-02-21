@@ -1,14 +1,11 @@
 package com.weather.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.data.common.Result
 import com.data.repo.SettingsRepo
-import com.domain.usecases.settings.ReConfigDataUseCase
-import com.weather.viewmodel.BaseViewModel
+import com.domain.usecases.ReConfigDataUseCase
 
 class SettingsViewModel(application: Application, private val repo: SettingsRepo) :
     BaseViewModel(application, repo) {

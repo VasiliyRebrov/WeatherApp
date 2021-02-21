@@ -12,10 +12,10 @@ import com.data.common.Result
 import com.data.model.City
 import com.data.repo.AddCityRepo
 import com.domain.*
-import com.domain.usecases.addcity.AddCityByLocationUseCase
-import com.domain.usecases.addcity.AddCityUseCase
-import com.domain.usecases.addcity.DefineLocationUseCase
-import com.domain.usecases.addcity.FindCityByNameUseCase
+import com.domain.usecases.AddCityByLocUseCase
+import com.domain.usecases.AddCityUseCase
+import com.domain.usecases.DefineLocationUseCase
+import com.domain.usecases.FindCityByNameUseCase
 import kotlinx.coroutines.flow.*
 import java.lang.Exception
 
@@ -23,7 +23,7 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
     BaseViewModel(application, repo) {
     private val findCityUseCase by lazy { FindCityByNameUseCase(repo) }
     private val addCityUseCase by lazy { AddCityUseCase(repo) }
-    private val addCityByLocationUseCase by lazy { AddCityByLocationUseCase(repo) }
+    private val addCityByLocationUseCase by lazy { AddCityByLocUseCase(repo) }
     private val defineLocationUseCase by lazy {
         DefineLocationUseCase(repo, locManager, locListener)
     }

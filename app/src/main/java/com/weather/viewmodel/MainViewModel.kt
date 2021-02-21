@@ -4,16 +4,12 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.data.common.Result
-import com.data.common.data
-import com.data.common.succeeded
 import com.data.model.City
 import com.data.repo.MainRepo
-import com.domain.usecases.main.GetLocalCitiesUseCase
-import com.domain.usecases.main.RefreshWeatherDataUseCase
+import com.domain.usecases.GetLocalCitiesUseCase
+import com.domain.usecases.RefreshWeatherDataUseCase
 import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
-import kotlinx.coroutines.flow.SharingStarted.Companion.Lazily
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel(application: Application, private val repo: MainRepo) :

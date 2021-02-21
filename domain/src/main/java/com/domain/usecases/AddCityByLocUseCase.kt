@@ -1,4 +1,4 @@
-package com.domain.usecases.addcity
+package com.domain.usecases
 
 import android.location.Location
 import com.data.common.Result
@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
-class AddCityByLocationUseCase(
+class AddCityByLocUseCase(
     private val repo: AddCityRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : FlowUseCase<Location, Int>(coroutineDispatcher) {

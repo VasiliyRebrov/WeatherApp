@@ -1,4 +1,4 @@
-package com.domain.usecases.addcity
+package com.domain.usecases
 
 import com.data.model.City
 import com.data.repo.AddCityRepo

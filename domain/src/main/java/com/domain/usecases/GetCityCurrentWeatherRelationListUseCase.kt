@@ -1,4 +1,4 @@
-package com.domain.usecases.citiesmanager
+package com.domain.usecases
 
 import com.data.common.Result
 import com.data.model.CityCurrentWeatherRelation

@@ -1,10 +1,14 @@
 <resources>
     <string name="app_name">Weather</string>
-    <string name="preference_units_title">Units of measurement</string>
-    <string name="preference_unit_measure">measure</string>
+
+    <string name="preference_units_group_title">Units of measurement</string>
+
+    <string name="preference_unit_measure_title">measure</string>
+    <string name="preference_unit_measure_key">temp_key</string>
     <string-array name="preference_units_entry">
         <item>Metric</item>
         <item>Imperial</item>
     </string-array>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

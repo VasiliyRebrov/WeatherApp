@@ -33,31 +33,6 @@ class Converters {
         }
     }
 
-//        val hourlyList = mutableListOf<Hourly>()
-//        with(string.split("|")) {
-//            hourlyList.add(
-//                Hourly(
-//                    this[0].toInt(),
-//                    this[1].toDouble(),
-//                    this[2],
-//                    this[3].toDouble(),
-//                    this[4].toInt(),
-//                    this[5].toDouble(),
-//                    this[6].toInt(),
-//                    this[7].toDouble(),
-//                    this[8].toDouble(),
-//                    this[9].toDouble(),
-//                    this[10].toInt(),
-//                    this[11],
-//                    this[12],
-//                    this[13].toInt(),
-//                    this[14].toDouble(),
-//                )
-//            )
-//        }
-//        return hourlyList
-
-
     @TypeConverter
     fun dailyStringToList(regex: String) = mutableListOf<Daily>().apply {
         regex.split("!").forEach { regexItem ->

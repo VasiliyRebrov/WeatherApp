@@ -1,4 +1,4 @@
-package com.domain.usecases.settings
+package com.domain.usecases
 
 import com.data.common.Result
 import com.data.repo.MainRepo

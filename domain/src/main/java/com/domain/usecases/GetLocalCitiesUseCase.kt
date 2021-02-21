@@ -1,5 +1,6 @@
-package com.domain.usecases.main
+package com.domain.usecases
 
+import android.util.Log
 import com.data.common.Result
 import com.data.model.City
 import com.data.repo.BaseRepo
@@ -8,12 +9,15 @@ import com.domain.usecases.FlowUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class RefreshWeatherDataUseCase(
+class GetLocalCitiesUseCase(
     private val repo: BaseRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
-) : FlowUseCase<Pair<List<City>, List<City>>, String>(coroutineDispatcher) {
-    override fun execute(parameters: Pair<List<City>, List<City>>): Flow<Result<String>> {
-        return repo.refreshWeatherData(parameters.first, parameters.second)
+) : FlowUseCase<Unit, List<City>>(coroutineDispatcher) {
+
+    override fun execute(parameters: Unit): Flow<Result<List<City>>> {
+        return repo.localCities
     }
 }
+

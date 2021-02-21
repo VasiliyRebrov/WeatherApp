@@ -1,20 +1,15 @@
 package com.data.remote.api
 
-import android.util.Log
-import androidx.annotation.RestrictTo
 import com.data.common.CitiesNotFoundException
 import com.data.remote.api.services.GeoService
 import com.data.remote.api.services.Service
 import com.data.remote.api.services.WeatherService
 import com.data.remote.entity.WeatherResponsePOJO
 import com.data.remote.entity.city.CityResponse
-import kotlinx.coroutines.*
-import okhttp3.Dispatcher
 import retrofit2.Response
 import java.lang.Exception
-import kotlin.coroutines.coroutineContext
 
-abstract class RetrofitRequest<T> {
+abstract class AbstractRetrofitRequest<T> {
     protected abstract val params: Params
     protected abstract val service: Service
     suspend fun execute(): T {
@@ -26,8 +21,8 @@ abstract class RetrofitRequest<T> {
     protected abstract fun validate(response: Response<T>): T
 }
 
-class LoadCitiesRetrofitRequest(override val params: LoadCitiesParams) :
-    RetrofitRequest<CityResponse>() {
+class LoadCitiesRetrofitRequest(override val params: Params.CitiesParams) :
+    AbstractRetrofitRequest<CityResponse>() {
     override val service = GeoService.create()
 
     override suspend fun loadData(): Response<CityResponse> {
@@ -56,8 +51,8 @@ class LoadCitiesRetrofitRequest(override val params: LoadCitiesParams) :
     }
 }
 
-class LoadWeatherRetrofitRequest(override val params: LoadWeatherParams) :
-    RetrofitRequest<WeatherResponsePOJO>() {
+class LoadWeatherRetrofitRequest(override val params: Params.WeatherParams) :
+    AbstractRetrofitRequest<WeatherResponsePOJO>() {
     override val service = WeatherService.create()
 
     override suspend fun loadData(): Response<WeatherResponsePOJO> {

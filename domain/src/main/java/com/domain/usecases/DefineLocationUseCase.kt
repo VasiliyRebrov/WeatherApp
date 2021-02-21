@@ -1,4 +1,4 @@
-package com.domain.usecases.addcity
+package com.domain.usecases
 
 import android.location.LocationListener
 import android.location.LocationManager

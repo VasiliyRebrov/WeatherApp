@@ -18,14 +18,13 @@ class SettingsFragment : PreferenceFragmentCompat(),
     private val viewModel: SettingsViewModel by viewModels {
         ViewModelFactory("SettingsViewModel", requireActivity().application)
     }
-    private val currentVal by lazy { findPreference<ListPreference>("temp_key")!!.value }
+//    private val currentVal by lazy { findPreference<ListPreference>("temp_key")!!.value }
 
 
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.settings)
     }
-
 
     override fun onResume() {
         super.onResume()

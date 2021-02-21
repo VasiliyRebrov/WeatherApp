@@ -10,25 +10,25 @@ import java.util.*
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-fun CurrentWeatherData.reConfig(config: String) {
-    val tempCalculator = getTempCalculator(config)
-    val windCalculator = getWindCalculator(config)
+fun CurrentWeatherData.reConfig(unitMeasurePref: String) {
+    val tempCalculator = getTempCalculator(unitMeasurePref)
+    val windCalculator = getWindCalculator(unitMeasurePref)
     this.temp = roundAvoid(tempCalculator(temp), 2)
     this.feels_like = roundAvoid(tempCalculator(feels_like), 2)
     this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
 }
 
-fun Hourly.reConfig(config: String) {
-    val tempCalculator = getTempCalculator(config)
-    val windCalculator = getWindCalculator(config)
+fun Hourly.reConfig(unitMeasurePref: String) {
+    val tempCalculator = getTempCalculator(unitMeasurePref)
+    val windCalculator = getWindCalculator(unitMeasurePref)
     this.temp = roundAvoid(tempCalculator(temp), 2)
     this.feels_like = roundAvoid(tempCalculator(feels_like), 2)
     this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
 }
 
-fun Daily.reConfig(config: String) {
-    val tempCalculator = getTempCalculator(config)
-    val windCalculator = getWindCalculator(config)
+fun Daily.reConfig(unitMeasurePref: String) {
+    val tempCalculator = getTempCalculator(unitMeasurePref)
+    val windCalculator = getWindCalculator(unitMeasurePref)
     this.tempDay = roundAvoid(tempCalculator(tempDay), 2)
     this.tempEve = roundAvoid(tempCalculator(tempEve), 2)
     this.tempMax = roundAvoid(tempCalculator(tempMax), 2)
@@ -38,12 +38,12 @@ fun Daily.reConfig(config: String) {
     this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
 }
 
-fun getTempCalculator(config: String): (Double) -> Double =
-    if (config == "Imperial") { temp -> temp * 9 / 5 + 32 }
+fun getTempCalculator(unitMeasurePref: String): (Double) -> Double =
+    if (unitMeasurePref == "Imperial") { temp -> temp * 9 / 5 + 32 }
     else { temp -> (temp - 32) * 5 / 9 }
 
-fun getWindCalculator(config: String): (Double) -> Double =
-    if (config == "Imperial") { wind -> wind * 2.237 }
+fun getWindCalculator(unitMeasurePref: String): (Double) -> Double =
+    if (unitMeasurePref == "Imperial") { wind -> wind * 2.237 }
     else { wind -> wind / 2.237 }
 
 fun roundAvoid(value: Double, places: Int): Double {

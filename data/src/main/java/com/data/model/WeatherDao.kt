@@ -1,26 +1,74 @@
 package com.data.model
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WeatherDao {
     @Query("select * from cities")
-    fun getFlowCityList(): Flow<List<City>>
+    fun getFlowCities(): Flow<List<City>>
 
     @Transaction
     @Query("select * from cities")
     fun getFlowCityCurrentWeatherRelationList(): Flow<List<CityCurrentWeatherRelation>>
 
-    @Query("select * from cities")
-    suspend fun getCityList(): List<City>
+    //временный метод. далее будем брать всю погоду
+    @Query("select * from current_weather_data where cityId=:cityId")
+    fun getCurrentWeather(cityId: Int): Flow<CurrentWeatherData>
 
+    @Query("select * from cities")
+    suspend fun getCities(): List<City>
+
+    @Query("select * from current_weather_data")
+    suspend fun getCurrentWeather(): List<CurrentWeatherData>
+
+    @Query("select * from hourly_weather_data")
+    suspend fun getHourlyWeather(): List<HourlyWeatherData>
+
+    @Query("select * from daily_weather_data")
+    suspend fun getDailyWeather(): List<DailyWeatherData>
+
+
+    /**
+     * [insertCity]
+     * Вызывается:
+     * Для добавления города.
+     * Кейсы:
+     * 1) При добавлении нового города.
+     * Возвращает: [Long] id удаленного города
+     * */
     @Insert
     suspend fun insertCity(city: City): Long
 
+    /**
+     * [deleteCity]
+     * Вызывается: Для удаления города.
+     * Кейсы:
+     * 1) При удаления города.
+     * Возвращает: [Int] количество удаленных городов. (сейчас только один)
+     * */
+    @Delete
+    suspend fun deleteCity(city: City): Int
+
+    /**
+     * [updateCities]
+     * Вызывается: Для обновления существующих городов
+     * Кейсы:
+     * 1) При пересортировке городов. Меняется их поле [City.position] и происходит вставка с заменой.
+     * Возвращает: [Int] количество обновленных записей
+     * */
+    @Update
+    suspend fun updateCities(vararg city: City): Int
+
+    /**
+     * [insertTransformedData]
+     * Вызывается:
+     * Для переконфигурации значений погодных данных.
+     * Кейсы:
+     * При изменении единий измерения в настройках.
+     */
     @Transaction
-    suspend fun insertWeathe(
+    suspend fun insertTransformedData(
         current: List<CurrentWeatherData>,
         hourly: List<HourlyWeatherData>,
         daily: List<DailyWeatherData>
@@ -30,8 +78,16 @@ interface WeatherDao {
         daily.forEach { insertDailyWeather(it) }
     }
 
+    /**
+     * [insertActualData]
+     * Вызывается:
+     * Для добавлении погоды.
+     * Кейсы:
+     * При добавления погоды нового города.
+     * При обновлении существующей погоды.
+     * */
     @Transaction
-    suspend fun insertWeather(vararg weatherData: Triple<CurrentWeatherData, HourlyWeatherData, DailyWeatherData>) {
+    suspend fun insertActualData(vararg weatherData: Triple<CurrentWeatherData, HourlyWeatherData, DailyWeatherData>) {
         weatherData.forEach {
             insertCurrentWeather(it.first)
             insertHourlyWeather(it.second)
@@ -48,9 +104,14 @@ interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDailyWeather(third: DailyWeatherData)
 
-    @Delete
-    suspend fun deleteCity(city: City)
 
+    /**
+     * [deleteWeatherData]
+     * Вызывается:
+     * Для удаления погоды.
+     * Кейсы:
+     * Удаление погоды города/городов, после удаление самих городов.
+     * */
     @Transaction
     suspend fun deleteWeatherData(vararg cityId: Int) {
         cityId.forEach {
@@ -68,23 +129,4 @@ interface WeatherDao {
 
     @Query("delete from daily_weather_data where cityId=:cityId")
     suspend fun deleteDailyWeatherData(vararg cityId: Int)
-
-    /**
-     * вызывается только от usecase: ReorderLocalCities
-     * поэтому предусмотрена возможность REPLACE
-     * */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun reorderLocalCities(vararg city: City): List<Long>
-
-    @Query("select * from current_weather_data")
-    suspend fun getCurrent(): List<CurrentWeatherData>
-
-    @Query("select * from hourly_weather_data")
-    suspend fun getHourly(): List<HourlyWeatherData>
-
-    @Query("select * from daily_weather_data")
-    suspend fun getDaily(): List<DailyWeatherData>
-
-    @Query("select * from current_weather_data where cityId=:cityId")
-    fun getCurrentWeather(cityId: Int): Flow<CurrentWeatherData>
 }

@@ -2,12 +2,7 @@ package com.weather.view
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.weather.R
 import com.weather.viewmodel.SettingsViewModel
@@ -39,6 +34,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
 //        sharedPreferences?.let { Log.d("aass", it.all.toString()) }
 //        key?.let { Log.d("aass", it) }
-        viewModel.reConfig()
+        viewModel.transformData()
     }
 }

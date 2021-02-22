@@ -6,7 +6,7 @@ import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.data.common.Result
 import com.data.model.City
-import com.data.repo.MainRepo
+import com.data.repo.BaseRepo
 import com.domain.RefreshWeatherParams
 import com.domain.usecases.GetLocalCitiesUseCase
 import com.domain.usecases.RefreshWeatherDataUseCase
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.util.*
 
-class MainViewModel(application: Application, private val repo: MainRepo) :
+class MainViewModel(application: Application, private val repo: BaseRepo) :
     BaseViewModel(application, repo) {
     val getLocalCitiesUseCase = GetLocalCitiesUseCase(repo)
     val refreshWeatherDataUseCase = RefreshWeatherDataUseCase(repo)

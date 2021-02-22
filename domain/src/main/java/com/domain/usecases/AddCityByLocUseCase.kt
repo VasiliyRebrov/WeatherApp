@@ -12,6 +12,6 @@ class AddCityByLocUseCase(
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : FlowUseCase<Location, Int>(coroutineDispatcher) {
     override fun execute(params: Location): Flow<Result<Int>> {
-        return repo.addCityByLocation(params)
+        return repo.addCityByLoc(params)
     }
 }

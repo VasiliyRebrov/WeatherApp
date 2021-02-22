@@ -9,7 +9,7 @@ import com.data.common.Result
 import com.data.model.City
 import com.domain.usecases.DeleteCityUseCase
 import com.domain.usecases.GetCityCurrentWeatherRelationListUseCase
-import com.domain.usecases.ReorderLocalCitiesUseCase
+import com.domain.usecases.ReorderCitiesUseCase
 import kotlinx.coroutines.flow.map
 
 
@@ -29,7 +29,7 @@ class CitiesManagerViewModel(application: Application, private val repo: CitiesM
     private val _deleteCityUseCaseLD = MutableLiveData<Result<Int>>()
     val deleteCityUseCaseLD: LiveData<Result<Int>> = _deleteCityUseCaseLD
 
-    private val reorderLocalCitiesUseCase = ReorderLocalCitiesUseCase(repo)
+    private val reorderLocalCitiesUseCase = ReorderCitiesUseCase(repo)
     private val _reorderLocalCitiesUseCaseLD = MutableLiveData<Result<Int>>()
     val reorderLocalCitiesUseCaseLD: LiveData<Result<Int>> = _reorderLocalCitiesUseCaseLD
 

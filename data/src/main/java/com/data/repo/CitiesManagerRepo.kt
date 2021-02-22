@@ -12,14 +12,15 @@ class CitiesManagerRepo(ctx: Context) : BaseRepo(ctx) {
 
     fun deleteCity(city: City) = flow {
         emit(Result.Loading)
-        dao.deleteCity(city)
-        if (dao.getCityList().isEmpty()) switchLocalCitiesStatus(false)
-        emit(Result.Success(city.cityId))
+        val id = dao.deleteCity(city)
+        if (dao.getCities().isEmpty()) switchLocalCitiesStatus(false)
+        emit(Result.Success(id))
     }
 
-    fun reorderLocalCities(cities: List<City>) = flow {
+
+    fun reorderCities(cities: List<City>) = flow {
         emit(Result.Loading)
-        val ids = dao.reorderLocalCities(*cities.toTypedArray())
-        emit(Result.Success(ids.size))
+        val count = dao.updateCities(*cities.toTypedArray())
+        emit(Result.Success(count))
     }
 }

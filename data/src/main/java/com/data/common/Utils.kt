@@ -10,7 +10,7 @@ import java.util.*
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-fun CurrentWeatherData.reConfig(unitMeasurePref: String) {
+fun CurrentWeatherData.transformData(unitMeasurePref: String) {
     val tempCalculator = getTempCalculator(unitMeasurePref)
     val windCalculator = getWindCalculator(unitMeasurePref)
     this.temp = roundAvoid(tempCalculator(temp), 2)
@@ -18,7 +18,7 @@ fun CurrentWeatherData.reConfig(unitMeasurePref: String) {
     this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
 }
 
-fun Hourly.reConfig(unitMeasurePref: String) {
+fun Hourly.transformData(unitMeasurePref: String) {
     val tempCalculator = getTempCalculator(unitMeasurePref)
     val windCalculator = getWindCalculator(unitMeasurePref)
     this.temp = roundAvoid(tempCalculator(temp), 2)
@@ -26,7 +26,7 @@ fun Hourly.reConfig(unitMeasurePref: String) {
     this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
 }
 
-fun Daily.reConfig(unitMeasurePref: String) {
+fun Daily.transformData(unitMeasurePref: String) {
     val tempCalculator = getTempCalculator(unitMeasurePref)
     val windCalculator = getWindCalculator(unitMeasurePref)
     this.tempDay = roundAvoid(tempCalculator(tempDay), 2)

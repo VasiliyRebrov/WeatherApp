@@ -7,6 +7,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * [DeleteCityUseCase]
+ * Вызывается: Для удаления города.
+ * Возвращает: [Int] id удаленного города.
+ * */
 class DeleteCityUseCase(
     private val repo: CitiesManagerRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
@@ -15,3 +20,5 @@ class DeleteCityUseCase(
         return repo.deleteCity(params)
     }
 }
+
+// в дальнейшем, возможно, сделать его, приримающим много городов на удалениеь

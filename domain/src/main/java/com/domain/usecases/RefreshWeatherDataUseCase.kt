@@ -12,6 +12,6 @@ class RefreshWeatherDataUseCase(
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : FlowUseCase<RefreshWeatherParams, String>(coroutineDispatcher) {
     override fun execute(params: RefreshWeatherParams): Flow<Result<String>> {
-        return repo.refreshWeatherData(params.unitMeasurePref, params.newCities, params.oldCities)
+        return repo.refreshData(params.unitMeasurePref, params.newCities, params.oldCities)
     }
 }

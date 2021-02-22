@@ -10,46 +10,40 @@ import com.data.common.*
 import com.data.model.City
 import com.data.remote.api.Params
 import com.data.remote.entity.city.CityResponse
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 
 
 class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
-    suspend fun fetchCitiesByName(name: String) =
-        if (checkInternetAccess(ctx)) {
-            (executeRequest(Params.CitiesParams.createParamsByName(name)) as CityResponse).data
-        } else
-            throw NoNetworkException()
-
-
-    fun addCity(city: City): Flow<Result<Int>> = flow {
-        emit(Result.Loading)
-        val localCities = dao.getCityList()
-        localCities.firstOrNull { it.cityId == city.cityId }
-            ?.let { throw CityAlreadyExistException() }
-        city.position = localCities.size
-        dao.insertCity(city)
-        switchLocalCitiesStatus(true)
-        kotlinx.coroutines.delay(1000)
-        emit(Result.Success(city.cityId))
+    suspend fun loadCitiesByName(name: String) = executeIfConnected {
+        (executeRequest(Params.CitiesParams.createParamsByName(name)) as CityResponse).data
     }
 
-    fun addCityByLocation(loc: Location) = flow {
+    fun addCity(newCity: City): Flow<Result<Int>> = flow {
         emit(Result.Loading)
-        if (checkInternetAccess(ctx)) {
+        with(dao.getCities()) {
+            firstOrNull { it.cityId == newCity.cityId }?.let { throw  CityAlreadyExistException() }
+            newCity.position = size
+        }
+        val id = dao.insertCity(newCity)
+        switchLocalCitiesStatus(true)
+        delay(300)
+        emit(Result.Success(id.toInt()))
+    }
+
+
+    fun addCityByLoc(loc: Location) = flow {
+        emit(Result.Loading)
+        executeIfConnected {
             val result =
                 (executeRequest(Params.CitiesParams.createParamsByLoc(loc)) as CityResponse).data[0]
             emitAll(addCity(result))
-        } else
-            throw NoNetworkException()
+        }
     }
 
-
-    fun defineLocation(
-        locManager: LocationManager,
-        locListener: LocationListener
-    ) = flow {
+    fun defineLocation(locManager: LocationManager, locListener: LocationListener) = flow {
         emit(Result.Loading)
         if (locManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             if (ContextCompat.checkSelfPermission(

@@ -5,23 +5,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.data.common.Result
 import com.data.repo.SettingsRepo
-import com.domain.usecases.ReConfigDataUseCase
+import com.domain.usecases.TransformDataUseCase
 import com.weather.components.Config
 
 class SettingsViewModel(application: Application, private val repo: SettingsRepo) :
     BaseViewModel(application, repo) {
-    private val reConfigDataUseCase = ReConfigDataUseCase(repo)
-    private val _reconfigDataLD = MutableLiveData<Result<Unit>>()
-    val reconfigDataLD: LiveData<Result<Unit>> = _reconfigDataLD
+    private val transformDataUseCase = TransformDataUseCase(repo)
+    private val _transformDataUseCaseLD = MutableLiveData<Result<Unit>>()
+    val transformDataUseCaseLD: LiveData<Result<Unit>> = _transformDataUseCaseLD
 
-    fun reConfig() {
-        launchUseCase(reConfigDataUseCase, Config.getInstance(getApplication()).unitMeasurePref) {
+    fun transformData() {
+        launchUseCase(transformDataUseCase, Config.getInstance(getApplication()).unitMeasurePref) {
             //обработка результата пересортировки
-            _reconfigDataLD.value = it
+            _transformDataUseCaseLD.value = it
         }
     }
 
     override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-        add(reconfigDataLD)
+        add(transformDataUseCaseLD)
     } as Set<LiveData<Result<*>>>
 }

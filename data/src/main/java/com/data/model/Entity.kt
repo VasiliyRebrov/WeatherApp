@@ -59,7 +59,7 @@ data class CurrentWeatherData(
     var wind_speed: Double,
     val description: String,
     val icon: String,
-) : WeatherEntity {
+) {
 
     override fun equals(other: Any?): Boolean {
         val obj = other as? CurrentWeatherData ?: return false
@@ -97,32 +97,29 @@ data class HourlyWeatherData(
     @PrimaryKey
     val cityId: Int,
     val hourlyList: List<Hourly>
-) : WeatherEntity {
+) {
     companion object {
         fun createFromRemoteEntity(
             cityId: Int,
             remoteEntity: List<com.data.remote.entity.Hourly>
         ): HourlyWeatherData {
-            val hourlyList = mutableListOf<Hourly>()
-            remoteEntity.forEach {
-                hourlyList.add(
-                    Hourly(
-                        it.clouds,
-                        it.dew_point,
-                        createDate(it.dt),
-                        it.feels_like,
-                        it.humidity,
-                        it.pop,
-                        it.pressure,
-                        it.rain?.`1h` ?: 228.0,
-                        it.temp,
-                        it.uvi,
-                        it.visibility,
-                        it.weather[0].description,
-                        it.weather[0].icon,
-                        it.wind_deg,
-                        it.wind_speed
-                    )
+            val hourlyList = remoteEntity.map {
+                Hourly(
+                    it.clouds,
+                    it.dew_point,
+                    createDate(it.dt),
+                    it.feels_like,
+                    it.humidity,
+                    it.pop,
+                    it.pressure,
+                    it.rain?.`1h` ?: 228.0,
+                    it.temp,
+                    it.uvi,
+                    it.visibility,
+                    it.weather[0].description,
+                    it.weather[0].icon,
+                    it.wind_deg,
+                    it.wind_speed
                 )
             }
             return HourlyWeatherData(cityId, hourlyList)
@@ -148,9 +145,9 @@ data class Hourly(
     var wind_speed: Double
 ) {
     override fun toString() =
-        "${component1()}|${component2()}|${component3()}|${component4()}|${component5()}|" +
-                "${component6()}|${component7()}|${component8()}|${component9()}|${component10()}|" +
-                "${component11()}|${component12()}|${component13()}|${component14()}|${component15()}"
+        "${component1()}$SEPARATOR${component2()}$SEPARATOR${component3()}$SEPARATOR${component4()}$SEPARATOR${component5()}$SEPARATOR" +
+                "${component6()}$SEPARATOR${component7()}$SEPARATOR${component8()}$SEPARATOR${component9()}$SEPARATOR${component10()}$SEPARATOR" +
+                "${component11()}$SEPARATOR${component12()}$SEPARATOR${component13()}$SEPARATOR${component14()}$SEPARATOR${component15()}"
 }
 
 @Entity(tableName = "daily_weather_data")
@@ -158,44 +155,40 @@ data class DailyWeatherData(
     @PrimaryKey
     val cityId: Int,
     val dailyList: List<Daily>
-) : WeatherEntity {
+) {
     companion object {
         fun createFromRemoteEntity(
             cityId: Int,
             remoteEntity: List<com.data.remote.entity.Daily>
         ): DailyWeatherData {
-            val dailyList = mutableListOf<Daily>()
-            remoteEntity.forEach {
-                dailyList.add(
-                    Daily(
-                        it.clouds,
-                        it.dew_point,
-                        createDate(it.dt),
-                        it.humidity,
-                        it.pop,
-                        it.pressure,
-                        it.rain,
-                        it.snow,
-                        createDate(it.sunrise),
-                        createDate(it.sunset),
-                        it.temp.day,
-                        it.temp.eve,
-                        it.temp.max,
-                        it.temp.min,
-                        it.temp.morn,
-                        it.temp.night,
-                        it.uvi,
-                        it.weather[0].description,
-                        it.weather[0].icon,
-                        it.wind_deg,
-                        it.wind_speed
-                    )
+            val dailyList = remoteEntity.map {
+                Daily(
+                    it.clouds,
+                    it.dew_point,
+                    createDate(it.dt),
+                    it.humidity,
+                    it.pop,
+                    it.pressure,
+                    it.rain,
+                    it.snow,
+                    createDate(it.sunrise),
+                    createDate(it.sunset),
+                    it.temp.day,
+                    it.temp.eve,
+                    it.temp.max,
+                    it.temp.min,
+                    it.temp.morn,
+                    it.temp.night,
+                    it.uvi,
+                    it.weather[0].description,
+                    it.weather[0].icon,
+                    it.wind_deg,
+                    it.wind_speed
                 )
             }
             return DailyWeatherData(cityId, dailyList)
         }
     }
-
 }
 
 data class Daily(
@@ -222,13 +215,12 @@ data class Daily(
     var wind_speed: Double
 ) {
     override fun toString() =
-        "${component1()}|${component2()}|${component3()}|${component4()}|${component5()}|" +
-                "${component6()}|${component7()}|${component8()}|${component9()}|${component10()}|" +
-                "${component11()}|${component12()}|${component13()}|${component14()}|${component15()}" +
-                "|${component16()}|${component17()}|${component18()}|${component19()}|${component20()}|${component21()}"
+        "${component1()}$SEPARATOR${component2()}$SEPARATOR${component3()}$SEPARATOR${component4()}$SEPARATOR${component5()}$SEPARATOR" +
+                "${component6()}$SEPARATOR${component7()}$SEPARATOR${component8()}$SEPARATOR${component9()}$SEPARATOR${component10()}$SEPARATOR" +
+                "${component11()}$SEPARATOR${component12()}$SEPARATOR${component13()}$SEPARATOR${component14()}$SEPARATOR${component15()}" +
+                "$SEPARATOR${component16()}$SEPARATOR${component17()}$SEPARATOR${component18()}$SEPARATOR${component19()}$SEPARATOR${component20()}$SEPARATOR${component21()}"
 }
 
-interface WeatherEntity
 
 //для localCitiesList
 data class CityCurrentWeatherRelation(
@@ -239,15 +231,3 @@ data class CityCurrentWeatherRelation(
     )
     val currentWeatherData: CurrentWeatherData?
 )
-
-////для settings reconfig
-//data class CityAndFullWeather(
-//    @Embedded val city: City,
-//    @Relation(
-//        parentColumn = "cityId",
-//        entityColumn = "cityId"
-//    )
-//    val weathers: List<WeatherEntity>?
-//
-//)
-//

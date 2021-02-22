@@ -1,25 +1,11 @@
-package com.data.remote.api
+package com.data.remote.api.requests
 
 import com.data.common.CitiesNotFoundException
+import com.data.remote.api.Params
 import com.data.remote.api.services.GeoService
-import com.data.remote.api.services.Service
-import com.data.remote.api.services.WeatherService
-import com.data.remote.entity.WeatherResponsePOJO
 import com.data.remote.entity.city.CityResponse
 import retrofit2.Response
 import java.lang.Exception
-
-abstract class AbstractRetrofitRequest<T> {
-    protected abstract val params: Params
-    protected abstract val service: Service
-    suspend fun execute(): T {
-        val response = loadData()
-        return validate(response)
-    }
-
-    protected abstract suspend fun loadData(): Response<T>
-    protected abstract fun validate(response: Response<T>): T
-}
 
 class LoadCitiesRetrofitRequest(override val params: Params.CitiesParams) :
     AbstractRetrofitRequest<CityResponse>() {
@@ -48,22 +34,5 @@ class LoadCitiesRetrofitRequest(override val params: Params.CitiesParams) :
         if (response.message() == "OK") throw CitiesNotFoundException()
         /** иначе, если не ОК, описать подробно ошибку*/
         else throw Exception("${response.message()} | ${response.errorBody()}")
-    }
-}
-
-class LoadWeatherRetrofitRequest(override val params: Params.WeatherParams) :
-    AbstractRetrofitRequest<WeatherResponsePOJO>() {
-    override val service = WeatherService.create()
-
-    override suspend fun loadData(): Response<WeatherResponsePOJO> {
-        return service.loadWeather(
-            params.lat, params.lon, params.exclude,
-            params.apiKey, params.units, params.lang
-        )
-    }
-
-    override fun validate(response: Response<WeatherResponsePOJO>): WeatherResponsePOJO {
-        if (response.isSuccessful) response.body()?.let { return it }
-        throw Exception("${response.message()} | ${response.errorBody()}")
     }
 }

@@ -5,6 +5,8 @@ import android.content.Context.MODE_PRIVATE
 import com.data.common.*
 import com.data.model.*
 import com.data.remote.api.*
+import com.data.remote.api.requests.LoadCitiesRetrofitRequest
+import com.data.remote.api.requests.LoadWeatherRetrofitRequest
 import com.data.remote.entity.WeatherResponsePOJO
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
@@ -72,11 +74,4 @@ open class BaseRepo(protected val ctx: Context) {
         }
     }.execute()
 
-    protected fun switchLocalCitiesStatus(isExist: Boolean) {
-        val sharedPref = ctx.getSharedPreferences("STORAGE", MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putBoolean("isExistCitiesList", isExist)
-            apply()
-        }
-    }
 }

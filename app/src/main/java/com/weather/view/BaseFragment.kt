@@ -48,14 +48,4 @@ abstract class BaseFragment : Fragment() {
         }
         this.observe(viewLifecycleOwner, loggingObserver)
     }
-
-    //сейчас так. в дальнейшем юзать sharedPref для моментального выявления состояния списка
-    //а эта подписка будет перенесена к остальным методам
-
-    protected fun checkExistCitiesList(resID: Int) {
-        val sharedPref = requireActivity().getSharedPreferences("STORAGE", MODE_PRIVATE)
-        val isExist = sharedPref.getBoolean("isExistCitiesList", false)
-        if (!isExist)
-            findNavController().navigate(resID)
-    }
 }

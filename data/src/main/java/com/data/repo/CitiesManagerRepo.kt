@@ -13,7 +13,6 @@ class CitiesManagerRepo(ctx: Context) : BaseRepo(ctx) {
     fun deleteCity(city: City) = flow {
         emit(Result.Loading)
         val id = dao.deleteCity(city)
-        if (dao.getCities().isEmpty()) switchLocalCitiesStatus(false)
         emit(Result.Success(id))
     }
 

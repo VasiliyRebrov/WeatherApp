@@ -43,7 +43,11 @@ class GeneralFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        checkExistCitiesList(R.id.action_generalFragment_to_citiesManagerFragment)
+        sharedViewModel.localCitiesLiveData.observe(viewLifecycleOwner) {
+            if (it is Result.Success && it.data.isEmpty())
+                findNavController().navigate(R.id.action_generalFragment_to_citiesManagerFragment)
+        }
+//        checkExistCitiesList(R.id.action_generalFragment_to_citiesManagerFragment)
         val binding: FragmentGeneralBinding =
             DataBindingUtil.inflate(
                 inflater,
@@ -66,10 +70,7 @@ class GeneralFragment : BaseFragment() {
     }
 
     private fun initObservers() {
-        sharedViewModel.localCitiesLiveData.observe(viewLifecycleOwner) {
-            if (it is Result.Success && it.data.isEmpty())
-                findNavController().navigate(R.id.action_generalFragment_to_citiesManagerFragment)
-        }
+
     }
 
     private fun initBar() {

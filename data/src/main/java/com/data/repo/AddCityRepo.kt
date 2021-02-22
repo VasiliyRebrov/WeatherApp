@@ -28,7 +28,6 @@ class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
             newCity.position = size
         }
         val id = dao.insertCity(newCity)
-        switchLocalCitiesStatus(true)
         delay(300)
         emit(Result.Success(id.toInt()))
     }

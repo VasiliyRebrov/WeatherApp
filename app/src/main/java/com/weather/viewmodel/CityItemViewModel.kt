@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import com.data.common.Result
 import com.data.model.City
-import com.data.model.WeatherEntity
 import com.data.repo.CityItemRepo
 import com.domain.RefreshWeatherParams
 import com.domain.usecases.GetCurrentWeatherUseCase

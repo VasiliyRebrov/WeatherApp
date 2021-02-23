@@ -56,7 +56,7 @@
                 android:gravity="start"
                 android:visibility="gone"
                 android:padding="8dp"
-                android:text="@{viewmodel.baseLiveData}" />
+                android:text="@{viewmodel.baseLD}" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView

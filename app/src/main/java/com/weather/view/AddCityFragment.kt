@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
@@ -18,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.data.common.InvalidArgsException
 import com.data.common.Result
-import com.data.common.data
 import com.data.common.succeeded
 import com.weather.R
 import com.weather.components.DialogAlertType
@@ -73,9 +71,10 @@ class AddCityFragment : BaseFragment() {
         initRecycler()
     }
 
-    override val eventObserver: Observer<Result<*>> = Observer<Result<*>> {
-        if (it is Result.Error && it.exception is InvalidArgsException) return@Observer
-        else Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
+
+    override val errorEventObserver = Observer<Result.Error> {
+        if (it.exception !is InvalidArgsException)
+            super.errorEventObserver.onChanged(it)
     }
 
     override fun initObservers() {

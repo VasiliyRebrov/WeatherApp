@@ -1,15 +1,12 @@
 package com.weather.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.data.common.Result
-import com.data.model.City
 import com.weather.components.DialogAlertType
 import com.weather.components.initBaseObservers
 import com.weather.viewmodel.BaseViewModel
@@ -42,9 +39,10 @@ abstract class BaseFragment : Fragment() {
 
     protected open fun initObservers() {
         viewLifecycleOwner.initBaseObservers(viewModel)
-        viewModel.usecaseEvent.observe(viewLifecycleOwner,eventObserver)
+        viewModel.errorEvent.observe(viewLifecycleOwner, errorEventObserver)
     }
-    protected open val eventObserver = Observer<Result<*>> {
+
+    protected open val errorEventObserver = Observer<Result.Error> {
         Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
     }
 

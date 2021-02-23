@@ -4,11 +4,9 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.data.common.Result
 import com.data.common.SingleLiveEvent
-import com.data.repo.BaseRepo
 import com.domain.usecases.FlowUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 abstract class BaseViewModel(application: Application) :
     AndroidViewModel(application) {
@@ -20,7 +18,7 @@ abstract class BaseViewModel(application: Application) :
      **/
 
     /** это контейнер всех ливдат, которые обрабатывают юзкейсы*/
-     val liveDataContainer: Map<String, LiveData<Result<*>>>
+    val liveDataContainer: Map<String, LiveData<Result<*>>>
             by lazy { initLiveDataContainer() }
 
 
@@ -30,24 +28,24 @@ abstract class BaseViewModel(application: Application) :
     /***
      * обращайся сюда, если результат выполнения юзкейсов являет состояние
      */
-    private val _baseLiveData by lazy {
+    private val _baseLD by lazy {
         MediatorLiveData<Result<*>>().apply {
             liveDataContainer.forEach { entry ->
                 addSource(entry.value) { result ->
                     value = result
                     //мб пусть ивент подписывается на базу?
-                    if (result !is Result.Loading) _usecaseEvent.value = result
+                    if (result is Result.Error) _errorEvent.value = result
                 }
             }
         }
     }
-    val baseLiveData: LiveData<Result<*>> by lazy { _baseLiveData }
+    val baseLD: LiveData<Result<*>> by lazy { _baseLD }
 
     /** event handler для события юзкейсов - успех. неудача
      * обращайся сюда, если результат выполнения юзкейсов являет событие
      * */
-    private val _usecaseEvent = SingleLiveEvent<Result<*>>()
-    val usecaseEvent: LiveData<Result<*>> = _usecaseEvent
+    private val _errorEvent = SingleLiveEvent<Result.Error>()
+    val errorEvent: LiveData<Result.Error> = _errorEvent
 
     /** метод для запуска юз-кейсов, возвращающих Flow
     корутина начинает работу в Main-потоке. Но возможнсть смены предусмотрена в юз-кейсе*/

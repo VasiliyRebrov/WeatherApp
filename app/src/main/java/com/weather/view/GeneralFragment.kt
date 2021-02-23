@@ -66,11 +66,6 @@ class GeneralFragment : BaseFragment() {
     private fun initComponents() {
         initBar()
         initPager()
-        initObservers()
-    }
-
-    private fun initObservers() {
-
     }
 
     private fun initBar() {

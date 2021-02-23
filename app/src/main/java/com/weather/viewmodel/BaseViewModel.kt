@@ -20,21 +20,22 @@ abstract class BaseViewModel(application: Application) :
      **/
 
     /** это контейнер всех ливдат, которые обрабатывают юзкейсы*/
-    private val liveDataContainer: Set<LiveData<Result<*>>>
-            by lazy { initLiveDataContainer() as Set<LiveData<Result<*>>> }
+     val liveDataContainer: Map<String, LiveData<Result<*>>>
+            by lazy { initLiveDataContainer() }
 
 
     /** фабричный метод по инициализации контейнера ливдат*/
-    protected abstract fun initLiveDataContainer(): Set<LiveData<*>>
+    protected abstract fun initLiveDataContainer(): Map<String, LiveData<Result<*>>>
 
     /***
      * обращайся сюда, если результат выполнения юзкейсов являет состояние
      */
     private val _baseLiveData by lazy {
         MediatorLiveData<Result<*>>().apply {
-            liveDataContainer.forEach { liveData ->
-                addSource(liveData) { result ->
+            liveDataContainer.forEach { entry ->
+                addSource(entry.value) { result ->
                     value = result
+                    //мб пусть ивент подписывается на базу?
                     if (result !is Result.Loading) _usecaseEvent.value = result
                 }
             }

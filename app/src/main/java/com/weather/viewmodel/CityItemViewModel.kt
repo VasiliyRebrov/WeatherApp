@@ -34,10 +34,16 @@ class CityItemViewModel(
             _refreshDataLD.value = it
         }
     }
+//
+//    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
+//        add(currentWeatherLD)
+//        add(refreshDataLD)
+//    }
 
-    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-        add(currentWeatherLD)
-        add(refreshDataLD)
+    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
+        put(getCurrentWeatherUseCase.javaClass.simpleName, currentWeatherLD as LiveData<Result<*>>)
+        put(refreshWeatherDataUseCase.javaClass.simpleName, refreshDataLD as LiveData<Result<*>>)
+
     }
 
 }

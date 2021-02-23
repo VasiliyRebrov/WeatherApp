@@ -21,7 +21,7 @@ class SettingsViewModel(application: Application, repo: SettingsRepo) :
         }
     }
 
-    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-        add(transformDataUseCaseLD)
+    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
+        put(transformDataUseCase.javaClass.simpleName, transformDataUseCaseLD as LiveData<Result<*>>)
     }
 }

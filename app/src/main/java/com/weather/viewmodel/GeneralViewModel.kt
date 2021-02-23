@@ -18,7 +18,7 @@ class GeneralViewModel(application: Application, repo: BaseRepo) :
             } else it
         }.asLiveData()
 
-    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-        add(localCitiesByPosLD)
+    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
+        put(getLocalCitiesUseCases.javaClass.simpleName, localCitiesByPosLD as LiveData<Result<*>>)
     }
 }

@@ -75,7 +75,6 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
     private fun initComponents() {
         initBar()
         initRecycler()
-        initObservers()
     }
 
     private fun initBar() {
@@ -93,18 +92,6 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
         val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
         mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper!!.attachToRecyclerView(rv_local_cities)
-    }
-
-
-    private fun initObservers() {
-        viewModel.usecaseEvent.observe(viewLifecycleOwner) {
-            val text: String = if (it is Result.Success) it.data.toString()
-            else (it as Result.Error).exception.toString()
-            Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
-        }
-        viewModel.baseLiveData.observe(viewLifecycleOwner) {
-
-        }
     }
 
     // эти 2 метода нужны, чтобы вызвать перетаскивание/свайп кнопками

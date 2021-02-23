@@ -1,28 +1,30 @@
 package com.weather.view
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.data.common.InvalidArgsException
+import com.data.common.Result
+import com.data.common.data
 import com.data.common.succeeded
 import com.weather.R
 import com.weather.components.DialogAlertType
 import com.weather.components.RvRemoteCitiesAdapter
 import com.weather.databinding.FragmentAddCityBinding
 import com.weather.viewmodel.AddCityViewModel
-import com.weather.viewmodel.BaseViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_add_city.*
 
@@ -69,22 +71,27 @@ class AddCityFragment : BaseFragment() {
         initInputField()
         initButton()
         initRecycler()
-        initObservers()
-
     }
 
-    private fun initObservers() {
+    override val eventObserver: Observer<Result<*>> = Observer<Result<*>> {
+        if (it is Result.Error && it.exception is InvalidArgsException) return@Observer
+        else Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
+    }
+
+    override fun initObservers() {
+        super.initObservers()
         with(viewModel) {
-            /** подписывается на главную LD, просто чтобы отслеживатьв логах каждый шаг всех ливдат-юзкейсов*/
-            baseLiveData.observeWithLogging()
-            /** подписывается на конкретные LD, чтобы обрабатывать конкретные ситуации*/
-            addCityUseCaseLiveData.observeWithLogging {
-                if (it.succeeded) findNavController().popBackStack()
+            addCityUseCaseLiveData.observe(viewLifecycleOwner) {
+                popBackIfSuccesed(it)
             }
-            addCityByLocationUseCaseLiveData.observeWithLogging {
-                if (it.succeeded) findNavController().popBackStack()
+            addCityByLocationUseCaseLiveData.observe(viewLifecycleOwner) {
+                popBackIfSuccesed(it)
             }
         }
+    }
+
+    private fun popBackIfSuccesed(result: Result<Int>) {
+        if (result.succeeded) findNavController().popBackStack()
     }
 
     private fun initInputField() {

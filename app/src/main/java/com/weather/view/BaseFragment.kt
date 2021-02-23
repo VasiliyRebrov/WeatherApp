@@ -1,23 +1,20 @@
 package com.weather.view
 
-import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.data.common.Result
-import com.weather.R
+import com.data.model.City
 import com.weather.components.DialogAlertType
+import com.weather.components.initBaseObservers
 import com.weather.viewmodel.BaseViewModel
 import com.weather.viewmodel.MainViewModel
 import com.weather.viewmodel.ViewModelFactory
-import kotlinx.coroutines.runBlocking
 
 abstract class BaseFragment : Fragment() {
     /**
@@ -37,15 +34,21 @@ abstract class BaseFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    protected fun showDialogFragment(alertType: DialogAlertType) {
-        MyDialogFragment.newInstance(alertType).show(childFragmentManager, "dialog")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initObservers()
     }
 
-    protected fun <T> LiveData<T>.observeWithLogging(observer: ((T) -> Unit)? = null) {
-        val loggingObserver: (T) -> Unit = {
-            Log.d("MyTag", it.toString())
-            observer?.invoke(it)
-        }
-        this.observe(viewLifecycleOwner, loggingObserver)
+
+    protected open fun initObservers() {
+        viewLifecycleOwner.initBaseObservers(viewModel)
+        viewModel.usecaseEvent.observe(viewLifecycleOwner,eventObserver)
+    }
+    protected open val eventObserver = Observer<Result<*>> {
+        Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
+    }
+
+    protected fun showDialogFragment(alertType: DialogAlertType) {
+        MyDialogFragment.newInstance(alertType).show(childFragmentManager, "dialog")
     }
 }

@@ -45,10 +45,22 @@ class CitiesManagerViewModel(application: Application, private val repo: CitiesM
             _reorderLocalCitiesUseCaseLD.value = it
         }
     }
+//
+//    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
+//        add(cityCurrentWeatherRelationListLiveData)
+//        add(deleteCityUseCaseLD)
+//        add(reorderLocalCitiesUseCaseLD)
+//    }
 
-    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-        add(cityCurrentWeatherRelationListLiveData)
-        add(deleteCityUseCaseLD)
-        add(reorderLocalCitiesUseCaseLD)
+    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
+        put(
+            getCityCurrentWeatherRelationListUseCase.javaClass.simpleName,
+            cityCurrentWeatherRelationListLiveData as LiveData<Result<*>>
+        )
+        put(deleteCityUseCase.javaClass.simpleName, deleteCityUseCaseLD as LiveData<Result<*>>)
+        put(
+            reorderLocalCitiesUseCase.javaClass.simpleName,
+            reorderLocalCitiesUseCaseLD as LiveData<Result<*>>
+        )
     }
 }

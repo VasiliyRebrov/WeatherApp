@@ -6,6 +6,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.*
 import com.data.common.InvalidArgsException
 import com.data.common.Result
@@ -114,10 +115,16 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         override fun onProviderDisabled(provider: String?) {}
     }
 
-    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-        add(addCityUseCaseLiveData)
-        add(findCityUseCaseLiveData)
-        add(addCityByLocationUseCaseLiveData)
-        add(defineLocationUseCaseLiveData)
+    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
+        put(findCityUseCase.javaClass.simpleName, findCityUseCaseLiveData as LiveData<Result<*>>)
+        put(
+            defineLocationUseCase.javaClass.simpleName,
+            defineLocationUseCaseLiveData as LiveData<Result<*>>
+        )
+        put(addCityUseCase.javaClass.simpleName, addCityUseCaseLiveData as LiveData<Result<*>>)
+        put(
+            addCityByLocationUseCase.javaClass.simpleName,
+            addCityByLocationUseCaseLiveData as LiveData<Result<*>>
+        )
     }
 }

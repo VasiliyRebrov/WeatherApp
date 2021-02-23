@@ -87,9 +87,17 @@ class MainViewModel(application: Application, repo: BaseRepo) :
         }
     }
 
-    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-        add(localCitiesLiveData)
-        add(refreshWeatherDataUseCaseLD)
+//    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
+//        add(localCitiesLiveData)
+//        add(refreshWeatherDataUseCaseLD)
+//    }
+
+    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
+        put(
+            refreshWeatherDataUseCase.javaClass.simpleName,
+            refreshWeatherDataUseCaseLD as LiveData<Result<*>>
+        )
+        put(getLocalCitiesUseCase.javaClass.simpleName, localCitiesLiveData as LiveData<Result<*>>)
     }
 
     override fun onCleared() {

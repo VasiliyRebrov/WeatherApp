@@ -1,10 +1,12 @@
 package com.weather.view
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceFragmentCompat
 import com.weather.R
+import com.weather.components.initBaseObservers
 import com.weather.viewmodel.SettingsViewModel
 import com.weather.viewmodel.ViewModelFactory
 
@@ -16,9 +18,9 @@ class SettingsFragment : PreferenceFragmentCompat(),
 //    private val currentVal by lazy { findPreference<ListPreference>("temp_key")!!.value }
 
 
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.settings)
+        viewLifecycleOwner.initBaseObservers(viewModel)
     }
 
     override fun onResume() {

@@ -7,8 +7,8 @@ import com.data.repo.BaseRepo
 import com.domain.usecases.GetLocalCitiesUseCase
 import kotlinx.coroutines.flow.map
 
-class GeneralViewModel(application: Application, private val repo: BaseRepo) :
-    BaseViewModel(application, repo) {
+class GeneralViewModel(application: Application, repo: BaseRepo) :
+    BaseViewModel(application) {
     private val getLocalCitiesUseCases = GetLocalCitiesUseCase(repo)
 
     val localCitiesByPosLD = getLocalCitiesUseCases(Unit)
@@ -18,7 +18,7 @@ class GeneralViewModel(application: Application, private val repo: BaseRepo) :
             } else it
         }.asLiveData()
 
-    override fun initLiveDataContainer(): Set<LiveData<Result<*>>> {
-        TODO("Not yet implemented")
+    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
+        add(localCitiesByPosLD)
     }
 }

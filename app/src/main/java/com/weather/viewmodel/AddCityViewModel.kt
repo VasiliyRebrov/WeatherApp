@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.*
 import java.lang.Exception
 
 class AddCityViewModel(application: Application, private val repo: AddCityRepo) :
-    BaseViewModel(application, repo) {
+    BaseViewModel(application) {
     private val findCityUseCase by lazy { FindCityByNameUseCase(repo) }
     private val addCityUseCase by lazy { AddCityUseCase(repo) }
     private val addCityByLocationUseCase by lazy { AddCityByLocUseCase(repo) }
@@ -43,9 +43,6 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
             }
             switchProgress(result)
             it
-//            val result = if (it.length > 1) Result.Loading else Result.Error(InvalidArgsException())
-//            switchProgress(result)
-//            it
         }
         .debounce(1200)
         .filter { it.length > 1 }
@@ -54,6 +51,8 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         }
         .asLiveData()
 
+
+    //найти как избавиться от ливдаты
     private val _findCityUseCaseLiveData = MediatorLiveData<Result<List<City>>>().apply {
         addSource(_searchResultLiveData) { this.value = it }
     }
@@ -116,13 +115,9 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
     }
 
     override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-        add(_addCityUseCaseLiveData)
-        add(_findCityUseCaseLiveData)
-        add(_addCityByLocationUseCaseLiveData)
-        add(_defineLocationUseCaseLiveData)
-    } as Set<LiveData<Result<*>>>
-
-    override fun onCleared() {
-        super.onCleared()
+        add(addCityUseCaseLiveData)
+        add(findCityUseCaseLiveData)
+        add(addCityByLocationUseCaseLiveData)
+        add(defineLocationUseCaseLiveData)
     }
 }

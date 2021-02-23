@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-abstract class BaseViewModel(application: Application, private val repo: BaseRepo) :
+abstract class BaseViewModel(application: Application) :
     AndroidViewModel(application) {
     /** все нижние объекты имеют ленивую инициализацию
      * Дело в том, что их инициализация зависит от ливдат в субклассах,
@@ -20,11 +20,12 @@ abstract class BaseViewModel(application: Application, private val repo: BaseRep
      **/
 
     /** это контейнер всех ливдат, которые обрабатывают юзкейсы*/
-    private val liveDataContainer: Set<LiveData<Result<*>>> by lazy { initLiveDataContainer() }
+    private val liveDataContainer: Set<LiveData<Result<*>>>
+            by lazy { initLiveDataContainer() as Set<LiveData<Result<*>>> }
 
 
     /** фабричный метод по инициализации контейнера ливдат*/
-    protected abstract fun initLiveDataContainer(): Set<LiveData<Result<*>>>
+    protected abstract fun initLiveDataContainer(): Set<LiveData<*>>
 
     /***
      * обращайся сюда, если результат выполнения юзкейсов являет состояние

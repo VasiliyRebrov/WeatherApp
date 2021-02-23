@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 
 
 class CitiesManagerViewModel(application: Application, private val repo: CitiesManagerRepo) :
-    BaseViewModel(application, repo) {
+    BaseViewModel(application) {
 
     val getCityCurrentWeatherRelationListUseCase = GetCityCurrentWeatherRelationListUseCase(repo)
 
@@ -36,24 +36,19 @@ class CitiesManagerViewModel(application: Application, private val repo: CitiesM
 
     fun deleteCity(city: City) {
         launchUseCase(deleteCityUseCase, city) {
-            //обработка удаления города
             _deleteCityUseCaseLD.value = it
         }
     }
 
     fun reorderLocalCities(reorderedCities: List<City>) {
         launchUseCase(reorderLocalCitiesUseCase, reorderedCities) {
-            //обработка пересортировка городов
             _reorderLocalCitiesUseCaseLD.value = it
         }
     }
 
     override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
+        add(cityCurrentWeatherRelationListLiveData)
         add(deleteCityUseCaseLD)
         add(reorderLocalCitiesUseCaseLD)
-    } as Set<LiveData<Result<*>>>
-
-    override fun onCleared() {
-        super.onCleared()
     }
 }

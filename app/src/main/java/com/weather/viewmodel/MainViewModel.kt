@@ -16,15 +16,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.util.*
 
-class MainViewModel(application: Application, private val repo: BaseRepo) :
-    BaseViewModel(application, repo) {
-    val getLocalCitiesUseCase = GetLocalCitiesUseCase(repo)
-    val refreshWeatherDataUseCase = RefreshWeatherDataUseCase(repo)
+class MainViewModel(application: Application, repo: BaseRepo) :
+    BaseViewModel(application) {
+    private val currentCities = mutableListOf<City>()
 
+    private val refreshWeatherDataUseCase = RefreshWeatherDataUseCase(repo)
     private val _refreshWeatherDataUseCaseLD = MutableLiveData<Result<String>>()
     val refreshWeatherDataUseCaseLD: LiveData<Result<String>> = _refreshWeatherDataUseCaseLD
 
-    private val currentCities = mutableListOf<City>()
 
     /**
      * в начале вернет по умолчанию Loading благодаря stateFlow
@@ -39,6 +38,7 @@ class MainViewModel(application: Application, private val repo: BaseRepo) :
     /** полученный список городов сортируется по id.*/
     /** сортировка по id позволяет исключить изменения, после юзкейса пересортировки,
      * когда меняется поле pos */
+    private val getLocalCitiesUseCase = GetLocalCitiesUseCase(repo)
     val localCitiesLiveData = getLocalCitiesUseCase(Unit)
         .map {
             return@map if (it is Result.Success && it.data.isNotEmpty()) {
@@ -83,15 +83,14 @@ class MainViewModel(application: Application, private val repo: BaseRepo) :
             oldCities
         )
         launchUseCase(refreshWeatherDataUseCase, params) {
-            //обработка обновление погодных данных
             _refreshWeatherDataUseCaseLD.value = it
         }
     }
 
     override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-        add(_refreshWeatherDataUseCaseLD)
-    } as Set<LiveData<Result<*>>>
-
+        add(localCitiesLiveData)
+        add(refreshWeatherDataUseCaseLD)
+    }
 
     override fun onCleared() {
         localCitiesLiveData.removeObserver(observer)

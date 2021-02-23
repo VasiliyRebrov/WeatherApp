@@ -15,8 +15,8 @@ import com.weather.components.Config
 class CityItemViewModel(
     application: Application,
     private val city: City,
-    private val repo: CityItemRepo
-) : BaseViewModel(application, repo) {
+    repo: CityItemRepo
+) : BaseViewModel(application) {
 
     private val getCurrentWeatherUseCase = GetCurrentWeatherUseCase(repo)
     val currentWeatherLD = getCurrentWeatherUseCase(city.cityId).asLiveData()
@@ -36,7 +36,8 @@ class CityItemViewModel(
     }
 
     override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
+        add(currentWeatherLD)
         add(refreshDataLD)
-    } as Set<LiveData<Result<*>>>
+    }
 
 }

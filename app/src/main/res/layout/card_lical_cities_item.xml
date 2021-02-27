@@ -2,14 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="data"
-            type="com.weather.components.CityCard" />
-
-    </data>
-
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="72dp"
@@ -36,7 +28,7 @@
                 android:id="@+id/tv_card_city_temp"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:text="@{data.currentTemp}"
+                android:text="--"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toStartOf="@+id/img_card_city_icon"
@@ -47,7 +39,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:lines="1"
-                android:text="@{data.city.name}"
                 app:layout_constraintEnd_toStartOf="@+id/tv_card_city_temp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +48,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:lines="1"
-                android:text="@{data.city.countryCode + '|'+ data.city.regionCode }"
                 app:layout_constraintEnd_toStartOf="@+id/tv_card_city_temp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_card_city_name" />

@@ -6,6 +6,5 @@ import com.data.model.City
 import kotlinx.coroutines.flow.map
 
 class CityItemRepo(ctx: Context) : BaseRepo(ctx) {
-    fun getFlowWeatherDataByCity(cityId: Int) =
-        dao.getFlowWeatherDataByCity(cityId).map { Result.Success(it) }
+    fun getFlowWeatherDataByCity(cityId: Int) = dao.getFlowWeatherDataByCity(cityId)
 }

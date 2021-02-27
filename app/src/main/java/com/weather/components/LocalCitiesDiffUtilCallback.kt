@@ -1,10 +1,11 @@
 package com.weather.components
 
 import androidx.recyclerview.widget.DiffUtil
+import com.data.model.CityWeatherRelation
 
 class LocalCitiesDiffUtilCallback(
-    private val oldCities: List<CityCard>,
-    private val newCities: List<CityCard>
+    private val oldCities: List<CityWeatherRelation>,
+    private val newCities: List<CityWeatherRelation>
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize() = oldCities.size
@@ -15,6 +16,9 @@ class LocalCitiesDiffUtilCallback(
 
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldCities[oldItemPosition] == newCities[newItemPosition]
+        val oldItem = oldCities[oldItemPosition]
+        val newItem = newCities[newItemPosition]
+        return oldItem.weatherData?.currentWeatherData?.temp == newItem.weatherData?.currentWeatherData?.temp &&
+                oldItem.weatherData?.currentWeatherData?.icon == newItem.weatherData?.currentWeatherData?.icon
     }
 }

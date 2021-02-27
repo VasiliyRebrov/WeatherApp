@@ -4,24 +4,36 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.data.common.getDrawablePath
 import com.data.model.City
 import com.data.model.CityWeatherRelation
+import com.weather.R
 import com.weather.databinding.CardLicalCitiesItemBinding
 import java.util.*
+import kotlin.math.roundToInt
 
 class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
     RecyclerView.Adapter<RvLocalCitiesAdapter.ViewHolder>(), ItemTouchHelperAdapter {
 
-    private val citiesList = mutableListOf<CityCard>()
+    private val citiesList = mutableListOf<CityWeatherRelation>()
 
     //    var lastAction: ItemTouchAction = ItemTouchAction.DEFAULT
     private var blockcount = 0
 
     inner class ViewHolder(private val binding: CardLicalCitiesItemBinding) :
         RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
-        fun bind(data: CityCard) {
-            binding.data = data
-            binding.imgCardCityIcon.setImageResource(data.iconStatus)
+        fun bind(data: CityWeatherRelation) {
+            binding.root.setBackgroundColor(binding.root.context.resources.getColor(R.color.colorAccent))
+            binding.tvCardCityName.text = data.city.name
+            binding.tvCardCityRegion.text = "${data.city.country} | ${data.city.region}"
+            data.weatherData?.let {
+                binding.tvCardCityTemp.text =
+                    "${it.currentWeatherData.temp.roundToInt()} °"
+            }
+
+            val resId = data.weatherData?.currentWeatherData?.icon
+                ?: binding.root.context.getDrawablePath("50n")
+            binding.imgCardCityIcon.setImageResource(resId)
             binding.executePendingBindings()
         }
 
@@ -82,7 +94,7 @@ class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
         mDragStartListener.deleteCity(city.city)
     }
 
-    fun updateList(newList: List<CityCard>) {  //сделать DiffUtil
+    fun updateList(newList: List<CityWeatherRelation>) {  //сделать DiffUtil
         if (blockcount > 0)
             blockcount--
         else {

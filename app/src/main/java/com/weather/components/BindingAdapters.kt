@@ -1,5 +1,6 @@
 package com.weather.components
 
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -17,7 +18,8 @@ import com.data.model.Hourly
 @BindingAdapter("app:update")
 fun update(view: RecyclerView, result: Result<List<Hourly>>?) {
     result?.let {
-        (view.adapter as RvHourlyWeatherAdapter).updateList(result.data!!)
+        Log.d("qwerty228",it.toString())
+        if (it is Result.Success) (view.adapter as RvHourlyWeatherAdapter).updateList(it.data)
     }
 }
 
@@ -51,7 +53,7 @@ fun update(view: ViewPager2, result: Result<List<City>>?) {
  * если Success - список может быть пуст, добавлена проверка
  * */
 @BindingAdapter("app:update2")
-fun update2(view: RecyclerView, result: Result<List<CityCard>>?) {
+fun update2(view: RecyclerView, result: Result<List<CityWeatherRelation>>?) {
     result?.let {
         if (it is Result.Success && it.data.isNotEmpty())
             (view.adapter as RvLocalCitiesAdapter).updateList(it.data)

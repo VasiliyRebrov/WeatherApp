@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.data.model.Hourly
 import com.weather.databinding.CardHourlyWeatherItemBinding
+import kotlin.math.roundToInt
 
 class RvHourlyWeatherAdapter : RecyclerView.Adapter<RvHourlyWeatherAdapter.ViewHolder>() {
     val hourlyPresList = mutableListOf<Hourly>()
@@ -12,7 +13,9 @@ class RvHourlyWeatherAdapter : RecyclerView.Adapter<RvHourlyWeatherAdapter.ViewH
     class ViewHolder(val binding: CardHourlyWeatherItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(hourly: Hourly) {
-            binding.hourly = hourly
+            binding.tvDateCardHourly.text=hourly.dt
+            binding.tvTempCardHourly.text="${hourly.temp.roundToInt()} °"
+            binding.imgCardHourly.setImageResource(hourly.icon)
             binding.executePendingBindings()
         }
     }
@@ -37,7 +40,6 @@ class RvHourlyWeatherAdapter : RecyclerView.Adapter<RvHourlyWeatherAdapter.ViewH
         with(hourlyPresList) { clear();addAll(newList) }
         notifyDataSetChanged()
     }
-
 }
 
 //class RvRemoteCitiesAdapter(private val listener: Listener) :

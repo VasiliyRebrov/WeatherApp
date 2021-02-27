@@ -64,7 +64,7 @@ class Converters {
                 this[9].toDouble(),
                 this[10].toInt(),
                 this[11],
-                this[12],
+                this[12].toInt(),
                 this[13].toInt(),
                 this[14].toDouble()
             )
@@ -93,7 +93,7 @@ class Converters {
                 this[15].toDouble(),
                 this[16].toDouble(),
                 this[17],
-                this[18],
+                this[18].toInt(),
                 this[19].toInt(),
                 this[20].toDouble()
             )

@@ -53,7 +53,7 @@ open class BaseRepo(protected val ctx: Context) {
                                     unitMeasurePref
                                 )
                             ) as WeatherResponsePOJO
-                        mapRemoteWeatherToEntity(city.cityId, result)
+                        ctx.mapRemoteWeatherToEntity(city.cityId, result)
                     }
                 }.awaitAll()
             }

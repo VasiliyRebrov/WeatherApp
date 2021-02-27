@@ -35,7 +35,7 @@ interface WeatherDao {
      * 1) получение погоды в CityItem
      * */
     @Query("select * from weather_data where cityId=:cityId")
-    fun getFlowWeatherDataByCity(cityId: Int): Flow<WeatherData>
+    fun getFlowWeatherDataByCity(cityId: Int): Flow<WeatherData?>
 
     /**
      * [getWeatherData]

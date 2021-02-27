@@ -1,8 +1,10 @@
 package com.data.common
 
+import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.util.Log
 import com.data.model.*
 import com.data.remote.entity.WeatherResponsePOJO
 import java.text.SimpleDateFormat
@@ -65,8 +67,10 @@ fun checkInternetAccess(context: Context): Boolean {
     return activeNetwork?.isConnectedOrConnecting == true
 }
 
+fun Context.getDrawablePath(name: String) =
+    resources.getIdentifier("a$name", "drawable", packageName)
 
-fun mapRemoteWeatherToEntity(
+fun Context.mapRemoteWeatherToEntity(
     cityId: Int,
     remoteWeather: WeatherResponsePOJO
 ): WeatherData {
@@ -86,9 +90,10 @@ fun mapRemoteWeatherToEntity(
             wind_deg,
             wind_speed,
             weather[0].description,
-            "a${weather[0].icon}"
+            getDrawablePath(weather[0].icon)
         )
     }
+
 
     fun createHourly() = remoteWeather.hourly.map {
         Hourly(
@@ -104,7 +109,7 @@ fun mapRemoteWeatherToEntity(
             it.uvi,
             it.visibility,
             it.weather[0].description,
-            it.weather[0].icon,
+            getDrawablePath(it.weather[0].icon),
             it.wind_deg,
             it.wind_speed
         )
@@ -130,10 +135,17 @@ fun mapRemoteWeatherToEntity(
             it.temp.night,
             it.uvi,
             it.weather[0].description,
-            it.weather[0].icon,
+            getDrawablePath(it.weather[0].icon),
             it.wind_deg,
             it.wind_speed
         )
     }
     return WeatherData(cityId, createCurrent(), createHourly(), createDaily())
 }
+
+
+
+
+
+
+

@@ -1,38 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data>
-
-        <variable
-            name="hourly"
-            type="com.data.model.Hourly" />
-    </data>
-
     <androidx.cardview.widget.CardView
-        android:layout_width="32dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/tv_date_card_hourly"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lines="1"
-                android:text="@{hourly.dt}" />
+          />
 
             <ImageView
+                android:id="@+id/img_card_hourly"
                 android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_launcher_background" />
+                android:layout_height="32dp" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/tv_temp_card_hourly"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="1"
-                android:text="@{String.valueOf(hourly.temp)}" />
+                android:lines="1" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </layout>

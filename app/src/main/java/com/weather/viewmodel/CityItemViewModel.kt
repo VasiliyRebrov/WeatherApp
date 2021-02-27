@@ -1,19 +1,19 @@
 package com.weather.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.data.common.Result
 import com.data.common.data
 import com.data.common.succeeded
-import com.data.model.City
-import com.data.model.Hourly
-import com.data.model.WeatherData
+import com.data.model.*
 import com.data.repo.CityItemRepo
 import com.domain.RefreshWeatherParams
 import com.domain.usecases.*
 import com.weather.components.Config
 import kotlinx.coroutines.flow.map
 import java.lang.Error
+import java.lang.Exception
 
 class CityItemViewModel(
     application: Application,
@@ -28,15 +28,33 @@ class CityItemViewModel(
     private val _weatherDataLD = getWeatherDataUseCase(city.cityId).asLiveData()
     val weatherDataLD: LiveData<Result<WeatherData>> = _weatherDataLD
 
+    val currentLD = Transformations.map(weatherDataLD) {
+        return@map (
+                if (it is Result.Success)
+                    Result.Success(it.data.currentWeatherData)
+                else it
+                ) as Result<CurrentWeatherData>
+    }
+
     val hourlyLD = Transformations.map(weatherDataLD) {
-        return@map (if (it is Result.Success) {
-            Result.Success(it.data.hourlyList)
-        } else it) as Result<List<Hourly>>
+        Log.d("qwerty2", it.toString())
+        return@map (
+                if (it is Result.Success)
+                    Result.Success(it.data.hourlyList)
+                else
+                    it
+                )
+                as Result<List<Hourly>>
     }
     val dailyLD = Transformations.map(weatherDataLD) {
-        return@map if (it is Result.Success) {
-            Result.Success(it.data.dailyList)
-        } else it
+        Log.d("qwerty2", it.toString())
+        return@map (
+                if (it is Result.Success)
+                    Result.Success(it.data.dailyList)
+                else
+                    it
+                )
+                as Result<List<Daily>>
     }
 
     fun refreshWeatherData() {
@@ -50,6 +68,7 @@ class CityItemViewModel(
     }
 
     override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
+        put(getWeatherDataUseCase.javaClass.simpleName, weatherDataLD as LiveData<Result<*>>)
 
         put(refreshWeatherDataUseCase.javaClass.simpleName, refreshDataLD as LiveData<Result<*>>)
     }

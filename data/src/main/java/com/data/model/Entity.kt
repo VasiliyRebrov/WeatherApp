@@ -70,7 +70,7 @@ data class CurrentWeatherData(
     val wind_deg: Int,
     var wind_speed: Double,
     val description: String,
-    val icon: String,
+    val icon: Int,
 ) {
     override fun equals(other: Any?): Boolean {
         val obj = other as? CurrentWeatherData ?: return false
@@ -93,7 +93,7 @@ data class Hourly(
     val uvi: Double,
     val visibility: Int,
     val description: String,
-    val icon: String,
+    val icon: Int,
     val wind_deg: Int,
     var wind_speed: Double
 ) {
@@ -123,7 +123,7 @@ data class Daily(
     var tempNight: Double,
     val uvi: Double,
     val description: String,
-    val icon: String,
+    val icon: Int,
     val wind_deg: Int,
     var wind_speed: Double
 ) {

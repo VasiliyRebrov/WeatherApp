@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 
 class CitiesManagerRepo(ctx: Context) : BaseRepo(ctx) {
     val cityCurrentWeatherRelationList =
-        dao.getFlowCityCurrentWeatherRelationList().map { Result.Success(it) }
+        dao.getFlowCityWeatherRelationList().map { Result.Success(it) }
 
     fun deleteCity(city: City) = flow {
         emit(Result.Loading)

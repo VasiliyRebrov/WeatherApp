@@ -39,6 +39,12 @@ class MainViewModel(application: Application, repo: BaseRepo) :
     /** сортировка по id позволяет исключить изменения, после юзкейса пересортировки,
      * когда меняется поле pos */
     private val getLocalCitiesUseCase = GetLocalCitiesUseCase(repo)
+
+    /**
+     * [localCitiesLiveData] по умолчанию [Result.Loading]
+     * не может быть [null]
+     *
+     * */
     val localCitiesLiveData = getLocalCitiesUseCase(Unit)
         .map {
             return@map if (it is Result.Success && it.data.isNotEmpty()) {
@@ -86,11 +92,6 @@ class MainViewModel(application: Application, repo: BaseRepo) :
             _refreshWeatherDataUseCaseLD.value = it
         }
     }
-
-//    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-//        add(localCitiesLiveData)
-//        add(refreshWeatherDataUseCaseLD)
-//    }
 
     override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
         put(

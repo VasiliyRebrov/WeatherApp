@@ -6,7 +6,7 @@
 
         <variable
             name="data"
-            type="com.data.model.CityCurrentWeatherRelation" />
+            type="com.weather.components.CityCard" />
 
     </data>
 
@@ -22,51 +22,45 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-            <TextView
-                android:id="@+id/tv_remote_cities_name"
+            <ImageView
+                android:id="@+id/img_card_city_icon"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginEnd="16dp"
-                android:gravity="start|bottom"
-                android:maxLength="20"
-                android:text="@{data.city.name}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintBottom_toTopOf="@id/text_card_city_description"
-                app:layout_constraintEnd_toStartOf="@+id/text_card_weather_temp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_weight="1" />
-
-            <TextView
-                android:id="@+id/text_card_city_description"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="16dp"
-                android:gravity="start|top"
-                android:maxLength="20"
-                android:text="@{data.city.country}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/text_card_weather_temp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_remote_cities_name"
-                app:layout_constraintVertical_weight="1" />
-
-
-            <TextView
-                android:id="@+id/text_card_weather_temp"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="16dp"
-                android:gravity="center"
-                android:maxLength="5"
-                android:text="@{String.valueOf(data.currentWeatherData.temp)}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_card_city_temp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="@{data.currentTemp}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@+id/img_card_city_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_card_city_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="@{data.city.name}"
+                app:layout_constraintEnd_toStartOf="@+id/tv_card_city_temp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_card_city_region"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="@{data.city.countryCode + '|'+ data.city.regionCode }"
+                app:layout_constraintEnd_toStartOf="@+id/tv_card_city_temp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_card_city_name" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

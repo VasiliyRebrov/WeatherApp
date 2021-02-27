@@ -3,6 +3,9 @@ package com.weather.view
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceFragmentCompat
 import com.weather.R
@@ -20,7 +23,15 @@ class SettingsFragment : PreferenceFragmentCompat(),
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.settings)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewLifecycleOwner.initBaseObservers(viewModel)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onResume() {

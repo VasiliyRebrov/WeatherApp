@@ -8,17 +8,25 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.data.common.Result
 import com.data.common.data
-import com.data.common.succeeded
 import com.data.model.City
-import com.data.model.CityCurrentWeatherRelation
+import com.data.model.CityWeatherRelation
+import com.data.model.Hourly
 
+
+@JvmName("update1")
+@BindingAdapter("app:update")
+fun update(view: RecyclerView, result: Result<List<Hourly>>?) {
+    result?.let {
+        (view.adapter as RvHourlyWeatherAdapter).updateList(result.data!!)
+    }
+}
 
 /**
  * если Success - список точно не пуст. Это проверяется еще в Retrofit-util.
- * Если списпок оказывается пуст - вернется Error
+ * Если список оказывается пуст - вернется Error
  * */
-@BindingAdapter("app:update")
-fun update(view: RecyclerView, result: Result<List<City>>) {
+@BindingAdapter("app:update228")
+fun update228(view: RecyclerView, result: Result<List<City>>) {
     when (result) {
         is Result.Success -> (view.adapter as RvRemoteCitiesAdapter).updateList(result.data)
         is Result.Error -> (view.adapter as RvRemoteCitiesAdapter).updateList(listOf())
@@ -39,14 +47,14 @@ fun update(view: ViewPager2, result: Result<List<City>>?) {
 }
 
 /**
- * если Success - список может быть пуст. (предположение)
+ * в начале приходит null
+ * если Success - список может быть пуст, добавлена проверка
  * */
 @BindingAdapter("app:update2")
-fun update2(view: RecyclerView, result: Result<List<CityCurrentWeatherRelation>>?) {
+fun update2(view: RecyclerView, result: Result<List<CityCard>>?) {
     result?.let {
-        if (it is Result.Success && it.data.isNotEmpty()) {
+        if (it is Result.Success && it.data.isNotEmpty())
             (view.adapter as RvLocalCitiesAdapter).updateList(it.data)
-        }
     }
 }
 

@@ -7,10 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import com.data.common.Result
 import com.data.model.City
+import com.data.model.CityWeatherRelation
 import com.domain.usecases.DeleteCityUseCase
 import com.domain.usecases.GetCityCurrentWeatherRelationListUseCase
+//import com.domain.usecases.GetCityCurrentWeatherRelationListUseCase
 import com.domain.usecases.ReorderCitiesUseCase
+import com.weather.components.CityCard
 import kotlinx.coroutines.flow.map
+import kotlin.math.roundToInt
 
 
 class CitiesManagerViewModel(application: Application, private val repo: CitiesManagerRepo) :
@@ -20,10 +24,23 @@ class CitiesManagerViewModel(application: Application, private val repo: CitiesM
 
     val cityCurrentWeatherRelationListLiveData =
         getCityCurrentWeatherRelationListUseCase(Unit).map { result ->
-            return@map if (result is Result.Success && result.data.isNotEmpty()) {
-                Result.Success(result.data.sortedBy { it.city.position })
-            } else result
+            return@map (if (result is Result.Success) {
+                val sortedList = result.data.sortedBy { it.city.position }
+                transformToCityCard(sortedList)
+            } else result) as Result<List<CityCard>>
         }.asLiveData()
+
+    private fun transformToCityCard(sortedList: List<CityWeatherRelation>) = Result.Success(
+        sortedList.map {
+            val temp = it.weatherData?.currentWeatherData?.temp?.roundToInt()?.toString() ?: "--"
+            val icon = it.weatherData?.currentWeatherData?.icon ?: "a50n"
+            val resId = with(getApplication<Application>()) {
+                resources.getIdentifier(icon, "drawable", packageName)
+            }
+            CityCard(it.city, temp, resId)
+        }
+    )
+
 
     private val deleteCityUseCase = DeleteCityUseCase(repo)
     private val _deleteCityUseCaseLD = MutableLiveData<Result<Int>>()

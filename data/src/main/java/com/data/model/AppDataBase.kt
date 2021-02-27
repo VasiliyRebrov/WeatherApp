@@ -9,7 +9,7 @@ import com.data.common.Converters
 import com.data.common.SingletonHolder
 
 @Database(
-    entities = [City::class, CurrentWeatherData::class, HourlyWeatherData::class, DailyWeatherData::class],
+    entities = [City::class, WeatherData::class],
     version = 1
 )
 @TypeConverters(Converters::class)

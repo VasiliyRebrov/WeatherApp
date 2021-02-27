@@ -1,29 +1,43 @@
 package com.weather.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import com.data.common.Result
+import com.data.common.data
+import com.data.common.succeeded
 import com.data.model.City
+import com.data.model.Hourly
+import com.data.model.WeatherData
 import com.data.repo.CityItemRepo
 import com.domain.RefreshWeatherParams
-import com.domain.usecases.GetCurrentWeatherUseCase
-import com.domain.usecases.RefreshWeatherDataUseCase
+import com.domain.usecases.*
 import com.weather.components.Config
+import kotlinx.coroutines.flow.map
+import java.lang.Error
 
 class CityItemViewModel(
     application: Application,
     private val city: City,
     repo: CityItemRepo
 ) : BaseViewModel(application) {
-
-    private val getCurrentWeatherUseCase = GetCurrentWeatherUseCase(repo)
-    val currentWeatherLD = getCurrentWeatherUseCase(city.cityId).asLiveData()
-
     private val refreshWeatherDataUseCase = RefreshWeatherDataUseCase(repo)
     private val _refreshDataLD = MutableLiveData<Result<String>>()
     val refreshDataLD: LiveData<Result<String>> = _refreshDataLD
+
+    private val getWeatherDataUseCase = GetWeatherDataUseCase(repo)
+    private val _weatherDataLD = getWeatherDataUseCase(city.cityId).asLiveData()
+    val weatherDataLD: LiveData<Result<WeatherData>> = _weatherDataLD
+
+    val hourlyLD = Transformations.map(weatherDataLD) {
+        return@map (if (it is Result.Success) {
+            Result.Success(it.data.hourlyList)
+        } else it) as Result<List<Hourly>>
+    }
+    val dailyLD = Transformations.map(weatherDataLD) {
+        return@map if (it is Result.Success) {
+            Result.Success(it.data.dailyList)
+        } else it
+    }
 
     fun refreshWeatherData() {
         val params = RefreshWeatherParams(
@@ -34,16 +48,9 @@ class CityItemViewModel(
             _refreshDataLD.value = it
         }
     }
-//
-//    override fun initLiveDataContainer() = mutableSetOf<LiveData<*>>().apply {
-//        add(currentWeatherLD)
-//        add(refreshDataLD)
-//    }
 
     override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
-        put(getCurrentWeatherUseCase.javaClass.simpleName, currentWeatherLD as LiveData<Result<*>>)
+
         put(refreshWeatherDataUseCase.javaClass.simpleName, refreshDataLD as LiveData<Result<*>>)
-
     }
-
 }

@@ -1,7 +1,6 @@
 package com.data.repo
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import com.data.common.*
 import com.data.model.*
 import com.data.remote.api.*
@@ -15,17 +14,19 @@ import java.util.*
 
 open class BaseRepo(protected val ctx: Context) {
     protected val dao = AppDataBase.getInstance(ctx).weatherDao()
-    val localCities = dao.getFlowCities().map { Result.Success(it) }
+    val localCities = dao.getFlowCities().map {
+        Result.Success(it) }
 
     fun refreshData(unitMeasurePref: String, newCities: List<City>, oldCities: List<City>) =
         flow {
             emit(Result.Loading)
+            delay(5000)
             val resultString = StringBuilder()
             coroutineScope {
                 if (newCities.isNotEmpty()) {
                     async {
-                        with(loadData(newCities, unitMeasurePref)) {
-                            dao.insertActualData(*this.toTypedArray())
+                        with(loadWeatherData(newCities, unitMeasurePref)) {
+                            dao.insertActualWeatherData(*this.toTypedArray())
                             resultString.append("added: ${this.size} elements\n")
                         }
                     }.start()
@@ -40,7 +41,7 @@ open class BaseRepo(protected val ctx: Context) {
             emit(Result.Success(resultString.toString()))
         }
 
-    private suspend fun loadData(cities: List<City>, unitMeasurePref: String) =
+    private suspend fun loadWeatherData(cities: List<City>, unitMeasurePref: String) =
         coroutineScope {
             return@coroutineScope executeIfConnected {
                 cities.map { city ->
@@ -52,7 +53,7 @@ open class BaseRepo(protected val ctx: Context) {
                                     unitMeasurePref
                                 )
                             ) as WeatherResponsePOJO
-                        createWeatherEntity(city.cityId, result)
+                        mapRemoteWeatherToEntity(city.cityId, result)
                     }
                 }.awaitAll()
             }

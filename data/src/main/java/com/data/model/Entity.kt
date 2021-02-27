@@ -5,9 +5,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.data.common.SEPARATOR
-import com.data.common.createDate
-import com.data.remote.entity.*
 import com.google.gson.annotations.SerializedName
+
 
 @Entity(tableName = "cities")
 data class City(
@@ -29,6 +28,7 @@ data class City(
         return this.cityId == obj.cityId
     }
 
+
     companion object {
         fun createCityByRegex(cityRegex: String) = with(cityRegex.split(SEPARATOR)) {
             City(
@@ -37,13 +37,25 @@ data class City(
             )
         }
     }
-
 }
 
-@Entity(tableName = "current_weather_data")
-data class CurrentWeatherData(
+fun City.toRegex() = component1().toString() + SEPARATOR + component2() +
+        SEPARATOR + component3() + SEPARATOR + component4() + SEPARATOR + component5() +
+        SEPARATOR + component6() + SEPARATOR + component7() + SEPARATOR + component8() +
+        SEPARATOR + component9() + SEPARATOR + component10()
+
+@Entity(tableName = "weather_data")
+data class WeatherData(
     @PrimaryKey
     val cityId: Int,
+    @Embedded
+    val currentWeatherData: CurrentWeatherData,
+    val hourlyList: List<Hourly>,
+    val dailyList: List<Daily>
+
+)
+
+data class CurrentWeatherData(
     val clouds: Int,
     val dew_point: Double,
     val dt: String,
@@ -60,70 +72,11 @@ data class CurrentWeatherData(
     val description: String,
     val icon: String,
 ) {
-
     override fun equals(other: Any?): Boolean {
         val obj = other as? CurrentWeatherData ?: return false
         return this.temp == obj.temp
-                && this.cityId == obj.cityId
+//                && this.cityId == obj.cityId
 //                && this.icon == obj.icon
-    }
-
-    companion object {
-        fun createFromRemoteEntity(cityId: Int, remoteEntity: Current) = with(remoteEntity) {
-            CurrentWeatherData(
-                cityId,
-                clouds,
-                dew_point,
-                createDate(dt),
-                feels_like,
-                humidity,
-                pressure,
-                createDate(sunrise),
-                createDate(sunset),
-                temp,
-                uvi,
-                visibility,
-                wind_deg,
-                wind_speed,
-                weather[0].description,
-                weather[0].icon
-            )
-        }
-    }
-}
-
-@Entity(tableName = "hourly_weather_data")
-data class HourlyWeatherData(
-    @PrimaryKey
-    val cityId: Int,
-    val hourlyList: List<Hourly>
-) {
-    companion object {
-        fun createFromRemoteEntity(
-            cityId: Int,
-            remoteEntity: List<com.data.remote.entity.Hourly>
-        ): HourlyWeatherData {
-            val hourlyList = remoteEntity.map {
-                Hourly(
-                    it.clouds,
-                    it.dew_point,
-                    createDate(it.dt),
-                    it.feels_like,
-                    it.humidity,
-                    it.pop,
-                    it.pressure,
-                    it.rain?.`1h` ?: 228.0,
-                    it.temp,
-                    it.uvi,
-                    it.visibility,
-                    it.weather[0].description,
-                    it.weather[0].icon,
-                    it.wind_deg,
-                    it.wind_speed
-                )
-            }
-            return HourlyWeatherData(cityId, hourlyList)
-        }
     }
 }
 
@@ -150,46 +103,6 @@ data class Hourly(
                 "${component11()}$SEPARATOR${component12()}$SEPARATOR${component13()}$SEPARATOR${component14()}$SEPARATOR${component15()}"
 }
 
-@Entity(tableName = "daily_weather_data")
-data class DailyWeatherData(
-    @PrimaryKey
-    val cityId: Int,
-    val dailyList: List<Daily>
-) {
-    companion object {
-        fun createFromRemoteEntity(
-            cityId: Int,
-            remoteEntity: List<com.data.remote.entity.Daily>
-        ): DailyWeatherData {
-            val dailyList = remoteEntity.map {
-                Daily(
-                    it.clouds,
-                    it.dew_point,
-                    createDate(it.dt),
-                    it.humidity,
-                    it.pop,
-                    it.pressure,
-                    it.rain,
-                    it.snow,
-                    createDate(it.sunrise),
-                    createDate(it.sunset),
-                    it.temp.day,
-                    it.temp.eve,
-                    it.temp.max,
-                    it.temp.min,
-                    it.temp.morn,
-                    it.temp.night,
-                    it.uvi,
-                    it.weather[0].description,
-                    it.weather[0].icon,
-                    it.wind_deg,
-                    it.wind_speed
-                )
-            }
-            return DailyWeatherData(cityId, dailyList)
-        }
-    }
-}
 
 data class Daily(
     val clouds: Int,
@@ -222,12 +135,29 @@ data class Daily(
 }
 
 
-//для localCitiesList
-data class CityCurrentWeatherRelation(
+data class CityWeatherRelation(
     @Embedded val city: City,
     @Relation(
         parentColumn = "cityId",
         entityColumn = "cityId"
     )
-    val currentWeatherData: CurrentWeatherData?
+    val weatherData: WeatherData?
 )
+
+//data class CityWithCurrentWeather(
+//    @Embedded val city: City,
+//    @Relation(
+//        parentColumn = "cityId",
+//        entityColumn = "cityId"
+//    )
+//    val currentWeatherData: CurrentWeatherData
+//)
+
+//
+//class DepartmentWithEmployees {
+//    @Embedded
+//    var department: Department? = null
+//
+//    @Relation(parentColumn = "id", entityColumn = "department_id")
+//    var employees: List<Employee>? = null
+//}

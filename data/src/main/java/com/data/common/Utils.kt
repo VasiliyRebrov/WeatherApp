@@ -65,12 +65,75 @@ fun checkInternetAccess(context: Context): Boolean {
     return activeNetwork?.isConnectedOrConnecting == true
 }
 
-fun createWeatherEntity(
+
+fun mapRemoteWeatherToEntity(
     cityId: Int,
-    weather: WeatherResponsePOJO
-): Triple<CurrentWeatherData, HourlyWeatherData, DailyWeatherData> {
-    val currentWeather = CurrentWeatherData.createFromRemoteEntity(cityId, weather.current)
-    val hourlyWeather = HourlyWeatherData.createFromRemoteEntity(cityId, weather.hourly)
-    val dailyWeather = DailyWeatherData.createFromRemoteEntity(cityId, weather.daily)
-    return Triple(currentWeather, hourlyWeather, dailyWeather)
+    remoteWeather: WeatherResponsePOJO
+): WeatherData {
+    fun createCurrent() = with(remoteWeather.current) {
+        CurrentWeatherData(
+            clouds,
+            dew_point,
+            createDate(dt),
+            feels_like,
+            humidity,
+            pressure,
+            createDate(sunrise),
+            createDate(sunset),
+            temp,
+            uvi,
+            visibility,
+            wind_deg,
+            wind_speed,
+            weather[0].description,
+            "a${weather[0].icon}"
+        )
+    }
+
+    fun createHourly() = remoteWeather.hourly.map {
+        Hourly(
+            it.clouds,
+            it.dew_point,
+            createDate(it.dt),
+            it.feels_like,
+            it.humidity,
+            it.pop,
+            it.pressure,
+            it.rain?.`1h` ?: 228.0,
+            it.temp,
+            it.uvi,
+            it.visibility,
+            it.weather[0].description,
+            it.weather[0].icon,
+            it.wind_deg,
+            it.wind_speed
+        )
+    }
+
+    fun createDaily() = remoteWeather.daily.map {
+        Daily(
+            it.clouds,
+            it.dew_point,
+            createDate(it.dt),
+            it.humidity,
+            it.pop,
+            it.pressure,
+            it.rain,
+            it.snow,
+            createDate(it.sunrise),
+            createDate(it.sunset),
+            it.temp.day,
+            it.temp.eve,
+            it.temp.max,
+            it.temp.min,
+            it.temp.morn,
+            it.temp.night,
+            it.uvi,
+            it.weather[0].description,
+            it.weather[0].icon,
+            it.wind_deg,
+            it.wind_speed
+        )
+    }
+    return WeatherData(cityId, createCurrent(), createHourly(), createDaily())
 }

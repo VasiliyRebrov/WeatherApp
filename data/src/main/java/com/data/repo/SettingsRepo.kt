@@ -1,47 +1,19 @@
 package com.data.repo
 
 import android.content.Context
-import android.util.Log
 import com.data.common.Result
 import com.data.common.transformData
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.flow
-import java.util.*
 
 class SettingsRepo(ctx: Context) : BaseRepo(ctx) {
     fun transformData(unitMeasurePref: String) = flow {
         emit(Result.Loading)
-        coroutineScope {
-            val currentDeferred = async {
-                with(dao.getCurrentWeather()) {
-                    forEach { it.transformData(unitMeasurePref) }
-                    return@async this
-                }
-            }
-            val hourlyDeferred = async {
-                with(dao.getHourlyWeather()) {
-                    forEach {
-                        it.hourlyList.forEach { hourly -> hourly.transformData(unitMeasurePref) }
-                    }
-                    return@async this
-                }
-            }
-
-            val dailyDeferred = async {
-                with(dao.getDailyWeather()) {
-                    forEach {
-                        it.dailyList.forEach { daily -> daily.transformData(unitMeasurePref) }
-                    }
-                    return@async this
-                }
-            }
-            dao.insertTransformedData(
-                currentDeferred.await(),
-                hourlyDeferred.await(),
-                dailyDeferred.await()
-            )
+        val transformedWeatherDate = dao.getWeatherData().onEach { weatherData ->
+            weatherData.currentWeatherData.transformData(unitMeasurePref)
+            weatherData.hourlyList.forEach { hourly -> hourly.transformData(unitMeasurePref) }
+            weatherData.dailyList.forEach { daily -> daily.transformData(unitMeasurePref) }
         }
+        dao.insertActualWeatherData(*transformedWeatherDate.toTypedArray())
         emit(Result.Success(Unit))
     }
 }

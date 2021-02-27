@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.data.model.City
 import com.weather.R
+import com.weather.components.RvHourlyWeatherAdapter
 import com.weather.databinding.FragmentCityItemBinding
 import com.weather.viewmodel.CityItemViewModel
 import com.weather.viewmodel.ViewModelFactory
@@ -37,8 +39,22 @@ class CityItemFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initComponents()
         swipe_city_item_to_refresh_weather_data.setOnRefreshListener {
             viewModel.refreshWeatherData()
+        }
+    }
+
+    private fun initComponents() {
+        initHourlyRecycler()
+    }
+
+    private fun initHourlyRecycler() {
+        with(rv_item_hourly) {
+            adapter = RvHourlyWeatherAdapter()
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            setHasFixedSize(true)
         }
     }
 

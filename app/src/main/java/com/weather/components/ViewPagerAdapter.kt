@@ -3,8 +3,8 @@ package com.weather.components
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.data.common.toRegex
 import com.data.model.City
+import com.data.model.toRegex
 import com.weather.view.CityItemFragment
 
 class ViewPagerAdapter(fm: FragmentManager, lifecycle: Lifecycle) :

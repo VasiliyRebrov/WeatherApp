@@ -10,30 +10,35 @@
             type="com.weather.viewmodel.GeneralViewModel" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         tools:context=".view.GeneralFragment">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/tb_general"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_general"
-            android:layout_width="match_parent"
+            android:translationZ="1dp"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:tabBackground="@drawable/tab_selector"
-            app:tabGravity="center"
-            app:tabIndicatorHeight="0dp" />
+            android:orientation="vertical">
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/tb_general"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_general"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp" />
+        </LinearLayout>
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/pager_general"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:update="@{model.localCitiesByPosLD}" />
-    </LinearLayout>
+    </FrameLayout>
 </layout>

@@ -68,7 +68,7 @@ fun checkInternetAccess(context: Context): Boolean {
 }
 
 fun Context.getDrawablePath(name: String) =
-    resources.getIdentifier("a$name", "drawable", packageName)
+    resources.getIdentifier("_$name", "drawable", packageName)
 
 fun Context.mapRemoteWeatherToEntity(
     cityId: Int,

@@ -47,7 +47,6 @@ fun update(view: ViewPager2, result: Result<List<City>>?) {
         }
     }
 }
-
 /**
  * в начале приходит null
  * если Success - список может быть пуст, добавлена проверка

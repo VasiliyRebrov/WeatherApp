@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridLayout
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +17,10 @@ import com.weather.databinding.FragmentCityItemBinding
 import com.weather.viewmodel.CityItemViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_city_item.*
+import kotlinx.android.synthetic.main.fragment_city_item.view.*
 import kotlinx.android.synthetic.main.layout_current_weather_top.*
+import kotlinx.android.synthetic.main.layout_grid_current_item.*
+import kotlinx.android.synthetic.main.layout_grid_current_item.view.*
 import kotlin.math.roundToInt
 
 private const val ARG_CITY_REGEX = "cityId"
@@ -61,11 +66,28 @@ class CityItemFragment : BaseFragment() {
         super.initObservers()
         viewModel.currentLD.observe(viewLifecycleOwner) {
             if (it is Result.Success) {
-                tv_current_weather_temp.text = "${it.data.temp.roundToInt()} °"
-                tv_current_weather_feels.text = "ощущается как ${it.data.feels_like.roundToInt()}"
-                tv_current_weather_status.text = it.data.description
+                with(it.data) {
+                    tv_current_weather_temp.text = "${temp.roundToInt()} °"
+                    tv_current_weather_feels.text = "ощущается как ${feels_like.roundToInt()}"
+                    tv_current_weather_status.text = description
+
+                    //лучше присваивать компоненты
+                    grid_item_current[0].kek("$humidity %", "влажность")
+                    grid_item_current[1].kek("$uvi", "УФ")
+                    grid_item_current[2].kek("$wind_speed", "скорость ветра")
+                    grid_item_current[3].kek("$dew_point", "точка росы")
+                    grid_item_current[4].kek("$visibility km", "видимость")
+                    grid_item_current[5].kek("$pressure ", "давление")
+                }
+
             }
         }
+    }
+
+    fun View.kek(value: String, name: String) {
+        this.img_grid_item.setImageResource(R.drawable._10d)
+        this.tv_grid_item_value.text = value
+        this.tv_grid_item_name.text = name
     }
 
     private fun initHourlyRecycler() {

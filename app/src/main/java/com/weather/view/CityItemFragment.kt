@@ -1,6 +1,7 @@
 package com.weather.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.data.common.Result
 import com.data.model.City
 import com.weather.R
+import com.weather.components.RvDailyWeatherAdapter
 import com.weather.components.RvHourlyWeatherAdapter
 import com.weather.databinding.FragmentCityItemBinding
+import com.weather.databinding.FragmentGeneralBinding
 import com.weather.viewmodel.CityItemViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_city_item.*
@@ -26,6 +29,12 @@ import kotlin.math.roundToInt
 private const val ARG_CITY_REGEX = "cityId"
 
 class CityItemFragment : BaseFragment() {
+
+    private var _binding: FragmentCityItemBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override val viewModel: CityItemViewModel by viewModels {
         ViewModelFactory(
             "CityItemViewModel",
@@ -38,9 +47,9 @@ class CityItemFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding: FragmentCityItemBinding =
+        _binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_city_item, container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
         return binding.root
     }
@@ -54,6 +63,8 @@ class CityItemFragment : BaseFragment() {
     private fun initComponents() {
         initSwipe()
         initHourlyRecycler()
+        initDailyRecycler()
+
     }
 
     private fun initSwipe() {
@@ -62,39 +73,19 @@ class CityItemFragment : BaseFragment() {
         }
     }
 
-    override fun initObservers() {
-        super.initObservers()
-        viewModel.currentLD.observe(viewLifecycleOwner) {
-            if (it is Result.Success) {
-                with(it.data) {
-                    tv_current_weather_temp.text = "${temp.roundToInt()} °"
-                    tv_current_weather_feels.text = "ощущается как ${feels_like.roundToInt()}"
-                    tv_current_weather_status.text = description
-
-                    //лучше присваивать компоненты
-                    grid_item_current[0].kek("$humidity %", "влажность")
-                    grid_item_current[1].kek("$uvi", "УФ")
-                    grid_item_current[2].kek("$wind_speed", "скорость ветра")
-                    grid_item_current[3].kek("$dew_point", "точка росы")
-                    grid_item_current[4].kek("$visibility km", "видимость")
-                    grid_item_current[5].kek("$pressure ", "давление")
-                }
-
-            }
-        }
-    }
-
-    fun View.kek(value: String, name: String) {
-        this.img_grid_item.setImageResource(R.drawable._10d)
-        this.tv_grid_item_value.text = value
-        this.tv_grid_item_name.text = name
-    }
-
     private fun initHourlyRecycler() {
         with(rv_item_hourly) {
             adapter = RvHourlyWeatherAdapter()
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            setHasFixedSize(true)
+        }
+    }
+
+    private fun initDailyRecycler() {
+        with(rv_item_daily) {
+            adapter = RvDailyWeatherAdapter()
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
         }
     }
@@ -107,5 +98,10 @@ class CityItemFragment : BaseFragment() {
                     putString(ARG_CITY_REGEX, cityRegex)
                 }
             }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

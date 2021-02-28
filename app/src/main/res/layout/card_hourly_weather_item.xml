@@ -1,32 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:padding="8dp">
 
-            <TextView
-                android:id="@+id/tv_date_card_hourly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lines="1"
-          />
-
-            <ImageView
-                android:id="@+id/img_card_hourly"
-                android:layout_width="32dp"
-                android:layout_height="32dp" />
 
             <TextView
                 android:id="@+id/tv_temp_card_hourly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:lines="1" />
+
+            <TextView
+                android:id="@+id/tv_pop_card_hourly"
+                style="@style/HintCustomText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:lines="1"
+                android:textColor="@color/colorAccent" />
+
+            <ImageView
+                android:id="@+id/img_card_hourly"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/tv_date_card_hourly"
+                style="@style/HintCustomText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:lines="1" />
+
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
 </layout>

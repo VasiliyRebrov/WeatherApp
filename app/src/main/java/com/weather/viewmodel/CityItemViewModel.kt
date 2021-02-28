@@ -29,6 +29,7 @@ class CityItemViewModel(
     val weatherDataLD: LiveData<Result<WeatherData>> = _weatherDataLD
 
     val currentLD = Transformations.map(weatherDataLD) {
+        Log.d("fffLD",it.toString())
         return@map (
                 if (it is Result.Success)
                     Result.Success(it.data.currentWeatherData)

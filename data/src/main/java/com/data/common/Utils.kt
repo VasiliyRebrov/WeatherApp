@@ -1,10 +1,8 @@
 package com.data.common
 
-import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.util.Log
 import com.data.model.*
 import com.data.remote.entity.WeatherResponsePOJO
 import java.text.SimpleDateFormat
@@ -53,12 +51,10 @@ fun roundAvoid(value: Double, places: Int): Double {
     return (value * scale).roundToInt() / scale
 }
 
-fun createDate(date: Int): String {
-    val unix = "${date}000".toLong()
-    val requireFormat =
-        SimpleDateFormat("HH:mm", Locale.getDefault()) // паттерн в константу
-    val _date = Date(unix)
-    return requireFormat.format(_date)
+fun formatDate(date: Int, pattern: String): String {
+    val unixDate = Date("${date}000".toLong())
+    val requireFormat = SimpleDateFormat(pattern, Locale.getDefault())
+    return requireFormat.format(unixDate)
 }
 
 fun checkInternetAccess(context: Context): Boolean {
@@ -78,12 +74,12 @@ fun Context.mapRemoteWeatherToEntity(
         CurrentWeatherData(
             clouds,
             dew_point,
-            createDate(dt),
+            formatDate(dt, HOUR_MIN_DATE_PATTERN),
             feels_like,
             humidity,
             pressure,
-            createDate(sunrise),
-            createDate(sunset),
+            formatDate(sunrise, HOUR_MIN_DATE_PATTERN),
+            formatDate(sunset, HOUR_MIN_DATE_PATTERN),
             temp,
             uvi,
             visibility,
@@ -99,10 +95,10 @@ fun Context.mapRemoteWeatherToEntity(
         Hourly(
             it.clouds,
             it.dew_point,
-            createDate(it.dt),
+            formatDate(it.dt, HOUR_MIN_DATE_PATTERN),
             it.feels_like,
             it.humidity,
-            it.pop,
+            (it.pop * 100).toInt(),
             it.pressure,
             it.rain?.`1h` ?: 228.0,
             it.temp,
@@ -115,18 +111,19 @@ fun Context.mapRemoteWeatherToEntity(
         )
     }
 
-    fun createDaily() = remoteWeather.daily.map {
+    fun createDaily() = remoteWeather.daily.mapIndexed { index, it ->
+        val isToday = index == 0
         Daily(
             it.clouds,
             it.dew_point,
-            createDate(it.dt),
+            if (isToday) "Сегодня" else formatDate(it.dt, WEEK_DAY_DATE_PATTERN),
             it.humidity,
-            it.pop,
+            (it.pop * 100).toInt(),
             it.pressure,
             it.rain,
             it.snow,
-            createDate(it.sunrise),
-            createDate(it.sunset),
+            formatDate(it.sunrise, HOUR_MIN_DATE_PATTERN),
+            formatDate(it.sunset, HOUR_MIN_DATE_PATTERN),
             it.temp.day,
             it.temp.eve,
             it.temp.max,

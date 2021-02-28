@@ -1,11 +1,13 @@
 package com.weather.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 import com.data.common.Result
 import com.google.android.material.tabs.TabLayoutMediator
 import com.weather.R
@@ -17,6 +19,11 @@ import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_general.*
 
 class GeneralFragment : BaseFragment() {
+    private var _binding: FragmentGeneralBinding? = null
+
+    // This property is only valid between onCreateView and
+// onDestroyView.
+    private val binding get() = _binding!!
     override val viewModel: GeneralViewModel by viewModels {
         ViewModelFactory("GeneralViewModel", requireActivity().application)
     }
@@ -48,12 +55,12 @@ class GeneralFragment : BaseFragment() {
                 findNavController().navigate(R.id.action_generalFragment_to_citiesManagerFragment)
         }
 //        checkExistCitiesList(R.id.action_generalFragment_to_citiesManagerFragment)
-        val binding: FragmentGeneralBinding =
+        _binding =
             DataBindingUtil.inflate(
                 inflater,
                 R.layout.fragment_general, container, false
             )
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.model = viewModel
         return binding.root
     }
@@ -77,9 +84,17 @@ class GeneralFragment : BaseFragment() {
     }
 
     private fun initPager() {
-        val adapter = ViewPagerAdapter(childFragmentManager, lifecycle)
+        //если не исп локальный лайфсайкл - утечка
+        val adapter = ViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+        pager_general.offscreenPageLimit = 10
         pager_general.adapter = adapter
         TabLayoutMediator(tab_general, pager_general) { _, _ ->
         }.attach()
+    }
+
+    override fun onDestroyView() {
+        Log.d("endGen", "end")
+        _binding = null
+        super.onDestroyView()
     }
 }

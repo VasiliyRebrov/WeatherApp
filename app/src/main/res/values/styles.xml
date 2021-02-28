@@ -5,43 +5,30 @@
         <item name="colorPrimaryDark">@color/colorBlack</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:homeAsUpIndicator">@drawable/arrow_back_ios</item>
+        <item name="android:windowBackground">@color/colorBlack</item>
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+        <item name="android:textColorSecondary">@color/colorWhite</item>
+        <item name="android:textColorTertiary">@color/colorWhite</item>
+        <item name="android:textColorPrimaryInverse">@color/colorWhite</item>
+        <item name="android:textColorSecondaryInverse">@color/colorWhite</item>
+        <item name="android:textColorTertiaryInverse">@color/colorWhite</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="CustomText1" parent="@android:style/TextAppearance">
+    <style name="PageMainCustomText" parent="@android:style/TextAppearance">
+        <item name="android:textSize">96sp</item>
+    </style>
+
+    <style name="PageTitlesCustomText" parent="@android:style/TextAppearance">
         <item name="android:textSize">22sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/colorWhite</item>
     </style>
 
-
-    <style name="CustomText2" parent="@android:style/TextAppearance">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/colorWhite</item>
-    </style>
-
-    <style name="CustomText3" parent="@android:style/TextAppearance">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">?android:textColorHint</item>
-
-    </style>
-
-    <style name="CustomText4" parent="@android:style/TextAppearance">
+    <style name="HintCustomText" parent="@android:style/TextAppearance">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">?android:textColorHint</item>
+        <item name="android:textColor">@color/colorHint</item>
     </style>
 
-
-    <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:minHeight">0dp</item>
-        <item name="android:minWidth">0dp</item>
-    </style>
-
-    <style name="CustomButtonText" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/colorWhite</item>
-        <item name="android:textStyle">bold</item>
-    </style>
+    <!--    <style name="PageParagraphCustomText" parent="@android:style/TextAppearance">-->
+    <!--        <item name="android:textSize">14sp</item>-->
+    <!--    </style>-->
 </resources>

@@ -50,7 +50,6 @@
 
             <TextView
                 android:id="@+id/text_main_title_status"
-                style="@style/CustomText1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"

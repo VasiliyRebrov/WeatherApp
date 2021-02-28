@@ -9,15 +9,12 @@
             name="viewmodel"
             type="com.weather.viewmodel.CityItemViewModel" />
 
-        <variable
-            name="sharedviewmodel"
-            type="com.weather.viewmodel.MainViewModel" />
+
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_city_item_to_refresh_weather_data"
         android:layout_width="match_parent"
-        android:background="@color/colorAccent"
         android:layout_height="wrap_content"
         app:progress="@{viewmodel.baseLD}">
 
@@ -37,7 +34,8 @@
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:viewmodel="@{viewmodel}" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_item_hourly"
@@ -54,7 +52,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rv_item_hourly" />
+                    app:layout_constraintTop_toBottomOf="@id/rv_item_hourly"
+                    app:update111="@{viewmodel.dailyLD}" />
 
                 <GridLayout
                     android:id="@+id/grid_item_current"
@@ -62,7 +61,8 @@
                     android:layout_height="wrap_content"
                     android:columnCount="3"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_item_daily">
+                    app:layout_constraintTop_toBottomOf="@+id/rv_item_daily"
+                    app:update="@{viewmodel.currentLD}">
 
                     <include
                         layout="@layout/layout_grid_current_item"
@@ -75,7 +75,6 @@
                         layout="@layout/layout_grid_current_item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp" />
 
@@ -83,7 +82,6 @@
                         layout="@layout/layout_grid_current_item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp" />
 
@@ -91,7 +89,6 @@
                         layout="@layout/layout_grid_current_item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp" />
 
@@ -99,7 +96,6 @@
                         layout="@layout/layout_grid_current_item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp" />
 

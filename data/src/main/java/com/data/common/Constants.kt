@@ -20,3 +20,6 @@ const val NO_NETWORK_MSG = "no network"
 const val CITY_ALREADY_EXIST_MSG = "city already exist"
 const val INVALID_ARGS_MSG = "input something"
 const val NETWORK_PROVIDER_DISABLED = "network provider disabled"
+
+const val HOUR_MIN_DATE_PATTERN = "HH:mm"
+const val WEEK_DAY_DATE_PATTERN = "EEE"

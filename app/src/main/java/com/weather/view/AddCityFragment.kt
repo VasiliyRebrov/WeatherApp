@@ -19,8 +19,8 @@ import com.data.common.InvalidArgsException
 import com.data.common.Result
 import com.data.common.succeeded
 import com.weather.R
-import com.weather.components.DialogAlertType
-import com.weather.components.RvRemoteCitiesAdapter
+import com.weather.common.adapters.RvRemoteCitiesAdapter
+import com.weather.common.entities.DialogAlertType
 import com.weather.databinding.FragmentAddCityBinding
 import com.weather.viewmodel.AddCityViewModel
 import com.weather.viewmodel.ViewModelFactory

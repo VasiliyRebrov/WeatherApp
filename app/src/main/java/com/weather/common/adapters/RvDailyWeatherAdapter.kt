@@ -1,12 +1,10 @@
-package com.weather.components
+package com.weather.common.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.data.model.Daily
-import com.data.model.Hourly
 import com.weather.databinding.CardDailyWeatherItemBinding
-import com.weather.databinding.CardHourlyWeatherItemBinding
 import kotlin.math.roundToInt
 
 

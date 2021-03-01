@@ -1,4 +1,4 @@
-package com.weather.components
+package com.weather.common.entities
 
 enum class DialogAlertType {
     ALLOW_LOCATION_PERMISSION,

@@ -1,4 +1,4 @@
-package com.weather.components
+package com.weather.common.components
 
 /**
  * интерфейс полезен в первую очередь при использовании анимаций

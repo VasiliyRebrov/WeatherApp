@@ -1,4 +1,4 @@
-package com.weather.components
+package com.weather.common.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,6 +8,10 @@ import com.data.common.getDrawablePath
 import com.data.model.City
 import com.data.model.CityWeatherRelation
 import com.weather.R
+import com.weather.common.components.ItemTouchHelperAdapter
+import com.weather.common.components.ItemTouchHelperViewHolder
+import com.weather.common.components.LocalCitiesDiffUtilCallback
+import com.weather.common.components.MyListener
 import com.weather.databinding.CardLicalCitiesItemBinding
 import java.util.*
 import kotlin.math.roundToInt

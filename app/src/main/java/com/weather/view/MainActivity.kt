@@ -5,7 +5,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.weather.R
-import com.weather.components.initBaseObservers
+import com.weather.common.components.initBaseObservers
 import com.weather.viewmodel.MainViewModel
 import com.weather.viewmodel.ViewModelFactory
 

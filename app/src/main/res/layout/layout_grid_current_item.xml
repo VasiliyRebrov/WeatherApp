@@ -8,6 +8,7 @@
         android:id="@+id/img_grid_item"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:scaleType="fitXY"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -17,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lines="1"
+        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_grid_item" />
 
@@ -24,7 +26,8 @@
         android:id="@+id/tv_grid_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lines="1"
+        android:gravity="center"
+        style="@style/HintCustomText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_grid_item_value" />
 

@@ -66,42 +66,42 @@
 
                     <include
                         layout="@layout/layout_grid_current_item"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp" />
 
                     <include
                         layout="@layout/layout_grid_current_item"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp" />
 
                     <include
                         layout="@layout/layout_grid_current_item"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp" />
 
                     <include
                         layout="@layout/layout_grid_current_item"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp" />
 
                     <include
                         layout="@layout/layout_grid_current_item"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp" />
 
                     <include
                         layout="@layout/layout_grid_current_item"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
                         android:layout_margin="8dp" />

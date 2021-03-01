@@ -1,4 +1,4 @@
-package com.weather.components
+package com.weather.common.components
 
 import androidx.recyclerview.widget.DiffUtil
 import com.data.model.CityWeatherRelation

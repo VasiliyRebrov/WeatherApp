@@ -1,30 +1,20 @@
 package com.weather.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
-import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.data.common.Result
 import com.data.model.City
 import com.weather.R
-import com.weather.components.RvDailyWeatherAdapter
-import com.weather.components.RvHourlyWeatherAdapter
+import com.weather.common.adapters.RvDailyWeatherAdapter
+import com.weather.common.adapters.RvHourlyWeatherAdapter
 import com.weather.databinding.FragmentCityItemBinding
-import com.weather.databinding.FragmentGeneralBinding
 import com.weather.viewmodel.CityItemViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_city_item.*
-import kotlinx.android.synthetic.main.fragment_city_item.view.*
-import kotlinx.android.synthetic.main.layout_current_weather_top.*
-import kotlinx.android.synthetic.main.layout_grid_current_item.*
-import kotlinx.android.synthetic.main.layout_grid_current_item.view.*
-import kotlin.math.roundToInt
 
 private const val ARG_CITY_REGEX = "cityId"
 

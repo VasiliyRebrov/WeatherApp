@@ -2,7 +2,6 @@ package com.weather.view
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
@@ -13,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.data.common.Result
 import com.data.model.City
 import com.weather.R
-import com.weather.components.MyListener
-import com.weather.components.RvLocalCitiesAdapter
-import com.weather.components.SimpleItemTouchHelperCallback
+import com.weather.common.components.MyListener
+import com.weather.common.adapters.RvLocalCitiesAdapter
+import com.weather.common.components.SimpleItemTouchHelperCallback
 import com.weather.databinding.FragmentCitiesManagerBinding
 import com.weather.viewmodel.CitiesManagerViewModel
 import com.weather.viewmodel.ViewModelFactory

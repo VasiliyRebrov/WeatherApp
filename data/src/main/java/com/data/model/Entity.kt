@@ -57,7 +57,7 @@ data class WeatherData(
 
 data class CurrentWeatherData(
     val clouds: Int,
-    val dew_point: Double,
+    var dew_point: Double,
     val dt: String,
     var feels_like: Double,
     val humidity: Int,
@@ -82,7 +82,7 @@ data class CurrentWeatherData(
 
 data class Hourly(
     val clouds: Int,
-    val dew_point: Double,
+    var dew_point: Double,
     val dt: String,
     var feels_like: Double,
     val humidity: Int,
@@ -106,7 +106,7 @@ data class Hourly(
 
 data class Daily(
     val clouds: Int,
-    val dew_point: Double,
+    var dew_point: Double,
     val dt: String,
     val humidity: Int,
     val pop: Int,

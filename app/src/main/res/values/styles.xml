@@ -15,11 +15,11 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="PageMainCustomText" parent="@android:style/TextAppearance">
+    <style name="MainCustomText" parent="@android:style/TextAppearance">
         <item name="android:textSize">96sp</item>
     </style>
 
-    <style name="PageTitlesCustomText" parent="@android:style/TextAppearance">
+    <style name="TitlesCustomText" parent="@android:style/TextAppearance">
         <item name="android:textSize">22sp</item>
     </style>
 

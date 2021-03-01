@@ -1,4 +1,4 @@
-package com.weather.components
+package com.weather.common.adapters
 
 import android.util.Log
 import android.view.View
@@ -13,7 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.data.common.Result
 import com.data.model.*
 import com.weather.R
-import kotlinx.android.synthetic.main.layout_current_weather_top.*
+import com.weather.common.entities.getWindUnits
 import kotlinx.android.synthetic.main.layout_current_weather_top.view.*
 import kotlinx.android.synthetic.main.layout_grid_current_item.view.*
 import kotlin.math.roundToInt
@@ -60,16 +60,50 @@ fun update(view: GridLayout, result: Result<CurrentWeatherData>?) {
     result?.let {
         if (result is Result.Success) {
             with(result.data) {
-                view[0].initCell("$humidity %", "влажность")
-                view[1].initCell("$uvi", "УФ")
-                view[2].initCell("$wind_speed", "скорость ветра")
-                view[3].initCell("$dew_point", "точка росы")
-                view[4].initCell("$visibility km", "видимость")
-                view[5].initCell("$pressure ", "давление")
+                view[0].initCell(
+                    view.resources.getString(R.string.humidity_value, "$humidity%"),
+                    "Относительная влажность"
+                )
+                view[1].initCell(uvi.toString(), "УФ индекс")
+                Log.d("cvcvcv", wind_speed.toString())
+                view[2].initCell(
+                    view.resources.getString(
+                        R.string.wind_speed_value,
+                        wind_speed.roundToInt(),
+                        view.context.getWindUnits()
+                    ),
+                    "Скорость ветра"
+                )
+                view[3].initCell(
+                    view.resources.getString(R.string.temp_value, dew_point.roundToInt()),
+                    "Точка росы"
+                )
+                view[4].initCell(
+                    view.resources.getString(R.string.visibility_value, visibility),
+                    "Видимость"
+                )
+                view[5].initCell(
+                    view.resources.getString(R.string.pressure_value, pressure),
+                    "Давление"
+                )
             }
         }
     }
 }
+//cont.text_album_item_description.text = cont.resources.getString(
+//R.string.item_album_description, convertTime(album.releaseDate),
+//TEXT_SEPARATOR, album.trackCount
+//)
+
+//Влажность	* %
+//Уф-индекс 	*
+//
+//Скорость ветра	 * м/сек или мили/час
+//
+//точка росы	* %
+//Видимость	* км
+//Давление 		* гпа
+
 
 //android:id="@+id/tv_current_weather_temp"
 //android:id="@+id/tv_current_weather_status"

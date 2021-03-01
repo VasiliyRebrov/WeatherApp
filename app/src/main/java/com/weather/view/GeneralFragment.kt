@@ -7,13 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 import com.data.common.Result
 import com.google.android.material.tabs.TabLayoutMediator
 import com.weather.R
-import com.weather.components.ViewPagerAdapter
+import com.weather.common.adapters.ViewPagerAdapter
 import com.weather.databinding.FragmentGeneralBinding
-import com.weather.viewmodel.BaseViewModel
 import com.weather.viewmodel.GeneralViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_general.*

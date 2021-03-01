@@ -6,56 +6,48 @@
 
     </data>
 
-    <androidx.cardview.widget.CardView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="32dp">
+        android:layout_height="32dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:background="@color/colorBlack"
-            android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tv_card_daily_date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:lines="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_card_daily_date"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:lines="1"
-                android:text="sdfsdf"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/img_card_daily_status"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@color/colorBlack"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/img_card_daily_status"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="16dp"
-                android:src="@color/colorBlack"
-                app:layout_constraintStart_toEndOf="@+id/tv_card_daily_date"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tv_card_daily_min_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginEnd="16dp"
+            android:lines="1"
+            app:layout_constraintEnd_toStartOf="@+id/tv_card_daily_max_temp"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_card_daily_min_temp"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_marginStart="16dp"
-                android:lines="1"
+        <TextView
+            android:id="@+id/tv_card_daily_max_temp"
+            android:layout_width="32dp"
+            android:gravity="end"
+            android:layout_height="32dp"
+            android:lines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                android:text="sdfsdf"
-                app:layout_constraintStart_toEndOf="@+id/img_card_daily_status"
-                app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/tv_card_daily_max_temp"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_marginStart="16dp"
-                android:lines="1"
-                android:text="sdfsdf"
-                app:layout_constraintStart_toEndOf="@+id/tv_card_daily_min_temp"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </androidx.cardview.widget.CardView>
 </layout>

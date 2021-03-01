@@ -1,4 +1,4 @@
-package com.weather.components
+package com.weather.common.adapters
 
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle

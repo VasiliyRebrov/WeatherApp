@@ -4,16 +4,11 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.data.common.Result
-import com.data.common.data
-import com.data.common.succeeded
 import com.data.model.*
 import com.data.repo.CityItemRepo
 import com.domain.RefreshWeatherParams
 import com.domain.usecases.*
-import com.weather.components.Config
-import kotlinx.coroutines.flow.map
-import java.lang.Error
-import java.lang.Exception
+import com.weather.common.entities.Config
 
 class CityItemViewModel(
     application: Application,

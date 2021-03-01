@@ -10,7 +10,7 @@ import com.data.repo.BaseRepo
 import com.domain.RefreshWeatherParams
 import com.domain.usecases.GetLocalCitiesUseCase
 import com.domain.usecases.RefreshWeatherDataUseCase
-import com.weather.components.Config
+import com.weather.common.entities.Config
 import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn

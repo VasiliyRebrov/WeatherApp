@@ -14,13 +14,12 @@ import java.util.*
 
 open class BaseRepo(protected val ctx: Context) {
     protected val dao = AppDataBase.getInstance(ctx).weatherDao()
-    val localCities = dao.getFlowCities().map {
-        Result.Success(it) }
+    val localCities = dao.getFlowCities().map { Result.Success(it) }
 
     fun refreshData(unitMeasurePref: String, newCities: List<City>, oldCities: List<City>) =
         flow {
             emit(Result.Loading)
-            delay(5000)
+//            delay(5000)
             val resultString = StringBuilder()
             coroutineScope {
                 if (newCities.isNotEmpty()) {

@@ -1,11 +1,8 @@
-package com.weather.components
+package com.weather.common.components
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.lifecycleScope
 import com.weather.viewmodel.BaseViewModel
 
 fun LifecycleOwner.initBaseObservers(viewModel: BaseViewModel) {

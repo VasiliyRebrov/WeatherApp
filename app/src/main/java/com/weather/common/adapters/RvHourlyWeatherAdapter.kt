@@ -1,6 +1,5 @@
-package com.weather.components
+package com.weather.common.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast

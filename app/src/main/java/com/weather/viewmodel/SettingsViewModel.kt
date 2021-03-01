@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.data.common.Result
 import com.data.repo.SettingsRepo
 import com.domain.usecases.TransformDataUseCase
-import com.weather.components.Config
+import com.weather.common.entities.Config
 
 class SettingsViewModel(application: Application, repo: SettingsRepo) :
     BaseViewModel(application) {

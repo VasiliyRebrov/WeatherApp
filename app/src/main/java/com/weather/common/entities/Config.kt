@@ -1,4 +1,4 @@
-package com.weather.components
+package com.weather.common.entities
 
 import android.content.Context
 import android.preference.PreferenceManager
@@ -16,6 +16,7 @@ class Config private constructor(private val ctx: Context) {
     val unitMeasurePref: String
         get() = getPrefValue(ctx.getString(R.string.preference_unit_measure_key)) ?: "Metric"
 
+
     companion object : SingletonHolder<Config, Context>({ ctx -> Config(ctx) })
 
     private fun getPrefValue(key: String): String? {
@@ -23,4 +24,13 @@ class Config private constructor(private val ctx: Context) {
         return sharedPref.getString(key, null)
     }
 }
+
+fun Context.getWindUnits() =
+    if (Config.getInstance(this).unitMeasurePref == "Metric") "м/сек" else "ми/ч"
+
+fun Context.getTempUnits() =
+    if (Config.getInstance(this).unitMeasurePref == "Metric") "C" else "F"
+
+
+
 

@@ -21,31 +21,27 @@
                 android:layout_gravity="center"
                 android:lines="1" />
 
+            <ImageView
+                android:id="@+id/img_card_hourly"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:scaleType="fitXY" />
+
             <TextView
                 android:id="@+id/tv_pop_card_hourly"
                 style="@style/HintCustomText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"
                 android:lines="1"
                 android:textColor="@color/colorAccent" />
-
-            <ImageView
-                android:id="@+id/img_card_hourly"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                android:scaleType="fitXY" />
-
             <TextView
                 android:id="@+id/tv_date_card_hourly"
                 style="@style/HintCustomText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"
                 android:lines="1" />
 
         </LinearLayout>

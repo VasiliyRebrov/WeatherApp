@@ -3,6 +3,7 @@ package com.data.common
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.text.TextUtils
 import com.data.model.*
 import com.data.remote.entity.WeatherResponsePOJO
 import java.text.SimpleDateFormat
@@ -15,6 +16,7 @@ fun CurrentWeatherData.transformData(unitMeasurePref: String) {
     val windCalculator = getWindCalculator(unitMeasurePref)
     this.temp = roundAvoid(tempCalculator(temp), 2)
     this.feels_like = roundAvoid(tempCalculator(feels_like), 2)
+    this.dew_point = roundAvoid(tempCalculator(dew_point), 2)
     this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
 }
 
@@ -23,6 +25,7 @@ fun Hourly.transformData(unitMeasurePref: String) {
     val windCalculator = getWindCalculator(unitMeasurePref)
     this.temp = roundAvoid(tempCalculator(temp), 2)
     this.feels_like = roundAvoid(tempCalculator(feels_like), 2)
+    this.dew_point = roundAvoid(tempCalculator(dew_point), 2)
     this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
 }
 
@@ -35,6 +38,7 @@ fun Daily.transformData(unitMeasurePref: String) {
     this.tempMin = roundAvoid(tempCalculator(tempMin), 2)
     this.tempMorn = roundAvoid(tempCalculator(tempMorn), 2)
     this.tempNight = roundAvoid(tempCalculator(tempNight), 2)
+    this.dew_point = roundAvoid(tempCalculator(dew_point), 2)
     this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
 }
 
@@ -82,10 +86,10 @@ fun Context.mapRemoteWeatherToEntity(
             formatDate(sunset, HOUR_MIN_DATE_PATTERN),
             temp,
             uvi,
-            visibility,
+            visibility/1000,
             wind_deg,
             wind_speed,
-            weather[0].description,
+            weather[0].description.capitalize(Locale.ROOT),
             getDrawablePath(weather[0].icon)
         )
     }
@@ -103,7 +107,7 @@ fun Context.mapRemoteWeatherToEntity(
             it.rain?.`1h` ?: 228.0,
             it.temp,
             it.uvi,
-            it.visibility,
+            it.visibility/1000,
             it.weather[0].description,
             getDrawablePath(it.weather[0].icon),
             it.wind_deg,
@@ -111,12 +115,16 @@ fun Context.mapRemoteWeatherToEntity(
         )
     }
 
+
     fun createDaily() = remoteWeather.daily.mapIndexed { index, it ->
         val isToday = index == 0
         Daily(
             it.clouds,
             it.dew_point,
-            if (isToday) "Сегодня" else formatDate(it.dt, WEEK_DAY_DATE_PATTERN),
+            (if (isToday) "Cегодня" else formatDate(
+                it.dt,
+                WEEK_DAY_DATE_PATTERN
+            )).capitalize(Locale.ROOT),
             it.humidity,
             (it.pop * 100).toInt(),
             it.pressure,

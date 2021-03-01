@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.data.common.Result
-import com.weather.components.DialogAlertType
-import com.weather.components.initBaseObservers
+import com.weather.common.components.initBaseObservers
+import com.weather.common.entities.DialogAlertType
 import com.weather.viewmodel.BaseViewModel
 import com.weather.viewmodel.MainViewModel
 import com.weather.viewmodel.ViewModelFactory

@@ -26,7 +26,11 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
     private val addCityUseCase by lazy { AddCityUseCase(repo) }
     private val addCityByLocationUseCase by lazy { AddCityByLocUseCase(repo) }
     private val defineLocationUseCase by lazy {
-        DefineLocationUseCase(repo, locManager, locListener)
+        DefineLocationUseCase(
+            repo,
+            locManager,
+            locListener
+        )
     }
 
     private val _searchQuery = MutableStateFlow("")
@@ -34,10 +38,10 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         /**
          * первый map отвечает за отображение прогресса в зависимости от кол-ва символов
          * и затем просто пропускает аргумент дальше
-         * какой способ корректнее?
          */
         .map {
             val result = try {
+                //фильтровать пробелы
                 if (it.length > 1) Result.Loading else throw InvalidArgsException()
             } catch (exc: Exception) {
                 Result.Error(exc)
@@ -52,8 +56,6 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         }
         .asLiveData()
 
-
-    //найти как избавиться от ливдаты
     private val _findCityUseCaseLiveData = MediatorLiveData<Result<List<City>>>().apply {
         addSource(_searchResultLiveData) { this.value = it }
     }

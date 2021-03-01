@@ -18,10 +18,8 @@ import kotlinx.android.synthetic.main.fragment_general.*
 
 class GeneralFragment : BaseFragment() {
     private var _binding: FragmentGeneralBinding? = null
-
-    // This property is only valid between onCreateView and
-// onDestroyView.
     private val binding get() = _binding!!
+
     override val viewModel: GeneralViewModel by viewModels {
         ViewModelFactory("GeneralViewModel", requireActivity().application)
     }
@@ -91,7 +89,7 @@ class GeneralFragment : BaseFragment() {
     }
 
     override fun onDestroyView() {
-        Log.d("endGen", "end")
+        pager_general.adapter=null
         _binding = null
         super.onDestroyView()
     }

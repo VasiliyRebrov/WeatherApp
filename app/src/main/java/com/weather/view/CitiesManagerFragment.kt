@@ -16,11 +16,16 @@ import com.weather.common.components.MyListener
 import com.weather.common.adapters.RvLocalCitiesAdapter
 import com.weather.common.components.SimpleItemTouchHelperCallback
 import com.weather.databinding.FragmentCitiesManagerBinding
+import com.weather.databinding.FragmentGeneralBinding
 import com.weather.viewmodel.CitiesManagerViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_cities_manager.*
 
 class CitiesManagerFragment : BaseFragment(), MyListener {
+
+    private var _binding: FragmentCitiesManagerBinding? = null
+    private val binding get() = _binding!!
+
     override val navResId: Int = R.id.action_citiesManagerFragment_to_addCityFragment
     private var mItemTouchHelper: ItemTouchHelper? = null
 
@@ -59,9 +64,9 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
                 findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)
         }
 //        checkExistCitiesList(R.id.action_citiesManagerFragment_to_addCityFragment)
-        val binding: FragmentCitiesManagerBinding =
+        _binding=
             DataBindingUtil.inflate(inflater, R.layout.fragment_cities_manager, container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
         return binding.root
     }
@@ -110,5 +115,10 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
 
     override fun reorderLocalCities(reorderedCities: List<City>) {
         viewModel.reorderLocalCities(reorderedCities)
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

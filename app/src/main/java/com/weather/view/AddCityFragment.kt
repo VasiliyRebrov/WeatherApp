@@ -22,6 +22,7 @@ import com.weather.R
 import com.weather.common.adapters.RvRemoteCitiesAdapter
 import com.weather.common.entities.DialogAlertType
 import com.weather.databinding.FragmentAddCityBinding
+import com.weather.databinding.FragmentGeneralBinding
 import com.weather.viewmodel.AddCityViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_add_city.*
@@ -29,6 +30,9 @@ import kotlinx.android.synthetic.main.fragment_add_city.*
 private const val REQUEST_CODE_LOCATION_PERMISSION = 999
 
 class AddCityFragment : BaseFragment() {
+    private var _binding: FragmentAddCityBinding? = null
+    private val binding get() = _binding!!
+
     override val viewModel: AddCityViewModel by viewModels {
         ViewModelFactory("AddCityViewModel", requireActivity().application)
     }
@@ -52,7 +56,7 @@ class AddCityFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding: FragmentAddCityBinding =
+        _binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_add_city, container, false)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
@@ -150,5 +154,10 @@ class AddCityFragment : BaseFragment() {
                     showDialogFragment(DialogAlertType.ALLOW_LOCATION_PERMISSION)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

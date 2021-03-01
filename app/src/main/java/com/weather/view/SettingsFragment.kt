@@ -5,19 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceFragmentCompat
 import com.weather.R
 import com.weather.common.components.initBaseObservers
 import com.weather.viewmodel.SettingsViewModel
 import com.weather.viewmodel.ViewModelFactory
+import kotlinx.android.synthetic.main.fragment_cities_manager.*
 
 class SettingsFragment : PreferenceFragmentCompat(),
     SharedPreferences.OnSharedPreferenceChangeListener {
     private val viewModel: SettingsViewModel by viewModels {
         ViewModelFactory("SettingsViewModel", requireActivity().application)
     }
-//    private val currentVal by lazy { findPreference<ListPreference>("temp_key")!!.value }
 
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

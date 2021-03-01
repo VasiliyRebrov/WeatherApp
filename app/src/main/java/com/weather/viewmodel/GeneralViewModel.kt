@@ -21,4 +21,8 @@ class GeneralViewModel(application: Application, repo: BaseRepo) :
     override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
         put(getLocalCitiesUseCases.javaClass.simpleName, localCitiesByPosLD as LiveData<Result<*>>)
     }
+
+    override fun onCleared() {
+        super.onCleared()
+    }
 }

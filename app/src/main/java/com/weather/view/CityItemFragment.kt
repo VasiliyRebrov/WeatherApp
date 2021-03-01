@@ -1,6 +1,7 @@
 package com.weather.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,11 +20,10 @@ import kotlinx.android.synthetic.main.fragment_city_item.*
 private const val ARG_CITY_REGEX = "cityId"
 
 class CityItemFragment : BaseFragment() {
+    val kek: String
+        get() = City.createCityByRegex(requireArguments().getString(ARG_CITY_REGEX)!!).name
 
     private var _binding: FragmentCityItemBinding? = null
-
-    // This property is only valid between onCreateView and
-// onDestroyView.
     private val binding get() = _binding!!
     override val viewModel: CityItemViewModel by viewModels {
         ViewModelFactory(
@@ -31,6 +31,12 @@ class CityItemFragment : BaseFragment() {
             requireActivity().application,
             City.createCityByRegex(requireArguments().getString(ARG_CITY_REGEX)!!)
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("qweewq", "onCreate | $kek")
+
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -41,6 +47,7 @@ class CityItemFragment : BaseFragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_city_item, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
+        Log.d("qweewq", "onCreateView | $kek")
         return binding.root
     }
 
@@ -72,6 +79,18 @@ class CityItemFragment : BaseFragment() {
         }
     }
 
+    override fun onStart() {
+        Log.d("qweewq", "onStart | $kek")
+
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.d("qweewq", "onResume | $kek")
+
+        super.onResume()
+    }
+
     private fun initDailyRecycler() {
         with(rv_item_daily) {
             adapter = RvDailyWeatherAdapter()
@@ -90,8 +109,24 @@ class CityItemFragment : BaseFragment() {
             }
     }
 
+    override fun onStop() {
+        Log.d("qweewq", "onStop | $kek")
+        super.onStop()
+    }
+
+    override fun onPause() {
+        Log.d("qweewq", "onPause | $kek")
+        super.onPause()
+    }
+
     override fun onDestroyView() {
+        Log.d("qweewq", "onDestroyView | $kek")
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        Log.d("qweewq", "onDestroy | $kek")
+        super.onDestroy()
     }
 }

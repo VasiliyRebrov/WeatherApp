@@ -24,7 +24,7 @@ class CityItemViewModel(
     val weatherDataLD: LiveData<Result<WeatherData>> = _weatherDataLD
 
     val currentLD = Transformations.map(weatherDataLD) {
-        Log.d("fffLD",it.toString())
+        Log.d("fffLD", it.toString())
         return@map (
                 if (it is Result.Success)
                     Result.Success(it.data.currentWeatherData)
@@ -63,9 +63,8 @@ class CityItemViewModel(
         }
     }
 
-    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
-        put(getWeatherDataUseCase.javaClass.simpleName, weatherDataLD as LiveData<Result<*>>)
-
-        put(refreshWeatherDataUseCase.javaClass.simpleName, refreshDataLD as LiveData<Result<*>>)
-    }
+    override val useCases = mutableMapOf<String, LiveData<*>>().apply {
+        put(getWeatherDataUseCase.javaClass.simpleName, weatherDataLD)
+        put(refreshWeatherDataUseCase.javaClass.simpleName, refreshDataLD)
+    } as Map<String, LiveData<Result<*>>>
 }

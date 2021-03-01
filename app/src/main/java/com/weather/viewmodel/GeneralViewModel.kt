@@ -18,11 +18,10 @@ class GeneralViewModel(application: Application, repo: BaseRepo) :
             } else it
         }.asLiveData()
 
-    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
-        put(getLocalCitiesUseCases.javaClass.simpleName, localCitiesByPosLD as LiveData<Result<*>>)
-    }
+//    override fun initLiveDataContainer()
 
-    override fun onCleared() {
-        super.onCleared()
-    }
+
+    override val useCases = mutableMapOf<String, LiveData<*>>().apply {
+        put(getLocalCitiesUseCases.javaClass.simpleName, localCitiesByPosLD)
+    } as Map<String, LiveData<Result<*>>>
 }

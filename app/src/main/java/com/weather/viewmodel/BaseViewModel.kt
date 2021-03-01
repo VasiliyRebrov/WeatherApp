@@ -18,19 +18,17 @@ abstract class BaseViewModel(application: Application) :
      **/
 
     /** это контейнер всех ливдат, которые обрабатывают юзкейсы*/
-    val liveDataContainer: Map<String, LiveData<Result<*>>>
-            by lazy { initLiveDataContainer() }
 
+    abstract val useCases: Map<String, LiveData<Result<*>>>
 
     /** фабричный метод по инициализации контейнера ливдат*/
-    protected abstract fun initLiveDataContainer(): Map<String, LiveData<Result<*>>>
 
     /***
      * обращайся сюда, если результат выполнения юзкейсов являет состояние
      */
     private val _baseLD by lazy {
         MediatorLiveData<Result<*>>().apply {
-            liveDataContainer.forEach { entry ->
+            useCases.forEach { entry ->
                 addSource(entry.value) { result ->
                     value = result
                     //мб пусть ивент подписывается на базу?

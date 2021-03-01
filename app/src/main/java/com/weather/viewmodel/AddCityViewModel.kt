@@ -74,9 +74,6 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         _findCityUseCaseLiveData.value = result
     }
 
-    /** проблема: при onResume() считывание EditText происходит автоматически. вызывается этот метод
-     * решение: источник, принимающий параметр - stateFlow. В случае передачи тех же данных, которые
-     * в нем уже находятся, он их не примет. Следовательно, никаких повторных запросов не происходит*/
     fun search(name: String) {
         _searchQuery.value = name
     }
@@ -117,16 +114,22 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
         override fun onProviderDisabled(provider: String?) {}
     }
 
-    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
-        put(findCityUseCase.javaClass.simpleName, findCityUseCaseLiveData as LiveData<Result<*>>)
-        put(
-            defineLocationUseCase.javaClass.simpleName,
-            defineLocationUseCaseLiveData as LiveData<Result<*>>
-        )
-        put(addCityUseCase.javaClass.simpleName, addCityUseCaseLiveData as LiveData<Result<*>>)
-        put(
-            addCityByLocationUseCase.javaClass.simpleName,
-            addCityByLocationUseCaseLiveData as LiveData<Result<*>>
-        )
-    }
+    override val useCases = mutableMapOf<String, LiveData<*>>().apply {
+        put(findCityUseCase.javaClass.simpleName, findCityUseCaseLiveData)
+        put(defineLocationUseCase.javaClass.simpleName, defineLocationUseCaseLiveData)
+        put(addCityUseCase.javaClass.simpleName, addCityUseCaseLiveData)
+        put(addCityByLocationUseCase.javaClass.simpleName, addCityByLocationUseCaseLiveData)
+    } as Map<String, LiveData<Result<*>>>
 }
+//    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
+//        put(findCityUseCase.javaClass.simpleName, findCityUseCaseLiveData as LiveData<Result<*>>)
+//        put(
+//            defineLocationUseCase.javaClass.simpleName,
+//            defineLocationUseCaseLiveData as LiveData<Result<*>>
+//        )
+//        put(addCityUseCase.javaClass.simpleName, addCityUseCaseLiveData as LiveData<Result<*>>)
+//        put(
+//            addCityByLocationUseCase.javaClass.simpleName,
+//            addCityByLocationUseCaseLiveData as LiveData<Result<*>>
+//        )
+//    }

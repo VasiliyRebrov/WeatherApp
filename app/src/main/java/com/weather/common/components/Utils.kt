@@ -17,7 +17,7 @@ fun LifecycleOwner.initBaseObservers(viewModel: BaseViewModel) {
         this.observe(this@initBaseObservers, loggingObserver)
     }
     with(viewModel) {
-        liveDataContainer.forEach { it.value.observeWithLogging(it.key) }
+        useCases.forEach { it.value.observeWithLogging(it.key) }
 //        baseLiveData.observeWithLogging("base")
 //        usecaseEvent.observeWithLogging("event") {
 //            Toast.makeText(ctx, it.toString(), Toast.LENGTH_SHORT).show()

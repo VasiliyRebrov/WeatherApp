@@ -93,13 +93,10 @@ class MainViewModel(application: Application, repo: BaseRepo) :
         }
     }
 
-    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
-        put(
-            refreshWeatherDataUseCase.javaClass.simpleName,
-            refreshWeatherDataUseCaseLD as LiveData<Result<*>>
-        )
-        put(getLocalCitiesUseCase.javaClass.simpleName, localCitiesLiveData as LiveData<Result<*>>)
-    }
+    override val useCases = mutableMapOf<String, LiveData<*>>().apply {
+        put(refreshWeatherDataUseCase.javaClass.simpleName, refreshWeatherDataUseCaseLD)
+        put(getLocalCitiesUseCase.javaClass.simpleName, localCitiesLiveData)
+    } as Map<String, LiveData<Result<*>>>
 
     override fun onCleared() {
         localCitiesLiveData.removeObserver(observer)

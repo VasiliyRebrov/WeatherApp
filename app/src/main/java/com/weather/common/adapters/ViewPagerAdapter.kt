@@ -20,4 +20,6 @@ class ViewPagerAdapter(fm: FragmentManager, lifecycle: Lifecycle) :
         with(cities) { clear(); addAll(newCityList) }
         notifyDataSetChanged()
     }
+
+    fun getFocusedCityName(position: Int) = cities[position].name
 }

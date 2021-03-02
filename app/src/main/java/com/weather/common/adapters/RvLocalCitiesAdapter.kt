@@ -11,12 +11,12 @@ import com.weather.R
 import com.weather.common.components.ItemTouchHelperAdapter
 import com.weather.common.components.ItemTouchHelperViewHolder
 import com.weather.common.components.LocalCitiesDiffUtilCallback
-import com.weather.common.components.MyListener
+import com.weather.common.components.LocalCitiesRVAdapterListener
 import com.weather.databinding.CardLicalCitiesItemBinding
 import java.util.*
 import kotlin.math.roundToInt
 
-class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
+class RvLocalCitiesAdapter(private val mDragStartListener: LocalCitiesRVAdapterListener) :
     RecyclerView.Adapter<RvLocalCitiesAdapter.ViewHolder>(), ItemTouchHelperAdapter {
 
     private val citiesList = mutableListOf<CityWeatherRelation>()
@@ -24,7 +24,7 @@ class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
     //    var lastAction: ItemTouchAction = ItemTouchAction.DEFAULT
     private var blockcount = 0
 
-    inner class ViewHolder(private val binding: CardLicalCitiesItemBinding) :
+    inner class ViewHolder(val binding: CardLicalCitiesItemBinding) :
         RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
         fun bind(data: CityWeatherRelation) {
             binding.root.setBackgroundColor(binding.root.context.resources.getColor(R.color.colorAccent))
@@ -38,6 +38,10 @@ class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
             val resId = data.weatherData?.currentWeatherData?.icon
                 ?: binding.root.context.getDrawablePath("50n")
             binding.imgCardCityIcon.setImageResource(resId)
+
+//            holder.binding.root.setOnClickListener { listener.onCitySelected(citiesList[position].city.position) }
+
+            binding.root.setOnClickListener { mDragStartListener.onClick(data.city.position) }
             binding.executePendingBindings()
         }
 
@@ -65,6 +69,12 @@ class RvLocalCitiesAdapter(private val mDragStartListener: MyListener) :
             }
         }
     }
+//    fun getReorderedCities(): List<City> {
+//        citiesList.onEachIndexed { index, it ->
+//            it.city.position = index
+//        }
+//        return citiesList.map { it.city }
+//    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

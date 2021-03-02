@@ -126,7 +126,9 @@ fun update(view: ConstraintLayout, result: Result<CurrentWeatherData>?) {
  * */
 @BindingAdapter("app:update")
 fun update(view: ViewPager2, result: Result<List<City>>?) {
+    view.visibility = if (result == null) View.GONE else View.VISIBLE
     result?.let {
+//        view.visibility = View.VISIBLE
         if (it is Result.Success && it.data.isNotEmpty()) {
             (view.adapter as ViewPagerAdapter).updateList(it.data)
         }

@@ -18,6 +18,8 @@ import java.util.*
 
 class MainViewModel(application: Application, repo: BaseRepo) :
     BaseViewModel(application) {
+
+    var focusedCityPos=0
     private val currentCities = mutableListOf<City>()
 
     private val refreshWeatherDataUseCase = RefreshWeatherDataUseCase(repo)

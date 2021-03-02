@@ -12,16 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.data.common.Result
 import com.data.model.City
 import com.weather.R
-import com.weather.common.components.MyListener
+import com.weather.common.components.LocalCitiesRVAdapterListener
 import com.weather.common.adapters.RvLocalCitiesAdapter
 import com.weather.common.components.SimpleItemTouchHelperCallback
 import com.weather.databinding.FragmentCitiesManagerBinding
-import com.weather.databinding.FragmentGeneralBinding
 import com.weather.viewmodel.CitiesManagerViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_cities_manager.*
 
-class CitiesManagerFragment : BaseFragment(), MyListener {
+class CitiesManagerFragment : BaseFragment(), LocalCitiesRVAdapterListener {
 
     private var _binding: FragmentCitiesManagerBinding? = null
     private val binding get() = _binding!!
@@ -64,7 +63,7 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
                 findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)
         }
 //        checkExistCitiesList(R.id.action_citiesManagerFragment_to_addCityFragment)
-        _binding=
+        _binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_cities_manager, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = viewModel
@@ -115,6 +114,11 @@ class CitiesManagerFragment : BaseFragment(), MyListener {
 
     override fun reorderLocalCities(reorderedCities: List<City>) {
         viewModel.reorderLocalCities(reorderedCities)
+    }
+
+    override fun onClick(position: Int) {
+        sharedViewModel.focusedCityPos = position
+        findNavController().popBackStack()
     }
 
     override fun onDestroyView() {

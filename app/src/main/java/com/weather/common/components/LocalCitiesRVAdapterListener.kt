@@ -6,7 +6,7 @@ import com.data.model.City
 /**
  * интерфейс для взаимодействия RecyclerView адаптера и View
  * */
-interface MyListener {
+interface LocalCitiesRVAdapterListener {
 
     fun onStartDrag(viewHolder: RecyclerView.ViewHolder?)
     fun onStartSwipe(viewHolder: RecyclerView.ViewHolder?)
@@ -20,4 +20,6 @@ interface MyListener {
      * отправляем список с городами, чьи позиции были изменены
      * */
     fun reorderLocalCities(reorderedCities: List<City>)
+
+    fun onClick(position: Int)
 }

@@ -48,20 +48,42 @@
                 android:layout_height="match_parent"
                 android:text="определить город" />
 
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/text_main_title_status"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:gravity="start"
-                android:visibility="gone"
                 android:padding="8dp"
                 android:text="@{viewmodel.baseLD}" />
-        </com.google.android.material.appbar.AppBarLayout>
+
+            <Button
+                android:id="@+id/but_add_city_retry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="@{()->viewmodel.retry()}"
+                android:text="retry"
+                android:visibility="gone"
+                app:update="@{viewmodel.baseLD}" />
+        </LinearLayout>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_add_city_results"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="@color/colorBlack"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:update228="@{viewmodel.findCityUseCaseLiveData}" />
 

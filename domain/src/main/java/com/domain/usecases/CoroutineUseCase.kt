@@ -44,7 +44,7 @@ abstract class UseCase<in P, R>(private val coroutineDispatcher: CoroutineDispat
         } catch (e: Exception) {
 //            Timber.d(e)
             Log.d("MyTag", e.toString())
-            com.data.common.Result.Error(e)
+            com.data.common.Result.Error(Exception(e))
         }
     }
 

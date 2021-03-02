@@ -18,7 +18,7 @@ import com.domain.usecases.AddCityUseCase
 import com.domain.usecases.DefineLocationUseCase
 import com.domain.usecases.FindCityByNameUseCase
 import kotlinx.coroutines.flow.*
-import java.lang.Exception
+import kotlin.Exception
 
 class AddCityViewModel(application: Application, private val repo: AddCityRepo) :
     BaseViewModel(application) {
@@ -44,7 +44,7 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
                 //фильтровать пробелы
                 if (it.length > 1) Result.Loading else throw InvalidArgsException()
             } catch (exc: Exception) {
-                Result.Error(exc)
+                Result.Error(Exception(exc))
             }
             switchProgress(result)
             it
@@ -76,6 +76,16 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
 
     fun search(name: String) {
         _searchQuery.value = name
+    }
+
+    fun retry() {
+        with(_searchQuery) {
+            val currentValue = value
+            value = ""
+            value = currentValue
+
+        }
+
     }
 
 

@@ -3,6 +3,7 @@ package com.weather.view
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -15,17 +16,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.data.common.InvalidArgsException
-import com.data.common.Result
-import com.data.common.succeeded
+import com.data.common.*
 import com.weather.R
 import com.weather.common.adapters.RvRemoteCitiesAdapter
 import com.weather.common.entities.DialogAlertType
 import com.weather.databinding.FragmentAddCityBinding
-import com.weather.databinding.FragmentGeneralBinding
 import com.weather.viewmodel.AddCityViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_add_city.*
+import kotlin.IllegalArgumentException
 
 private const val REQUEST_CODE_LOCATION_PERMISSION = 999
 
@@ -77,8 +76,23 @@ class AddCityFragment : BaseFragment() {
 
 
     override val errorEventObserver = Observer<Result.Error> {
-        if (it.exception !is InvalidArgsException)
+        if (it.exception.cause is NetworkProviderDisabledException)
+            showDialogFragment(DialogAlertType.ENABLE_LOCATION)
+        else if (it.exception.cause is CityAlreadyExistException)
             super.errorEventObserver.onChanged(it)
+//
+//        when ( it.exception.cause) {
+//            is NetworkProviderDisabledException -> {
+//                showDialogFragment(DialogAlertType.ENABLE_LOCATION)
+//            }
+//            is CityAlreadyExistException -> {
+//                println()
+//            }
+//            is InvalidArgsException -> {
+//                println()
+//            }
+//            else -> super.errorEventObserver.onChanged(it)
+//        }
     }
 
     override fun initObservers() {

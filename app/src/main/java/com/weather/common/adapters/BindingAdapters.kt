@@ -2,6 +2,7 @@ package com.weather.common.adapters
 
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.GridLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -10,7 +11,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
-import com.data.common.Result
+import com.data.common.*
 import com.data.model.*
 import com.weather.R
 import com.weather.common.entities.getWindUnits
@@ -41,11 +42,10 @@ fun update111(view: RecyclerView, result: Result<List<Daily>>?) {
  * */
 @BindingAdapter("app:update228")
 fun update228(view: RecyclerView, result: Result<List<City>>) {
-    when (result) {
-        is Result.Success -> (view.adapter as RvRemoteCitiesAdapter).updateList(result.data)
-        is Result.Error -> (view.adapter as RvRemoteCitiesAdapter).updateList(listOf())
-    }
-
+    if (result is Result.Success) {
+        view.visibility = View.VISIBLE
+        (view.adapter as RvRemoteCitiesAdapter).updateList(result.data)
+    } else view.visibility = View.GONE
 }
 
 //изначально всегда придет null, даже если в LD не может храниться null
@@ -156,18 +156,43 @@ fun update2(view: RecyclerView, result: Result<List<CityWeatherRelation>>?) {
  * */
 @BindingAdapter("android:text")
 fun setText(view: TextView, result: Result<*>?) {
-    when (result) {
-        is Result.Success -> {
-            view.visibility = View.GONE
+//    view.visibility = if (result is Result.Success) View.GONE else View.VISIBLE
+
+    view.text = when {
+        (result is Result.Loading) -> "Поиск..."
+        (result is Result.Error) -> {
+            if (result.exception.cause is NetworkProviderDisabledException || result.exception.cause is CityAlreadyExistException)
+                INVALID_ARGS_MSG
+            else
+                result.exception.cause!!.message
         }
-        is Result.Loading -> {
-            view.visibility = View.VISIBLE
-            view.text = "..."
-        }
-        is Result.Error -> {
-            view.visibility = View.VISIBLE
-            view.text = result.exception.message
-        }
+        else -> ""
+    }
+
+
+//    if (result is Result.Success)
+//        view.visibility = View.GONE
+//    else if (result is Result.Loading) {
+//        view.visibility = View.VISIBLE
+//        view.text = "Поиск..."
+//    } else if (result is Result.Error) {
+//        if (result.exception.cause !is NetworkProviderDisabledException && result.exception.cause !is CityAlreadyExistException) {
+//            view.visibility = View.VISIBLE
+//            view.text = result.exception.cause!!.message
+//        }
+//        if (result.exception.cause is CityAlreadyExistException) {
+//            view.visibility = View.VISIBLE
+//            view.text = INVALID_ARGS_MSG
+//        }
+//    }
+}
+
+
+@BindingAdapter("app:update")
+fun update(view: Button, result: Result<*>?) {
+    result?.let {
+        view.visibility =
+            if (it is Result.Error && it.exception.cause is NoNetworkException) View.VISIBLE else View.GONE
     }
 }
 

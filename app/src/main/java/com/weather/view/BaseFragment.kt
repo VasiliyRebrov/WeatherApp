@@ -43,7 +43,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     protected open val errorEventObserver = Observer<Result.Error> {
-        Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), it.exception.cause!!.message, Toast.LENGTH_SHORT).show()
     }
 
     protected fun showDialogFragment(alertType: DialogAlertType) {

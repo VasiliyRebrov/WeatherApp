@@ -1,13 +1,14 @@
 package com.data.remote.api.requests
 
 import com.data.common.CitiesNotFoundException
-import com.data.remote.api.Params
+import com.data.remote.api.RequestParams
 import com.data.remote.api.services.GeoService
 import com.data.remote.entity.city.CityResponse
 import retrofit2.Response
 import java.lang.Exception
 
-class LoadCitiesRetrofitRequest(override val params: Params.CitiesParams) :
+
+class LoadCitiesRetrofitRequest(override val params: RequestParams.GeoRequestParams) :
     AbstractRetrofitRequest<CityResponse>() {
     override val service = GeoService.create()
 
@@ -26,13 +27,16 @@ class LoadCitiesRetrofitRequest(override val params: Params.CitiesParams) :
         )
     }
 
-    /**даже если вернулось 0 городов - результат HTTP считается 'OK' (успешным)*/
+    /** Даже если вернулось 0 городов - результат HTTP считается 'OK' (успешным).
+     *  Поэтому нужно обработать этот кейс*/
     override fun validate(response: Response<CityResponse>): CityResponse {
         if (response.isSuccessful)
             response.body()?.let { if (it.metadata.totalCount > 0) return it }
         /** В первом кейсе просто не найдены города по заданному параметру*/
-        if (response.message() == "OK") throw CitiesNotFoundException()
+        if (response.message() == "OK")
+            throw CitiesNotFoundException()
         /** иначе, если не ОК, описать подробно ошибку*/
-        else throw Exception("${response.message()} | ${response.errorBody()}")
+        else
+            throw Exception("${response.message()} | ${response.errorBody()}")
     }
 }

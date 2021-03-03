@@ -1,12 +1,14 @@
 package com.data.remote.api.requests
 
-import com.data.remote.api.Params
+import com.data.remote.api.RequestParams
 import com.data.remote.api.services.Service
 import retrofit2.Response
-
+// переопределить operator invoke()
 abstract class AbstractRetrofitRequest<T> {
-    protected abstract val params: Params
+    protected abstract val params: RequestParams
     protected abstract val service: Service
+
+    /** [execute] - шаблонный метод*/
     suspend fun execute(): T {
         val response = loadData()
         return validate(response)

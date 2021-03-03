@@ -3,7 +3,6 @@ package com.data.common
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.text.TextUtils
 import com.data.model.*
 import com.data.remote.entity.WeatherResponsePOJO
 import java.text.SimpleDateFormat
@@ -11,35 +10,35 @@ import java.util.*
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-fun CurrentWeatherData.transformData(unitMeasurePref: String) {
+fun CurrentWeather.transformData(unitMeasurePref: String) {
     val tempCalculator = getTempCalculator(unitMeasurePref)
     val windCalculator = getWindCalculator(unitMeasurePref)
-    this.temp = roundAvoid(tempCalculator(temp), 2)
-    this.feels_like = roundAvoid(tempCalculator(feels_like), 2)
-    this.dew_point = roundAvoid(tempCalculator(dew_point), 2)
-    this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
+    this.temp = roundAvoid(tempCalculator(temp))
+    this.feels_like = roundAvoid(tempCalculator(feels_like))
+    this.dew_point = roundAvoid(tempCalculator(dew_point))
+    this.wind_speed = roundAvoid(windCalculator(wind_speed))
 }
 
-fun Hourly.transformData(unitMeasurePref: String) {
+fun HourlyWeather.transformData(unitMeasurePref: String) {
     val tempCalculator = getTempCalculator(unitMeasurePref)
     val windCalculator = getWindCalculator(unitMeasurePref)
-    this.temp = roundAvoid(tempCalculator(temp), 2)
-    this.feels_like = roundAvoid(tempCalculator(feels_like), 2)
-    this.dew_point = roundAvoid(tempCalculator(dew_point), 2)
-    this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
+    this.temp = roundAvoid(tempCalculator(temp))
+    this.feels_like = roundAvoid(tempCalculator(feels_like))
+    this.dew_point = roundAvoid(tempCalculator(dew_point))
+    this.wind_speed = roundAvoid(windCalculator(wind_speed))
 }
 
-fun Daily.transformData(unitMeasurePref: String) {
+fun DailyWeather.transformData(unitMeasurePref: String) {
     val tempCalculator = getTempCalculator(unitMeasurePref)
     val windCalculator = getWindCalculator(unitMeasurePref)
-    this.tempDay = roundAvoid(tempCalculator(tempDay), 2)
-    this.tempEve = roundAvoid(tempCalculator(tempEve), 2)
-    this.tempMax = roundAvoid(tempCalculator(tempMax), 2)
-    this.tempMin = roundAvoid(tempCalculator(tempMin), 2)
-    this.tempMorn = roundAvoid(tempCalculator(tempMorn), 2)
-    this.tempNight = roundAvoid(tempCalculator(tempNight), 2)
-    this.dew_point = roundAvoid(tempCalculator(dew_point), 2)
-    this.wind_speed = roundAvoid(windCalculator(wind_speed), 2)
+    this.tempDay = roundAvoid(tempCalculator(tempDay))
+    this.tempEve = roundAvoid(tempCalculator(tempEve))
+    this.tempMax = roundAvoid(tempCalculator(tempMax))
+    this.tempMin = roundAvoid(tempCalculator(tempMin))
+    this.tempMorn = roundAvoid(tempCalculator(tempMorn))
+    this.tempNight = roundAvoid(tempCalculator(tempNight))
+    this.dew_point = roundAvoid(tempCalculator(dew_point))
+    this.wind_speed = roundAvoid(windCalculator(wind_speed))
 }
 
 fun getTempCalculator(unitMeasurePref: String): (Double) -> Double =
@@ -50,7 +49,7 @@ fun getWindCalculator(unitMeasurePref: String): (Double) -> Double =
     if (unitMeasurePref == "Imperial") { wind -> wind * 2.237 }
     else { wind -> wind / 2.237 }
 
-fun roundAvoid(value: Double, places: Int): Double {
+fun roundAvoid(value: Double, places: Int = 2): Double {
     val scale = 10.0.pow(places.toDouble())
     return (value * scale).roundToInt() / scale
 }
@@ -67,15 +66,12 @@ fun checkInternetAccess(context: Context): Boolean {
     return activeNetwork?.isConnectedOrConnecting == true
 }
 
-fun Context.getDrawablePath(name: String) =
+fun Context.createDrawablePath(name: String) =
     resources.getIdentifier("_$name", "drawable", packageName)
 
-fun Context.mapRemoteWeatherToEntity(
-    cityId: Int,
-    remoteWeather: WeatherResponsePOJO
-): WeatherData {
+fun Context.mapRemoteDataToLocal(cityId: Int, remoteWeather: WeatherResponsePOJO): WeatherData {
     fun createCurrent() = with(remoteWeather.current) {
-        CurrentWeatherData(
+        CurrentWeather(
             clouds,
             dew_point,
             formatDate(dt, HOUR_MIN_DATE_PATTERN),
@@ -86,17 +82,16 @@ fun Context.mapRemoteWeatherToEntity(
             formatDate(sunset, HOUR_MIN_DATE_PATTERN),
             temp,
             uvi,
-            visibility/1000,
+            visibility / 1000,
             wind_deg,
             wind_speed,
             weather[0].description.capitalize(Locale.ROOT),
-            getDrawablePath(weather[0].icon)
+            createDrawablePath(weather[0].icon)
         )
     }
 
-
     fun createHourly() = remoteWeather.hourly.map {
-        Hourly(
+        HourlyWeather(
             it.clouds,
             it.dew_point,
             formatDate(it.dt, HOUR_MIN_DATE_PATTERN),
@@ -107,18 +102,17 @@ fun Context.mapRemoteWeatherToEntity(
             it.rain?.`1h` ?: 228.0,
             it.temp,
             it.uvi,
-            it.visibility/1000,
+            it.visibility / 1000,
             it.weather[0].description,
-            getDrawablePath(it.weather[0].icon),
+            createDrawablePath(it.weather[0].icon),
             it.wind_deg,
             it.wind_speed
         )
     }
 
-
     fun createDaily() = remoteWeather.daily.mapIndexed { index, it ->
         val isToday = index == 0
-        Daily(
+        DailyWeather(
             it.clouds,
             it.dew_point,
             (if (isToday) "Cегодня" else formatDate(
@@ -140,7 +134,7 @@ fun Context.mapRemoteWeatherToEntity(
             it.temp.night,
             it.uvi,
             it.weather[0].description,
-            getDrawablePath(it.weather[0].icon),
+            createDrawablePath(it.weather[0].icon),
             it.wind_deg,
             it.wind_speed
         )

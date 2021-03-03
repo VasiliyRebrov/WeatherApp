@@ -9,25 +9,20 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.flow
 
 class SettingsRepo(ctx: Context) : BaseRepo(ctx) {
+
     fun transformData(unitMeasurePref: String) = flow {
         emit(Result.Loading)
-        val transformedWeatherData = coroutineScope {
-            dao.getWeatherData().map { weatherData ->
+        val transformedData = coroutineScope {
+            dao.getData().map { data ->
                 async {
-                    weatherData.currentWeatherData.transformData(unitMeasurePref)
-                    weatherData.hourlyList.forEach { hourly -> hourly.transformData(unitMeasurePref) }
-                    weatherData.dailyList.forEach { daily -> daily.transformData(unitMeasurePref) }
-                    return@async weatherData
+                    data.currentWeather.transformData(unitMeasurePref)
+                    data.hourlyList.forEach { hourly -> hourly.transformData(unitMeasurePref) }
+                    data.dailyList.forEach { daily -> daily.transformData(unitMeasurePref) }
+                    return@async data
                 }
             }.awaitAll()
         }
-        dao.insertActualWeatherData(*transformedWeatherData.toTypedArray())
-//        val transformedWeatherDate = dao.getWeatherData().onEach { weatherData ->
-//            weatherData.currentWeatherData.transformData(unitMeasurePref)
-//            weatherData.hourlyList.forEach { hourly -> hourly.transformData(unitMeasurePref) }
-//            weatherData.dailyList.forEach { daily -> daily.transformData(unitMeasurePref) }
-//        }
-//        dao.insertActualWeatherData(*transformedWeatherDate.toTypedArray())
-        emit(Result.Success(Unit))
+        val count = dao.insertData(*transformedData.toTypedArray()).size
+        emit(Result.Success(count))
     }
 }

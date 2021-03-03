@@ -28,6 +28,20 @@ data class City(
         return this.cityId == obj.cityId
     }
 
+    override fun hashCode(): Int {
+        var result = cityId
+        result = 31 * result + city.hashCode()
+        result = 31 * result + country.hashCode()
+        result = 31 * result + countryCode.hashCode()
+        result = 31 * result + latitude.hashCode()
+        result = 31 * result + longitude.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + region.hashCode()
+        result = 31 * result + regionCode.hashCode()
+        result = 31 * result + position
+        return result
+    }
+
 
     companion object {
         fun createCityByRegex(cityRegex: String) = with(cityRegex.split(SEPARATOR)) {
@@ -49,13 +63,13 @@ data class WeatherData(
     @PrimaryKey
     val cityId: Int,
     @Embedded
-    val currentWeatherData: CurrentWeatherData,
-    val hourlyList: List<Hourly>,
-    val dailyList: List<Daily>
+    val currentWeather: CurrentWeather,
+    val hourlyList: List<HourlyWeather>,
+    val dailyList: List<DailyWeather>
 
 )
 
-data class CurrentWeatherData(
+data class CurrentWeather(
     val clouds: Int,
     var dew_point: Double,
     val dt: String,
@@ -72,15 +86,15 @@ data class CurrentWeatherData(
     val description: String,
     val icon: Int,
 ) {
-    override fun equals(other: Any?): Boolean {
-        val obj = other as? CurrentWeatherData ?: return false
-        return this.temp == obj.temp
-//                && this.cityId == obj.cityId
-//                && this.icon == obj.icon
-    }
+//    override fun equals(other: Any?): Boolean {
+//        val obj = other as? CurrentWeatherData ?: return false
+//        return this.temp == obj.temp
+////                && this.cityId == obj.cityId
+////                && this.icon == obj.icon
+//    }
 }
 
-data class Hourly(
+data class HourlyWeather(
     val clouds: Int,
     var dew_point: Double,
     val dt: String,
@@ -104,7 +118,7 @@ data class Hourly(
 }
 
 
-data class Daily(
+data class DailyWeather(
     val clouds: Int,
     var dew_point: Double,
     val dt: String,
@@ -135,7 +149,7 @@ data class Daily(
 }
 
 
-data class CityWeatherRelation(
+data class CityData(
     @Embedded val city: City,
     @Relation(
         parentColumn = "cityId",
@@ -143,21 +157,3 @@ data class CityWeatherRelation(
     )
     val weatherData: WeatherData?
 )
-
-//data class CityWithCurrentWeather(
-//    @Embedded val city: City,
-//    @Relation(
-//        parentColumn = "cityId",
-//        entityColumn = "cityId"
-//    )
-//    val currentWeatherData: CurrentWeatherData
-//)
-
-//
-//class DepartmentWithEmployees {
-//    @Embedded
-//    var department: Department? = null
-//
-//    @Relation(parentColumn = "id", entityColumn = "department_id")
-//    var employees: List<Employee>? = null
-//}

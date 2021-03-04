@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.domain.usecases
+package com.domain.usecases.base
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

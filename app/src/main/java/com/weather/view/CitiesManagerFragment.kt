@@ -16,14 +16,14 @@ import com.weather.common.components.LocalCitiesRVAdapterListener
 import com.weather.common.adapters.RvLocalCitiesAdapter
 import com.weather.common.components.SimpleItemTouchHelperCallback
 import com.weather.databinding.FragmentCitiesManagerBinding
+import com.weather.viewmodel.BaseViewModel
 import com.weather.viewmodel.CitiesManagerViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_cities_manager.*
 
 class CitiesManagerFragment : BaseFragment(), LocalCitiesRVAdapterListener {
-    override val model:CitiesManagerViewModel by viewModels {
-        ViewModelFactory(this::class.java.simpleName, requireActivity().application)
-    }
+    override val model: CitiesManagerViewModel
+        get() = super.model as CitiesManagerViewModel
     override val localCitiesObserver: (Result<List<City>>) -> Unit = {
         if (it is Result.Success && it.data.isEmpty())
             findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)

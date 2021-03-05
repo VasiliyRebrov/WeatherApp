@@ -16,15 +16,17 @@ import com.weather.common.adapters.ViewPagerAdapter
 import com.weather.common.components.awaitLayoutChange
 import com.weather.databinding.FragmentGeneralBinding
 import com.weather.databinding.FragmentGeneralBindingImpl
+import com.weather.viewmodel.AddCityViewModel
+import com.weather.viewmodel.BaseViewModel
 import com.weather.viewmodel.GeneralViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_general.*
 import kotlinx.coroutines.launch
 
 class GeneralFragment : BaseFragment() {
-    override val model: GeneralViewModel by viewModels {
-        ViewModelFactory(this::class.java.simpleName, requireActivity().application)
-    }
+    override val model: GeneralViewModel
+        get() = super.model as GeneralViewModel
+
     override val localCitiesObserver: (Result<List<City>>) -> Unit = {
         if (it is Result.Success && it.data.isEmpty())
             findNavController().navigate(R.id.action_generalFragment_to_citiesManagerFragment)

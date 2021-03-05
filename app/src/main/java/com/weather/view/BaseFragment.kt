@@ -29,7 +29,9 @@ abstract class BaseFragment : Fragment() {
     }
 
     /** Сделай приведение в субклассе к нужному типу субклассу BaseViewModel*/
-    abstract val model: BaseViewModel
+    open val model: BaseViewModel by viewModels {
+        ViewModelFactory(this::class.java.simpleName, requireActivity().application)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

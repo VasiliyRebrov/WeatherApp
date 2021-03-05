@@ -22,15 +22,19 @@ import com.weather.common.adapters.RvRemoteCitiesAdapter
 import com.weather.common.entities.DialogType
 import com.weather.databinding.FragmentAddCityBinding
 import com.weather.viewmodel.AddCityViewModel
+import com.weather.viewmodel.BaseViewModel
 import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_add_city.*
 
 private const val REQUEST_CODE_LOCATION_PERMISSION = 999
 
 class AddCityFragment : BaseFragment() {
-    override val model: AddCityViewModel by viewModels {
-        ViewModelFactory(this::class.java.simpleName, requireActivity().application)
-    }
+    override val model: AddCityViewModel
+        get() = super.model as AddCityViewModel
+
+    //    override val model: AddCityViewModel by viewModels {
+//        ViewModelFactory(this::class.java.simpleName, requireActivity().application)
+//    }
     var oldFlag = false
 
     override val localCitiesObserver: (Result<List<City>>) -> Unit = {

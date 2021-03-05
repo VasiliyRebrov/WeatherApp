@@ -16,7 +16,7 @@
         android:id="@+id/swipe_city_item_to_refresh_weather_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:progress="@{viewmodel.baseLD}">
+        app:progress="@{viewmodel.baseUCLD}">
 
         <ScrollView
             android:layout_width="match_parent"

@@ -9,16 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.weather.R
-import com.weather.common.entities.DialogAlertType
+import com.weather.common.entities.DialogType
 import kotlinx.android.synthetic.main.fragment_blank.*
 
-private const val ALERT_TYPE = "ALERT_TYPE"
+private const val DIALOG_TYPE = "DIALOG_TYPE"
 
 class MyDialogFragment : DialogFragment() {
 
-    private val alertType by lazy {
-        val ordinal = requireArguments().getInt(ALERT_TYPE)
-        DialogAlertType.values()[ordinal]
+    private val dialogType by lazy {
+        val ordinal = requireArguments().getInt(DIALOG_TYPE)
+        DialogType.values()[ordinal]
     }
 
     override fun onCreateView(
@@ -41,8 +41,8 @@ class MyDialogFragment : DialogFragment() {
         but_dialog_cancel.setOnClickListener { dismiss() }
     }
 
-    private fun buildComponents(): Pair<String, (View) -> Unit> = when (alertType) {
-        DialogAlertType.ALLOW_LOCATION_PERMISSION -> Pair("Включите службы определения местоположения") {
+    private fun buildComponents(): Pair<String, (View) -> Unit> = when (dialogType) {
+        DialogType.ALLOW_LOCATION_PERMISSION -> Pair("Включите службы определения местоположения") {
             with(Intent()) {
                 action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                 data = Uri.fromParts("package", requireActivity().packageName, null)
@@ -50,7 +50,7 @@ class MyDialogFragment : DialogFragment() {
                 dismiss()
             }
         }
-        DialogAlertType.ENABLE_LOCATION -> Pair("Определение местоположения отключено. Включить?") {
+        DialogType.ENABLE_LOCATION -> Pair("Определение местоположения отключено. Включить?") {
             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             dismiss()
         }
@@ -58,10 +58,10 @@ class MyDialogFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(alertType: DialogAlertType) =
+        fun newInstance(type: DialogType) =
             MyDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ALERT_TYPE, alertType.ordinal)
+                    putInt(DIALOG_TYPE, type.ordinal)
                 }
             }
     }

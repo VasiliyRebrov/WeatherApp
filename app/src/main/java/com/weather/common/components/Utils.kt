@@ -8,30 +8,24 @@ import com.weather.viewmodel.BaseViewModel
 import kotlinx.android.synthetic.main.fragment_general.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-fun LifecycleOwner.initBaseObservers(viewModel: BaseViewModel) {
+fun LifecycleOwner.initBaseObservers(model: BaseViewModel) {
     fun <T> LiveData<T>.observeWithLogging(
         name: String,
         observer: ((T) -> Unit)? = null
     ) {
         val loggingObserver: (T) -> Unit = {
-            Log.d("UseCaseResult", "usecase: $name | result ${it.toString()}")
+            Log.d("UseCaseResult", "\nusecase: $name\nresult: ${it.toString()}\n")
             observer?.invoke(it)
         }
         this.observe(this@initBaseObservers, loggingObserver)
     }
-    with(viewModel) {
+    with(model) {
         useCases.forEach { it.value.observeWithLogging(it.key) }
-//        baseLiveData.observeWithLogging("base")
-//        usecaseEvent.observeWithLogging("event") {
-//            Toast.makeText(ctx, it.toString(), Toast.LENGTH_SHORT).show()
-//        }
     }
 }
 
 suspend fun View.awaitLayoutChange(action: () -> Unit) = suspendCancellableCoroutine<Unit> { cont ->
-
     val listener = object : View.OnLayoutChangeListener {
-
         override fun onLayoutChange(
             view: View?,
             left: Int,
@@ -48,9 +42,7 @@ suspend fun View.awaitLayoutChange(action: () -> Unit) = suspendCancellableCorou
             cont.resume(Unit, null)
         }
     }
-
     addOnLayoutChangeListener(listener)
-
     cont.invokeOnCancellation { removeOnLayoutChangeListener(listener) }
 }
 

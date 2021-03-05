@@ -14,7 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.data.common.*
 import com.data.model.*
 import com.weather.R
-import com.weather.common.entities.getWindUnits
+import com.weather.common.entities.Config.Companion.getWindUnits
 import kotlinx.android.synthetic.main.layout_current_weather_top.view.*
 import kotlinx.android.synthetic.main.layout_grid_current_item.view.*
 import kotlin.math.roundToInt
@@ -22,7 +22,7 @@ import kotlin.math.roundToInt
 
 @JvmName("update1")
 @BindingAdapter("app:update")
-fun update(view: RecyclerView, result: Result<List<Hourly>>?) {
+fun update(view: RecyclerView, result: Result<List<HourlyWeather>>?) {
     result?.let {
         Log.d("qwerty228", it.toString())
         if (it is Result.Success) (view.adapter as RvHourlyWeatherAdapter).updateList(it.data)
@@ -30,7 +30,7 @@ fun update(view: RecyclerView, result: Result<List<Hourly>>?) {
 }
 
 @BindingAdapter("app:update111")
-fun update111(view: RecyclerView, result: Result<List<Daily>>?) {
+fun update111(view: RecyclerView, result: Result<List<DailyWeather>>?) {
     result?.let {
         if (it is Result.Success) (view.adapter as RvDailyWeatherAdapter).updateList(it.data)
     }
@@ -51,7 +51,7 @@ fun update228(view: RecyclerView, result: Result<List<City>>) {
 //изначально всегда придет null, даже если в LD не может храниться null
 //дело в отсутствии привязки к лд в начале
 @BindingAdapter("app:update")
-fun update(view: GridLayout, result: Result<CurrentWeatherData>?) {
+fun update(view: GridLayout, result: Result<CurrentWeather>?) {
     fun View.initCell(value: String, name: String) {
         this.img_grid_item.setImageResource(R.drawable._10d)
         this.tv_grid_item_value.text = value
@@ -109,7 +109,7 @@ fun update(view: GridLayout, result: Result<CurrentWeatherData>?) {
 //android:id="@+id/tv_current_weather_status"
 //android:id="@+id/tv_current_weather_feels"
 @BindingAdapter("app:update")
-fun update(view: ConstraintLayout, result: Result<CurrentWeatherData>?) {
+fun update(view: ConstraintLayout, result: Result<CurrentWeather>?) {
     result?.let {
         if (it is Result.Success) {
             with(it.data) {
@@ -140,7 +140,7 @@ fun update(view: ViewPager2, result: Result<List<City>>?) {
  * если Success - список может быть пуст, добавлена проверка
  * */
 @BindingAdapter("app:update2")
-fun update2(view: RecyclerView, result: Result<List<CityWeatherRelation>>?) {
+fun update2(view: RecyclerView, result: Result<List<CityData>>?) {
     result?.let {
         if (it is Result.Success && it.data.isNotEmpty())
             (view.adapter as RvLocalCitiesAdapter).updateList(it.data)

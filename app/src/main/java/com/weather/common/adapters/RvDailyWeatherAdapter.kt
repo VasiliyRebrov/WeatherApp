@@ -3,17 +3,17 @@ package com.weather.common.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.data.model.Daily
+import com.data.model.DailyWeather
 import com.weather.databinding.CardDailyWeatherItemBinding
 import kotlin.math.roundToInt
 
 
 class RvDailyWeatherAdapter : RecyclerView.Adapter<RvDailyWeatherAdapter.ViewHolder>() {
-    val dailyList = mutableListOf<Daily>()
+    val dailyList = mutableListOf<DailyWeather>()
 
     class ViewHolder(val binding: CardDailyWeatherItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(daily: Daily) {
+        fun bind(daily: DailyWeather) {
             binding.tvCardDailyDate.text = daily.dt
             binding.imgCardDailyStatus.setImageResource(daily.icon)
             binding.tvCardDailyMinTemp.text = "${daily.tempMin.roundToInt()} °"
@@ -38,7 +38,7 @@ class RvDailyWeatherAdapter : RecyclerView.Adapter<RvDailyWeatherAdapter.ViewHol
 
     override fun getItemCount() = dailyList.size
 
-    fun updateList(newList: List<Daily>) {  //сделать DiffUtil
+    fun updateList(newList: List<DailyWeather>) {  //сделать DiffUtil
         with(dailyList) { clear();addAll(newList) }
         notifyDataSetChanged()
     }

@@ -16,21 +16,22 @@ class Config private constructor(private val ctx: Context) {
     val unitMeasurePref: String
         get() = getPrefValue(ctx.getString(R.string.preference_unit_measure_key)) ?: "Metric"
 
-
-    companion object : SingletonHolder<Config, Context>({ ctx -> Config(ctx) })
-
     private fun getPrefValue(key: String): String? {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(ctx)
         return sharedPref.getString(key, null)
     }
+
+    companion object {
+        private val singletonHolder = SingletonHolder<Config, Context> { ctx -> Config(ctx) }
+        private fun Context.getSingletonHolder() = singletonHolder.getInstance(this)
+
+        fun Context.getUnitMeasurePref() = getSingletonHolder().unitMeasurePref
+
+        fun Context.getWindUnits() = if (getUnitMeasurePref() == "Metric") "м/сек" else "ми/ч"
+
+        fun Context.getTempUnits() = if (getUnitMeasurePref() == "Metric") "C" else "F"
+    }
 }
-
-fun Context.getWindUnits() =
-    if (Config.getInstance(this).unitMeasurePref == "Metric") "м/сек" else "ми/ч"
-
-fun Context.getTempUnits() =
-    if (Config.getInstance(this).unitMeasurePref == "Metric") "C" else "F"
-
 
 
 

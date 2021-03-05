@@ -6,72 +6,56 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.*
 import com.data.common.InvalidArgsException
 import com.data.common.Result
 import com.data.model.City
 import com.data.repo.AddCityRepo
 import com.domain.*
-import com.domain.usecases.AddCityByLocUseCase
-import com.domain.usecases.AddCityUseCase
-import com.domain.usecases.DefineLocationUseCase
-import com.domain.usecases.FindCityByNameUseCase
+import com.domain.usecases.*
 import kotlinx.coroutines.flow.*
 import kotlin.Exception
 
 class AddCityViewModel(application: Application, private val repo: AddCityRepo) :
     BaseViewModel(application) {
-    private val findCityUseCase by lazy { FindCityByNameUseCase(repo) }
-    private val addCityUseCase by lazy { AddCityUseCase(repo) }
-    private val addCityByLocationUseCase by lazy { AddCityByLocUseCase(repo) }
-    private val defineLocationUseCase by lazy {
-        DefineLocationUseCase(
-            repo,
-            locManager,
-            locListener
-        )
+    private val locManager by lazy { application.getSystemService(Context.LOCATION_SERVICE) as LocationManager }
+    private val locListener = object : LocationListener {
+        override fun onLocationChanged(location: Location?) {
+            location?.let { locManager.removeUpdates(this); addCity(it, currentLang) }
+        }
+
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+        override fun onProviderEnabled(provider: String?) {}
+        override fun onProviderDisabled(provider: String?) {}
     }
 
+
+
+    /** Find city*/
+    private val findCityByNameUC by lazy { FindCityByNameUC(repo) }
     private val _searchQuery = MutableStateFlow("")
-    private val _searchResultLiveData = _searchQuery.asStateFlow()
-        /**
-         * первый map отвечает за отображение прогресса в зависимости от кол-ва символов
-         * и затем просто пропускает аргумент дальше
-         */
-        .map {
-            val result = try {
-                //фильтровать пробелы
-                if (it.length > 1) Result.Loading else throw InvalidArgsException()
-            } catch (exc: Exception) {
-                Result.Error(Exception(exc))
-            }
-            switchProgress(result)
-            it
+    private val _searchResultLiveData = _searchQuery.asStateFlow().map {
+        val result = try {
+            //фильтровать пробелы
+            if (it.length > 1) Result.Loading else throw InvalidArgsException()
+        } catch (exc: Exception) {
+            Result.Error(Exception(exc))
         }
-        .debounce(1200)
+        switchProgress(result)
+        it
+    }.debounce(1200)
         .filter { it.length > 1 }
         .mapLatest { name ->
-            return@mapLatest findCityUseCase(name)
-        }
-        .asLiveData()
-
-    private val _findCityUseCaseLiveData = MediatorLiveData<Result<List<City>>>().apply {
+            val params = FindCityByNameUCParams(name, currentLang)
+            return@mapLatest findCityByNameUC(params)
+        }.asLiveData()
+    private val _findCityByNameUCLD = MediatorLiveData<Result<List<City>>>().apply {
         addSource(_searchResultLiveData) { this.value = it }
     }
-    val findCityUseCaseLiveData: LiveData<Result<List<City>>> = _findCityUseCaseLiveData
-
-    private val _addCityUseCaseLiveData = MutableLiveData<Result<Int>>()
-    val addCityUseCaseLiveData: LiveData<Result<Int>> = _addCityUseCaseLiveData
-
-    private val _addCityByLocationUseCaseLiveData = MutableLiveData<Result<Int>>()
-    val addCityByLocationUseCaseLiveData: LiveData<Result<Int>> = _addCityByLocationUseCaseLiveData
-
-    private val _defineLocationUseCaseLiveData = MutableLiveData<Result<Unit>>()
-    val defineLocationUseCaseLiveData: LiveData<Result<Unit>> = _defineLocationUseCaseLiveData
+    val findCityByNameUCLD: LiveData<Result<List<City>>> = _findCityByNameUCLD
 
     private fun switchProgress(result: Result<List<City>>) {
-        _findCityUseCaseLiveData.value = result
+        _findCityByNameUCLD.value = result
     }
 
     fun search(name: String) {
@@ -83,63 +67,41 @@ class AddCityViewModel(application: Application, private val repo: AddCityRepo) 
             val currentValue = value
             value = ""
             value = currentValue
-
         }
-
     }
 
+    /** Add city*/
+    private val addCityUC by lazy { AddCityUC(repo) }
+    private val _addCityUCLD = MutableLiveData<Result<Long>>()
+    val addCityUCLD: LiveData<Result<Long>> = _addCityUCLD
 
     fun addCity(city: City) {
-        launchUseCase(addCityUseCase, city) {
-            // обработка при добавлении города
-            _addCityUseCaseLiveData.value = it
-        }
+        launchUseCase(addCityUC, city) { _addCityUCLD.value = it }
     }
 
-    fun addCity(location: Location) {
-        launchUseCase(addCityByLocationUseCase, location) {
-            // обработка при добавлении города по локации
-            _addCityByLocationUseCaseLiveData.value = it
-        }
+    /** Add city by location*/
+    private val addCityByLocUC by lazy { AddCityByLocUC(repo) }
+    private val _addCityByLocUCLD = MutableLiveData<Result<Long>>()
+    val addCityByLocUCLD: LiveData<Result<Long>> = _addCityByLocUCLD
+
+    fun addCity(location: Location, lang: String) {
+        val params = AddCityByLocUCParams(location, lang)
+        launchUseCase(addCityByLocUC, params) { _addCityByLocUCLD.value = it }
     }
 
-    //вызывается при нажатии кнопки
-    fun defineLocation() {
-        launchUseCase(defineLocationUseCase, Unit) {
-            // обработка определения локации
-            // при получении локации, юзкейс доб. города вызовется автоматически. см. Listener
-            _defineLocationUseCaseLiveData.value = it
-        }
-    }
+    /** Define Location*/
+    private val defineLocUC by lazy { DefineLocUC(repo, locManager, locListener) }
+    private val _defineLocUCLD = MutableLiveData<Result<Unit>>()
+    val defineLocUCLD: LiveData<Result<Unit>> = _defineLocUCLD
 
-
-    private val locManager by lazy { application.getSystemService(Context.LOCATION_SERVICE) as LocationManager }
-    private val locListener = object : LocationListener {
-        override fun onLocationChanged(location: Location?) {
-            location?.let { locManager.removeUpdates(this); addCity(it) }
-        }
-
-        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-        override fun onProviderEnabled(provider: String?) {}
-        override fun onProviderDisabled(provider: String?) {}
+    fun defineLoc() {
+        launchUseCase(defineLocUC, Unit) { _defineLocUCLD.value = it }
     }
 
     override val useCases = mutableMapOf<String, LiveData<*>>().apply {
-        put(findCityUseCase.javaClass.simpleName, findCityUseCaseLiveData)
-        put(defineLocationUseCase.javaClass.simpleName, defineLocationUseCaseLiveData)
-        put(addCityUseCase.javaClass.simpleName, addCityUseCaseLiveData)
-        put(addCityByLocationUseCase.javaClass.simpleName, addCityByLocationUseCaseLiveData)
+        put(findCityByNameUC.javaClass.simpleName, findCityByNameUCLD)
+        put(defineLocUC.javaClass.simpleName, defineLocUCLD)
+        put(addCityUC.javaClass.simpleName, addCityUCLD)
+        put(addCityByLocUC.javaClass.simpleName, addCityByLocUCLD)
     } as Map<String, LiveData<Result<*>>>
 }
-//    override fun initLiveDataContainer() = mutableMapOf<String, LiveData<Result<*>>>().apply {
-//        put(findCityUseCase.javaClass.simpleName, findCityUseCaseLiveData as LiveData<Result<*>>)
-//        put(
-//            defineLocationUseCase.javaClass.simpleName,
-//            defineLocationUseCaseLiveData as LiveData<Result<*>>
-//        )
-//        put(addCityUseCase.javaClass.simpleName, addCityUseCaseLiveData as LiveData<Result<*>>)
-//        put(
-//            addCityByLocationUseCase.javaClass.simpleName,
-//            addCityByLocationUseCaseLiveData as LiveData<Result<*>>
-//        )
-//    }

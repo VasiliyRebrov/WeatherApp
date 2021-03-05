@@ -1,14 +1,17 @@
 package com.weather.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.data.common.NoNetworkException
+import com.data.common.Result
 import com.data.model.City
+import com.domain.usecases.RefreshDataUC
 import com.weather.R
 import com.weather.common.adapters.RvDailyWeatherAdapter
 import com.weather.common.adapters.RvHourlyWeatherAdapter
@@ -20,34 +23,30 @@ import kotlinx.android.synthetic.main.fragment_city_item.*
 private const val ARG_CITY_REGEX = "cityId"
 
 class CityItemFragment : BaseFragment() {
-    val kek: String
-        get() = City.createCityByRegex(requireArguments().getString(ARG_CITY_REGEX)!!).name
-
-    private var _binding: FragmentCityItemBinding? = null
-    private val binding get() = _binding!!
-    override val viewModel: CityItemViewModel by viewModels {
+    override val model: CityItemViewModel by viewModels {
         ViewModelFactory(
-            "CityItemViewModel",
+            this::class.java.simpleName,
             requireActivity().application,
             City.createCityByRegex(requireArguments().getString(ARG_CITY_REGEX)!!)
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("qweewq", "onCreate | $kek")
-
-        super.onCreate(savedInstanceState)
+    override val errorEventObserver: Observer<Result.Error> = Observer {
+        if (it.exception.cause is NoNetworkException)
+            super.errorEventObserver.onChanged(it)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+    override fun inflate(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_city_item, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewmodel = viewModel
-        Log.d("qweewq", "onCreateView | $kek")
+        with(binding as FragmentCityItemBinding) {
+            lifecycleOwner = viewLifecycleOwner
+            viewmodel = model
+        }
         return binding.root
     }
 
@@ -59,18 +58,18 @@ class CityItemFragment : BaseFragment() {
 
     private fun initComponents() {
         initSwipe()
-        initHourlyRecycler()
-        initDailyRecycler()
+        initHourlyListRecycler()
+        initDailyListRecycler()
 
     }
 
     private fun initSwipe() {
         swipe_city_item_to_refresh_weather_data.setOnRefreshListener {
-            viewModel.refreshWeatherData()
+            model.refreshData()
         }
     }
 
-    private fun initHourlyRecycler() {
+    private fun initHourlyListRecycler() {
         with(rv_item_hourly) {
             adapter = RvHourlyWeatherAdapter()
             layoutManager =
@@ -79,19 +78,8 @@ class CityItemFragment : BaseFragment() {
         }
     }
 
-    override fun onStart() {
-        Log.d("qweewq", "onStart | $kek")
 
-        super.onStart()
-    }
-
-    override fun onResume() {
-        Log.d("qweewq", "onResume | $kek")
-
-        super.onResume()
-    }
-
-    private fun initDailyRecycler() {
+    private fun initDailyListRecycler() {
         with(rv_item_daily) {
             adapter = RvDailyWeatherAdapter()
             layoutManager = LinearLayoutManager(requireContext())
@@ -107,26 +95,5 @@ class CityItemFragment : BaseFragment() {
                     putString(ARG_CITY_REGEX, cityRegex)
                 }
             }
-    }
-
-    override fun onStop() {
-        Log.d("qweewq", "onStop | $kek")
-        super.onStop()
-    }
-
-    override fun onPause() {
-        Log.d("qweewq", "onPause | $kek")
-        super.onPause()
-    }
-
-    override fun onDestroyView() {
-        Log.d("qweewq", "onDestroyView | $kek")
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onDestroy() {
-        Log.d("qweewq", "onDestroy | $kek")
-        super.onDestroy()
     }
 }

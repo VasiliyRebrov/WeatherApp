@@ -1,7 +1,6 @@
 package com.weather.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
@@ -11,8 +10,8 @@ import com.weather.viewmodel.MainViewModel
 import com.weather.viewmodel.ViewModelFactory
 
 class MainActivity : AppCompatActivity() {
-    val viewModel: MainViewModel by viewModels {
-        ViewModelFactory("MainViewModel", application)
+    val model: MainViewModel by viewModels {
+        ViewModelFactory(this::class.java.simpleName, application)
     }
     private val host: NavHostFragment
             by lazy {
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initBaseObservers( viewModel)
+        initBaseObservers(model)
     }
 
 //    private fun initNav() {

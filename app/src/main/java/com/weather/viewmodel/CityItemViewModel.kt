@@ -6,65 +6,67 @@ import androidx.lifecycle.*
 import com.data.common.Result
 import com.data.model.*
 import com.data.repo.CityItemRepo
-import com.domain.RefreshWeatherParams
 import com.domain.usecases.*
-import com.weather.common.entities.Config
+import com.weather.common.entities.Config.Companion.getUnitMeasurePref
 
 class CityItemViewModel(
     application: Application,
     private val city: City,
     repo: CityItemRepo
 ) : BaseViewModel(application) {
-    private val refreshWeatherDataUseCase = RefreshWeatherDataUseCase(repo)
-    private val _refreshDataLD = MutableLiveData<Result<String>>()
-    val refreshDataLD: LiveData<Result<String>> = _refreshDataLD
 
-    private val getWeatherDataUseCase = GetWeatherDataUseCase(repo)
-    private val _weatherDataLD = getWeatherDataUseCase(city.cityId).asLiveData()
-    val weatherDataLD: LiveData<Result<WeatherData>> = _weatherDataLD
 
-    val currentLD = Transformations.map(weatherDataLD) {
-        Log.d("fffLD", it.toString())
-        return@map (
-                if (it is Result.Success)
-                    Result.Success(it.data.currentWeatherData)
-                else it
-                ) as Result<CurrentWeatherData>
+    /** Refresh data*/
+    private val refreshDataUC by lazy { RefreshDataUC(repo) }
+    private val _refreshDataUCLD = MutableLiveData<Result<String>>()
+    val refreshDataUCLD: LiveData<Result<String>> = _refreshDataUCLD
+
+    fun refreshData() {
+        val params = RefreshWeatherParams(
+            getApplication<Application>().getUnitMeasurePref(),
+            currentLang,
+            listOf(city)
+        )
+        launchUseCase(refreshDataUC, params) {
+            _refreshDataUCLD.value = it
+        }
     }
 
-    val hourlyLD = Transformations.map(weatherDataLD) {
-        Log.d("qwerty2", it.toString())
+    /** Get local data*/
+    private val getDataUC = GetDataUC(repo)
+    private val _getDataUCLD = getDataUC(city.cityId).asLiveData()
+    val getDataUCLD: LiveData<Result<WeatherData>> = _getDataUCLD
+
+    val currentLD = Transformations.map(getDataUCLD) {
+        return@map (
+                if (it is Result.Success)
+                    Result.Success(it.data.currentWeather)
+                else it
+                ) as Result<CurrentWeather>
+    }
+
+    val hourlyLD = Transformations.map(getDataUCLD) {
         return@map (
                 if (it is Result.Success)
                     Result.Success(it.data.hourlyList)
                 else
                     it
                 )
-                as Result<List<Hourly>>
+                as Result<List<HourlyWeather>>
     }
-    val dailyLD = Transformations.map(weatherDataLD) {
-        Log.d("qwerty2", it.toString())
+    val dailyLD = Transformations.map(getDataUCLD) {
         return@map (
                 if (it is Result.Success)
                     Result.Success(it.data.dailyList)
                 else
                     it
                 )
-                as Result<List<Daily>>
-    }
-
-    fun refreshWeatherData() {
-        val params = RefreshWeatherParams(
-            Config.getInstance(getApplication()).unitMeasurePref,
-            listOf(city)
-        )
-        launchUseCase(refreshWeatherDataUseCase, params) {
-            _refreshDataLD.value = it
-        }
+                as Result<List<DailyWeather>>
     }
 
     override val useCases = mutableMapOf<String, LiveData<*>>().apply {
-        put(getWeatherDataUseCase.javaClass.simpleName, weatherDataLD)
-        put(refreshWeatherDataUseCase.javaClass.simpleName, refreshDataLD)
+        put(getDataUC.javaClass.simpleName, getDataUCLD)
+        put(refreshDataUC.javaClass.simpleName, refreshDataUCLD)
     } as Map<String, LiveData<Result<*>>>
+
 }

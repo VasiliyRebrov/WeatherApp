@@ -4,16 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.data.model.Hourly
+import com.data.model.HourlyWeather
 import com.weather.databinding.CardHourlyWeatherItemBinding
 import kotlin.math.roundToInt
 
 class RvHourlyWeatherAdapter : RecyclerView.Adapter<RvHourlyWeatherAdapter.ViewHolder>() {
-    val hourlyPresList = mutableListOf<Hourly>()
+    val hourlyPresList = mutableListOf<HourlyWeather>()
 
     class ViewHolder(val binding: CardHourlyWeatherItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(hourly: Hourly) {
+        fun bind(hourly: HourlyWeather) {
             binding.tvDateCardHourly.text = hourly.dt
             if (hourly.pop > 0) binding.tvPopCardHourly.text = "${hourly.pop}%"
             binding.tvTempCardHourly.text = "${hourly.temp.roundToInt()}°"
@@ -38,7 +38,7 @@ class RvHourlyWeatherAdapter : RecyclerView.Adapter<RvHourlyWeatherAdapter.ViewH
 
     override fun getItemCount() = hourlyPresList.size
 
-    fun updateList(newList: List<Hourly>) {  //сделать DiffUtil
+    fun updateList(newList: List<HourlyWeather>) {  //сделать DiffUtil
         with(hourlyPresList) { clear();addAll(newList) }
         notifyDataSetChanged()
     }

@@ -1,52 +1,49 @@
 package com.weather.viewmodel
 
 import android.app.Application
+import android.os.Build
+import android.os.LocaleList
 import androidx.lifecycle.*
 import com.data.common.Result
 import com.data.common.SingleLiveEvent
-import com.domain.usecases.FlowUseCase
+import com.domain.usecases.base.FlowUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.*
 
-abstract class BaseViewModel(application: Application) :
-    AndroidViewModel(application) {
-    /** все нижние объекты имеют ленивую инициализацию
-     * Дело в том, что их инициализация зависит от ливдат в субклассах,
-     * но объекты субклассов инициализируются после родительских.
-     * Решение: тк здесь объекты Lazy - они будут созданы при подписке на них
-     * а объекты-ливдаты субклассов будут созданы сразу
-     **/
+abstract class BaseViewModel(application: Application) : AndroidViewModel(application) {
+    /** [currentLang] дает текущую конфиг языка*/
+    val currentLang: String
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            LocaleList.getDefault().get(0).language
+        else
+            Locale.getDefault().language
 
-    /** это контейнер всех ливдат, которые обрабатывают юзкейсы*/
-
+    /** [useCases] - это контейнер всех ливдат текущего субкласса, которые обрабатывают юзкейсы.*/
     abstract val useCases: Map<String, LiveData<Result<*>>>
 
-    /** фабричный метод по инициализации контейнера ливдат*/
-
-    /***
-     * обращайся сюда, если результат выполнения юзкейсов являет состояние
+    /**
+     * [baseUCLD] - принимает всез начения [useCases]. Обращайся сюда, если результат [LiveData] являет состояние
      */
-    private val _baseLD by lazy {
+    val baseUCLD: LiveData<Result<*>> by lazy {
         MediatorLiveData<Result<*>>().apply {
             useCases.forEach { entry ->
                 addSource(entry.value) { result ->
                     value = result
-                    //мб пусть ивент подписывается на базу?
                     if (result is Result.Error) _errorEvent.value = result
                 }
             }
         }
     }
-    val baseLD: LiveData<Result<*>> by lazy { _baseLD }
 
-    /** event handler для события юзкейсов - успех. неудача
-     * обращайся сюда, если результат выполнения юзкейсов являет событие
+    /**
+     * [_errorEvent] - принимает все значения [useCases], где результат [Result.Error].
+     * Обращайся сюда, если результат [LiveData] являет событие
      * */
-    private val _errorEvent = SingleLiveEvent<Result.Error>()
-    val errorEvent: LiveData<Result.Error> = _errorEvent
+    private val _errorEvent by lazy { SingleLiveEvent<Result.Error>() }
+    val errorEvent: LiveData<Result.Error> by lazy { _errorEvent }
 
-    /** метод для запуска юз-кейсов, возвращающих Flow
-    корутина начинает работу в Main-потоке. Но возможнсть смены предусмотрена в юз-кейсе*/
+    /** [launchUseCase] - метод для запуска юз-кейсов, релазаций [FlowUseCase]*/
     protected fun <P, R> launchUseCase(
         useCase: FlowUseCase<P, R>,
         parameters: P,
@@ -55,7 +52,3 @@ abstract class BaseViewModel(application: Application) :
         viewModelScope.launch { useCase(parameters).collect(collect) }
     }
 }
-
-/**
- * возможно, сделать shared/state flow.
- * */

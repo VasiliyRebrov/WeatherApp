@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.data.common.getDrawablePath
+import com.data.common.createDrawablePath
 import com.data.model.City
-import com.data.model.CityWeatherRelation
+import com.data.model.CityData
 import com.weather.R
 import com.weather.common.components.ItemTouchHelperAdapter
 import com.weather.common.components.ItemTouchHelperViewHolder
@@ -16,32 +16,32 @@ import com.weather.databinding.CardLicalCitiesItemBinding
 import java.util.*
 import kotlin.math.roundToInt
 
-class RvLocalCitiesAdapter(private val mDragStartListener: LocalCitiesRVAdapterListener) :
+class RvLocalCitiesAdapter(private val listener: LocalCitiesRVAdapterListener) :
     RecyclerView.Adapter<RvLocalCitiesAdapter.ViewHolder>(), ItemTouchHelperAdapter {
 
-    private val citiesList = mutableListOf<CityWeatherRelation>()
+    private val citiesList = mutableListOf<CityData>()
 
     //    var lastAction: ItemTouchAction = ItemTouchAction.DEFAULT
     private var blockcount = 0
 
     inner class ViewHolder(val binding: CardLicalCitiesItemBinding) :
         RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
-        fun bind(data: CityWeatherRelation) {
+        fun bind(data: CityData) {
             binding.root.setBackgroundColor(binding.root.context.resources.getColor(R.color.colorAccent))
             binding.tvCardCityName.text = data.city.name
             binding.tvCardCityRegion.text = "${data.city.country} | ${data.city.region}"
             data.weatherData?.let {
                 binding.tvCardCityTemp.text =
-                    "${it.currentWeatherData.temp.roundToInt()} °"
+                    "${it.currentWeather.temp.roundToInt()} °"
             }
 
-            val resId = data.weatherData?.currentWeatherData?.icon
-                ?: binding.root.context.getDrawablePath("50n")
+            val resId = data.weatherData?.currentWeather?.icon
+                ?: binding.root.context.createDrawablePath("50n")
             binding.imgCardCityIcon.setImageResource(resId)
 
 //            holder.binding.root.setOnClickListener { listener.onCitySelected(citiesList[position].city.position) }
 
-            binding.root.setOnClickListener { mDragStartListener.onClick(data.city.position) }
+            binding.root.setOnClickListener { listener.onItemClick(data.city.position) }
             binding.executePendingBindings()
         }
 
@@ -50,7 +50,7 @@ class RvLocalCitiesAdapter(private val mDragStartListener: LocalCitiesRVAdapterL
             with(getReorderedCities()) {
                 if (isNotEmpty()) {
                     blockcount++
-                    mDragStartListener.reorderLocalCities(this)
+                    listener.reorderCities(this)
                 }
             }
         }
@@ -105,10 +105,10 @@ class RvLocalCitiesAdapter(private val mDragStartListener: LocalCitiesRVAdapterL
         citiesList.removeAt(position)
         notifyItemRemoved(position)
         blockcount += 2
-        mDragStartListener.deleteCity(city.city)
+        listener.deleteCity(city.city)
     }
 
-    fun updateList(newList: List<CityWeatherRelation>) {  //сделать DiffUtil
+    fun updateList(newList: List<CityData>) {  //сделать DiffUtil
         if (blockcount > 0)
             blockcount--
         else {

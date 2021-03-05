@@ -5,21 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceFragmentCompat
 import com.weather.R
 import com.weather.common.components.initBaseObservers
 import com.weather.viewmodel.SettingsViewModel
 import com.weather.viewmodel.ViewModelFactory
-import kotlinx.android.synthetic.main.fragment_cities_manager.*
 
 class SettingsFragment : PreferenceFragmentCompat(),
     SharedPreferences.OnSharedPreferenceChangeListener {
     private val viewModel: SettingsViewModel by viewModels {
-        ViewModelFactory("SettingsViewModel", requireActivity().application)
+        ViewModelFactory(this::class.java.simpleName, requireActivity().application)
     }
-
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.settings)
@@ -45,8 +42,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-//        sharedPreferences?.let { Log.d("aass", it.all.toString()) }
-//        key?.let { Log.d("aass", it) }
         viewModel.transformData()
     }
 }

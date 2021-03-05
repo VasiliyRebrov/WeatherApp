@@ -1,32 +1,28 @@
 package com.weather.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.data.common.Result
 import com.data.model.City
 import com.data.repo.BaseRepo
-import com.domain.RefreshWeatherParams
-import com.domain.usecases.GetLocalCitiesUseCase
-import com.domain.usecases.RefreshWeatherDataUseCase
-import com.weather.common.entities.Config
+import com.domain.usecases.GetCitiesUC
+import com.domain.usecases.RefreshDataUC
+import com.domain.usecases.RefreshWeatherParams
+import com.weather.common.entities.Config.Companion.getUnitMeasurePref
 import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.util.*
 
-class MainViewModel(application: Application, repo: BaseRepo) :
-    BaseViewModel(application) {
+class MainViewModel(application: Application, repo: BaseRepo) : BaseViewModel(application) {
+    private val actualCities = mutableListOf<City>()
+    var focusedCityPos = 0
 
-    var focusedCityPos=0
-    private val currentCities = mutableListOf<City>()
-
-    private val refreshWeatherDataUseCase = RefreshWeatherDataUseCase(repo)
-    private val _refreshWeatherDataUseCaseLD = MutableLiveData<Result<String>>()
-    val refreshWeatherDataUseCaseLD: LiveData<Result<String>> = _refreshWeatherDataUseCaseLD
-
-
+    override fun onCleared() {
+        localCitiesLD.removeObserver(observer)
+        super.onCleared()
+    }
     /**
      * в начале вернет по умолчанию Loading благодаря stateFlow
      * stateFlow здесь фильтрует на уникальное значение. Единственный полезный для этого случай
@@ -40,14 +36,14 @@ class MainViewModel(application: Application, repo: BaseRepo) :
     /** полученный список городов сортируется по id.*/
     /** сортировка по id позволяет исключить изменения, после юзкейса пересортировки,
      * когда меняется поле pos */
-    private val getLocalCitiesUseCase = GetLocalCitiesUseCase(repo)
+
+    /** Get local cities*/
+    private val getCitiesUC by lazy { GetCitiesUC(repo) }
 
     /**
-     * [localCitiesLiveData] по умолчанию [Result.Loading]
-     * не может быть [null]
-     *
+     * [localCitiesLD] по умолчанию [Result.Loading]. Не может быть [null]
      * */
-    val localCitiesLiveData = getLocalCitiesUseCase(Unit)
+    val localCitiesLD = getCitiesUC(Unit)
         .map {
             return@map if (it is Result.Success && it.data.isNotEmpty()) {
                 Result.Success(it.data.sortedBy { city -> city.cityId })
@@ -58,7 +54,7 @@ class MainViewModel(application: Application, repo: BaseRepo) :
         Observer<Result<List<City>>> { localCities -> observeCities(localCities) }
 
     init {
-        localCitiesLiveData.observeForever(observer)
+        localCitiesLD.observeForever(observer)
     }
 
     /**
@@ -67,7 +63,6 @@ class MainViewModel(application: Application, repo: BaseRepo) :
      * также будет вызван с Loading при инициализации
      * */
     private fun observeCities(localCities: Result<List<City>>) {
-        Log.d("myTag", "observeCities : $localCities")
         if (localCities is Result.Success) {
             val (newCities, oldCities) = defineDifference(localCities.data)
             refreshData(newCities, oldCities)
@@ -75,33 +70,34 @@ class MainViewModel(application: Application, repo: BaseRepo) :
     }
 
     private fun defineDifference(localCities: List<City>): Pair<List<City>, List<City>> {
-        fun createCollection(toAdd: List<City>, toRemove: List<City>) =
-            mutableListOf<City>().apply { addAll(toAdd);removeAll(toRemove) }
+        fun createCollection(toAddCities: List<City>, toRemoveCities: List<City>) =
+            mutableListOf<City>().apply { addAll(toAddCities);removeAll(toRemoveCities) }.toList()
 
-        val newCities = createCollection(localCities, currentCities)
-        val oldCities = createCollection(currentCities, localCities)
-        with(currentCities) { clear();addAll(localCities) }
+        val newCities = createCollection(localCities, actualCities)
+        val oldCities = createCollection(actualCities, localCities)
+        with(actualCities) { clear();addAll(localCities) }
         return Pair(newCities, oldCities)
     }
 
     private fun refreshData(newCities: List<City>, oldCities: List<City>) {
         val params = RefreshWeatherParams(
-            Config.getInstance(getApplication()).unitMeasurePref,
+            getApplication<Application>().getUnitMeasurePref(),
+            currentLang,
             newCities,
-            oldCities
+            oldCities,
         )
-        launchUseCase(refreshWeatherDataUseCase, params) {
-            _refreshWeatherDataUseCaseLD.value = it
+        launchUseCase(refreshDataUC, params) {
+            _refreshDataUCLD.value = it
         }
     }
 
-    override val useCases = mutableMapOf<String, LiveData<*>>().apply {
-        put(refreshWeatherDataUseCase.javaClass.simpleName, refreshWeatherDataUseCaseLD)
-        put(getLocalCitiesUseCase.javaClass.simpleName, localCitiesLiveData)
-    } as Map<String, LiveData<Result<*>>>
+    /** Refresh data*/
+    private val refreshDataUC by lazy { RefreshDataUC(repo) }
+    private val _refreshDataUCLD = MutableLiveData<Result<String>>()
+    val refreshDataUCLD: LiveData<Result<String>> = _refreshDataUCLD
 
-    override fun onCleared() {
-        localCitiesLiveData.removeObserver(observer)
-        super.onCleared()
-    }
+    override val useCases = mutableMapOf<String, LiveData<*>>().apply {
+        put(refreshDataUC.javaClass.simpleName, refreshDataUCLD)
+        put(getCitiesUC.javaClass.simpleName, localCitiesLD)
+    } as Map<String, LiveData<Result<*>>>
 }

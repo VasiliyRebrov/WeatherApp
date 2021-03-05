@@ -64,7 +64,7 @@
                 android:layout_gravity="center"
                 android:gravity="start"
                 android:padding="8dp"
-                android:text="@{viewmodel.baseLD}" />
+                android:text="@{viewmodel.baseUCLD}" />
 
             <Button
                 android:id="@+id/but_add_city_retry"
@@ -74,7 +74,7 @@
                 android:onClick="@{()->viewmodel.retry()}"
                 android:text="retry"
                 android:visibility="gone"
-                app:update="@{viewmodel.baseLD}" />
+                app:update="@{viewmodel.baseUCLD}" />
         </LinearLayout>
 
 
@@ -85,7 +85,7 @@
             android:visibility="gone"
             android:background="@color/colorBlack"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:update228="@{viewmodel.findCityUseCaseLiveData}" />
+            app:update228="@{viewmodel.findCityByNameUCLD}" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

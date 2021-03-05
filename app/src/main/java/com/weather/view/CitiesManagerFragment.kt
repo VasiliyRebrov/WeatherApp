@@ -21,12 +21,28 @@ import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_cities_manager.*
 
 class CitiesManagerFragment : BaseFragment(), LocalCitiesRVAdapterListener {
-
-    private var _binding: FragmentCitiesManagerBinding? = null
-    private val binding get() = _binding!!
-
-    override val navResId: Int = R.id.action_citiesManagerFragment_to_addCityFragment
+    override val model:CitiesManagerViewModel by viewModels {
+        ViewModelFactory(this::class.java.simpleName, requireActivity().application)
+    }
+    override val localCitiesObserver: (Result<List<City>>) -> Unit = {
+        if (it is Result.Success && it.data.isEmpty())
+            findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)
+    }
     private var mItemTouchHelper: ItemTouchHelper? = null
+
+    override fun inflate(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_cities_manager, container, false)
+        with(binding as FragmentCitiesManagerBinding) {
+            lifecycleOwner = viewLifecycleOwner
+            viewmodel = model
+        }
+        return binding.root
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_cities_manager, menu)
@@ -38,36 +54,12 @@ class CitiesManagerFragment : BaseFragment(), LocalCitiesRVAdapterListener {
                 findNavController().navigateUp()
                 true
             }
-            R.id.action_settings -> {
-                findNavController().navigate(R.id.action_citiesManagerFragment_to_settingsFragment)
-                true
-            }
             R.id.action_add_city -> {
                 findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)
                 true
             }
             else -> return super.onOptionsItemSelected(item)
         }
-    }
-
-    override val viewModel: CitiesManagerViewModel by viewModels {
-        ViewModelFactory("CitiesManagerViewModel", requireActivity().application)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        sharedViewModel.localCitiesLiveData.observe(viewLifecycleOwner) {
-            if (it is Result.Success && it.data.isEmpty())
-                findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)
-        }
-//        checkExistCitiesList(R.id.action_citiesManagerFragment_to_addCityFragment)
-        _binding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_cities_manager, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewmodel = viewModel
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,16 +80,18 @@ class CitiesManagerFragment : BaseFragment(), LocalCitiesRVAdapterListener {
     }
 
     private fun initRecycler() {
-        val adapter = RvLocalCitiesAdapter(this)
-        rv_local_cities.adapter = adapter
-        rv_local_cities.layoutManager = LinearLayoutManager(requireContext())
-        rv_local_cities.setHasFixedSize(true)
-        val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
-        mItemTouchHelper = ItemTouchHelper(callback)
-        mItemTouchHelper!!.attachToRecyclerView(rv_local_cities)
+        with(rv_local_cities) {
+            val adapter = RvLocalCitiesAdapter(this@CitiesManagerFragment)
+            this.adapter = adapter
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
+            mItemTouchHelper = ItemTouchHelper(callback)
+            mItemTouchHelper!!.attachToRecyclerView(rv_local_cities)
+        }
     }
 
-    // эти 2 метода нужны, чтобы вызвать перетаскивание/свайп кнопками
+    // эти 2 метода нужны, чтобы активировать перетаскивание/свайп нажатием на view-компоненты
     //адаптер их не вызывает. пока что ненужные
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
         mItemTouchHelper!!.startDrag(viewHolder!!)
@@ -109,20 +103,15 @@ class CitiesManagerFragment : BaseFragment(), LocalCitiesRVAdapterListener {
 
     //а эти нужные. тут конкретный юзкейс
     override fun deleteCity(city: City) {
-        viewModel.deleteCity(city)
+        model.deleteCity(city)
     }
 
-    override fun reorderLocalCities(reorderedCities: List<City>) {
-        viewModel.reorderLocalCities(reorderedCities)
+    override fun reorderCities(reorderedCities: List<City>) {
+        model.reorderCities(reorderedCities)
     }
 
-    override fun onClick(position: Int) {
-        sharedViewModel.focusedCityPos = position
+    override fun onItemClick(position: Int) {
+        sharedModel.focusedCityPos = position
         findNavController().popBackStack()
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
     }
 }

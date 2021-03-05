@@ -7,55 +7,59 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import com.data.common.Result
 import com.data.model.City
-import com.domain.usecases.DeleteCityUseCase
-import com.domain.usecases.GetCityCurrentWeatherRelationListUseCase
+import com.domain.usecases.DeleteCityUC
+import com.domain.usecases.GetCityDataListUC
 //import com.domain.usecases.GetCityCurrentWeatherRelationListUseCase
-import com.domain.usecases.ReorderCitiesUseCase
+import com.domain.usecases.ReorderCitiesUC
 import kotlinx.coroutines.flow.map
 
 
 class CitiesManagerViewModel(application: Application, private val repo: CitiesManagerRepo) :
     BaseViewModel(application) {
 
-    val getCityCurrentWeatherRelationListUseCase = GetCityCurrentWeatherRelationListUseCase(repo)
 
+    /** Get city with data list*/
+    val getCityDataListUCLD =GetCityDataListUC(repo)
     val cityCurrentWeatherRelationListLiveData =
-        getCityCurrentWeatherRelationListUseCase(Unit).map { result ->
+        getCityDataListUCLD(Unit).map { result ->
             return@map if (result is Result.Success) {
                 Result.Success(result.data.sortedBy { it.city.position })
             } else result
         }.asLiveData()
 
-    private val deleteCityUseCase = DeleteCityUseCase(repo)
-    private val _deleteCityUseCaseLD = MutableLiveData<Result<Int>>()
-    val deleteCityUseCaseLD: LiveData<Result<Int>> = _deleteCityUseCaseLD
-
-    private val reorderLocalCitiesUseCase = ReorderCitiesUseCase(repo)
-    private val _reorderLocalCitiesUseCaseLD = MutableLiveData<Result<Int>>()
-    val reorderLocalCitiesUseCaseLD: LiveData<Result<Int>> = _reorderLocalCitiesUseCaseLD
-
+    /** Delete city*/
+    private val deleteCityUC =DeleteCityUC(repo)
+    private val _deleteCityUCLD = MutableLiveData<Result<Int>>()
+    val deleteCityUCLD: LiveData<Result<Int>> = _deleteCityUCLD
 
     fun deleteCity(city: City) {
-        launchUseCase(deleteCityUseCase, city) {
-            _deleteCityUseCaseLD.value = it
+        launchUseCase(deleteCityUC, city) {
+            _deleteCityUCLD.value = it
         }
     }
 
-    fun reorderLocalCities(reorderedCities: List<City>) {
-        launchUseCase(reorderLocalCitiesUseCase, reorderedCities) {
-            _reorderLocalCitiesUseCaseLD.value = it
+    /** Reorder cities */
+    private val reorderCitiesUC = ReorderCitiesUC(repo)
+    private val _reorderCitiesUCLD = MutableLiveData<Result<Int>>()
+    val reorderCitiesUCLD: LiveData<Result<Int>> = _reorderCitiesUCLD
+
+
+    fun reorderCities(reorderedCities: List<City>) {
+        launchUseCase(reorderCitiesUC, reorderedCities) {
+            _reorderCitiesUCLD.value = it
         }
     }
+
 
     override val useCases = mutableMapOf<String, LiveData<*>>().apply {
         put(
-            getCityCurrentWeatherRelationListUseCase.javaClass.simpleName,
+            getCityDataListUCLD.javaClass.simpleName,
             cityCurrentWeatherRelationListLiveData
         )
-        put(deleteCityUseCase.javaClass.simpleName, deleteCityUseCaseLD)
+        put(deleteCityUC.javaClass.simpleName, deleteCityUCLD)
         put(
-            reorderLocalCitiesUseCase.javaClass.simpleName,
-            reorderLocalCitiesUseCaseLD
+            reorderCitiesUC.javaClass.simpleName,
+            reorderCitiesUCLD
         )
     } as Map<String, LiveData<Result<*>>>
 }

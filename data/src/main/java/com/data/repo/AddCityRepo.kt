@@ -20,7 +20,7 @@ class AddCityRepo(ctx: Context) : BaseRepo(ctx) {
         (executeRequest(RequestParams.GeoRequestParams.createParamsByName(name, lang)) as CityResponse).data
     }
 
-    fun addCity(loc: Location, lang: String) = flow {
+    fun addCityByLoc(loc: Location, lang: String) = flow {
         emit(Result.Loading)
         executeIfConnected {
             val result =

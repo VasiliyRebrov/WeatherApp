@@ -12,9 +12,6 @@
         <action
             android:id="@+id/action_citiesManagerFragment_to_addCityFragment"
             app:destination="@id/addCityFragment" />
-        <action
-            android:id="@+id/action_citiesManagerFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

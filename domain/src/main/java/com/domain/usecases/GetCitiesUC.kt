@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
  * */
 class GetCitiesUC(
     private val repo: BaseRepo,
-    coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+    coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : FlowUseCase<Unit, List<City>>(coroutineDispatcher) {
 
     override fun execute(params: Unit): Flow<Result<List<City>>> = repo.localCities

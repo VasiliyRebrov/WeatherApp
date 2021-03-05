@@ -19,7 +19,7 @@ interface LocalCitiesRVAdapterListener {
     /**
      * отправляем список с городами, чьи позиции были изменены
      * */
-    fun reorderLocalCities(reorderedCities: List<City>)
+    fun reorderCities(reorderedCities: List<City>)
 
-    fun onClick(position: Int)
+    fun onItemClick(position: Int)
 }

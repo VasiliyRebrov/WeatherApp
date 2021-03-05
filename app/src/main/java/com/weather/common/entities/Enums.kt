@@ -1,6 +1,6 @@
 package com.weather.common.entities
 
-enum class DialogAlertType {
+enum class DialogType {
     ALLOW_LOCATION_PERMISSION,
     ENABLE_LOCATION
 }

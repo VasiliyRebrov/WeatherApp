@@ -5,24 +5,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.data.common.Result
 import com.data.repo.SettingsRepo
-import com.domain.usecases.TransformDataUseCase
-import com.weather.common.entities.Config
+import com.domain.usecases.TransformDataUC
+import com.weather.common.entities.Config.Companion.getUnitMeasurePref
 
 class SettingsViewModel(application: Application, repo: SettingsRepo) :
     BaseViewModel(application) {
 
-    private val transformDataUseCase = TransformDataUseCase(repo)
-    private val _transformDataUseCaseLD = MutableLiveData<Result<Unit>>()
-    val transformDataUseCaseLD: LiveData<Result<Unit>> = _transformDataUseCaseLD
+
+    /** Transform data*/
+    private val transformDataUC by lazy { TransformDataUC(repo) }
+    private val _transformDataUCLD = MutableLiveData<Result<Int>>()
+    val transformDataUCLD: LiveData<Result<Int>> = _transformDataUCLD
 
     fun transformData() {
-        launchUseCase(transformDataUseCase, Config.getInstance(getApplication()).unitMeasurePref) {
-            _transformDataUseCaseLD.value = it
+        launchUseCase(transformDataUC, getApplication<Application>().getUnitMeasurePref()) {
+            _transformDataUCLD.value = it
         }
     }
 
-
     override val useCases = mutableMapOf<String, LiveData<*>>().apply {
-        put(transformDataUseCase.javaClass.simpleName, transformDataUseCaseLD)
+        put(transformDataUC.javaClass.simpleName, transformDataUCLD)
     } as Map<String, LiveData<Result<*>>>
 }

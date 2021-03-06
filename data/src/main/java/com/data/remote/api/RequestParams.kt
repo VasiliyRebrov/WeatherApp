@@ -54,6 +54,6 @@ sealed class RequestParams {
 }
 
 fun Location.formatLocation(): String {
-    fun Double.withPrefix() = (if (this > 0) "+" else "-") + latitude
+    fun Double.withPrefix() = (if (this > 0) "+" else "-") + this
     return latitude.withPrefix() + longitude.withPrefix()
 }

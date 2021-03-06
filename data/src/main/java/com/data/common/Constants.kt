@@ -14,7 +14,7 @@ const val NO_NETWORK_MSG = "No network"
 const val NETWORK_PROVIDER_DISABLED_MSG = "Network provider disabled"
 const val CITIES_NOT_FOUND_MSG = "Cities not found"
 const val CITY_ALREADY_EXIST_MSG = "City already exist"
-const val INVALID_ARGS_MSG = "Search for a city in the current language"
+const val INVALID_ARGS_MSG = "Search for a city in the system language"
 
 
 /** Date pattern */

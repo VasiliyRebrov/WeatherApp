@@ -10,6 +10,7 @@ import androidx.core.view.get
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.data.common.*
 import com.data.model.*
@@ -125,10 +126,8 @@ fun update(view: ConstraintLayout, result: Result<CurrentWeather>?) {
  * если Success - список может быть пуст. (предположение)
  * */
 @BindingAdapter("app:update")
-fun update(view: ViewPager2, result: Result<List<City>>?) {
-    view.visibility = if (result == null) View.GONE else View.VISIBLE
+fun update(view: ViewPager, result: Result<List<City>>?) {
     result?.let {
-//        view.visibility = View.VISIBLE
         if (it is Result.Success && it.data.isNotEmpty()) {
             (view.adapter as ViewPagerAdapter).updateList(it.data)
         }

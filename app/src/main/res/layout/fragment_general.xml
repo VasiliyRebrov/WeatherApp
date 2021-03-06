@@ -35,9 +35,10 @@
                 app:tabGravity="center"
                 app:tabIndicatorHeight="0dp" />
         </LinearLayout>
-        <androidx.viewpager2.widget.ViewPager2
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/pager_general"
             android:layout_width="match_parent"
+            android:saveEnabled="false"
             android:layout_height="match_parent"
             app:update="@{model.localCitiesByPosLD}" />
     </FrameLayout>

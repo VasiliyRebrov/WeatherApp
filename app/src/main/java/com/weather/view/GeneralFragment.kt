@@ -85,22 +85,23 @@ class GeneralFragment : BaseFragment() {
 
     private fun initPager() {
         with(pager_general) {
-            val adapter = ViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+            val adapter = ViewPagerAdapter(childFragmentManager)
             this.adapter = adapter
-            offscreenPageLimit = 10
-            registerOnPageChangeCallback(object :
-                ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    if (position != 0) sharedModel.focusedCityPos = position
-                    tb_general.title = adapter.getFocusedCityName(position)
-                }
-            })
-            TabLayoutMediator(tab_general, pager_general) { _, _ -> }.attach()
-            lifecycleScope.launch {
-                pager_general.awaitLayoutChange {
-                    pager_general.currentItem = sharedModel.focusedCityPos
-                }
-            }
+//            tab_general.setupWithViewPager(this)
+//            offscreenPageLimit = 10
+//            registerOnPageChangeCallback(object :
+//                ViewPager2.OnPageChangeCallback() {
+//                override fun onPageSelected(position: Int) {
+//                    if (position != 0) sharedModel.focusedCityPos = position
+//                    tb_general.title = adapter.getFocusedCityName(position)
+//                }
+//            })
+//            TabLayoutMediator(tab_general, pager_general) { _, _ -> }.attach()
+//            lifecycleScope.launch {
+//                pager_general.awaitLayoutChange {
+//                    pager_general.currentItem = sharedModel.focusedCityPos
+//                }
+//            }
         }
     }
 

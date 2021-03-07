@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.map
 import java.lang.Exception
 
 /**
- * [GetDataUC] возвращает [Flow], дающий список локальных погодных данных
+ * [GetDataUseCase] возвращает [Flow], дающий список локальных погодных данных
  * */
-class GetDataUC(
+class GetDataUseCase(
     private val repo: CityItemRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : FlowUseCase<Int, WeatherData>(coroutineDispatcher) {

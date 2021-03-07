@@ -12,14 +12,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * [DefineLocUC] запускает определение локации и завершается.
- * Далее, когда локация определена - [LocationListener] вызывает [AddCityByLocUC].
+ * [DefineLocUseCase] запускает определение локации и завершается.
+ * Далее, когда локация определена - [LocationListener] вызывает [AddCityByLocUseCase].
  * Интервал между этими юз-кейсами ощутим, поэтому [map] нужен для преобразования [Result.Success] в [Result.Loading],
  * для отображения статуса выполнения задачи
  * Для работы с локацией нужен главный поток, поэтому исп. [Dispatchers.Main]
  */
 
-class DefineLocUC(
+class DefineLocUseCase(
     private val repo: AddCityRepo,
     private val locManager: LocationManager,
     private val locListener: LocationListener,

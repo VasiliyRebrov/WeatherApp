@@ -8,7 +8,7 @@
     tools:context=".view.MyDialogFragment">
 
     <TextView
-        android:id="@+id/text_dialog_description"
+        android:id="@+id/tv_dialog_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +22,7 @@
         android:layout_marginTop="8dp"
         android:text="Настройки"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_dialog_description" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_dialog_description" />
 
     <Button
         android:id="@+id/but_dialog_cancel"

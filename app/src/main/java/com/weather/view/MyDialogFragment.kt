@@ -10,23 +10,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.weather.R
 import com.weather.common.entities.DialogType
-import kotlinx.android.synthetic.main.fragment_blank.*
+import kotlinx.android.synthetic.main.fragment_dialog.*
 
 private const val DIALOG_TYPE = "DIALOG_TYPE"
 
 class MyDialogFragment : DialogFragment() {
-
-    private val dialogType by lazy {
-        val ordinal = requireArguments().getInt(DIALOG_TYPE)
-        DialogType.values()[ordinal]
-    }
+    private val dialogType by lazy { DialogType.values()[requireArguments().getInt(DIALOG_TYPE)] }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         isCancelable = false
-        return inflater.inflate(R.layout.fragment_blank, container, false)
+        return inflater.inflate(R.layout.fragment_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,7 +32,7 @@ class MyDialogFragment : DialogFragment() {
 
     private fun initComponents() {
         val (description, action) = buildComponents()
-        text_dialog_description.text = description
+        tv_dialog_description.text = description
         but_dialog_action.setOnClickListener(action)
         but_dialog_cancel.setOnClickListener { dismiss() }
     }

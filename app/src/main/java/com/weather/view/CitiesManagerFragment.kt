@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.fragment_cities_manager.*
 class CitiesManagerFragment : BaseFragment(), LocalCitiesRVAdapterListener {
     override val model: CitiesManagerViewModel
         get() = super.model as CitiesManagerViewModel
+
     override val localCitiesObserver: (Result<List<City>>) -> Unit = {
         if (it is Result.Success && it.data.isEmpty())
             findNavController().navigate(R.id.action_citiesManagerFragment_to_addCityFragment)
@@ -80,14 +81,14 @@ class CitiesManagerFragment : BaseFragment(), LocalCitiesRVAdapterListener {
     }
 
     private fun initRecycler() {
-        with(rv_local_cities) {
+        with(recycler_cities_manager_local_cities) {
             val adapter = RvLocalCitiesAdapter(this@CitiesManagerFragment)
             this.adapter = adapter
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
             mItemTouchHelper = ItemTouchHelper(callback)
-            mItemTouchHelper!!.attachToRecyclerView(rv_local_cities)
+            mItemTouchHelper!!.attachToRecyclerView(this)
         }
     }
 
@@ -102,11 +103,11 @@ class CitiesManagerFragment : BaseFragment(), LocalCitiesRVAdapterListener {
     }
 
     //а эти нужные. тут конкретный юзкейс
-    override fun deleteCity(city: City) {
+    override fun onDeleteCity(city: City) {
         model.deleteCity(city)
     }
 
-    override fun reorderCities(reorderedCities: List<City>) {
+    override fun onReorderCities(reorderedCities: List<City>) {
         model.reorderCities(reorderedCities)
     }
 

@@ -7,6 +7,6 @@
         android:id="@+id/action_settings"
         android:icon="@drawable/baseline_settings_applications_white_24dp"
         android:orderInCategory="100"
-        android:title="add city"
+        android:title="settings"
         app:showAsAction="always" />
 </menu>

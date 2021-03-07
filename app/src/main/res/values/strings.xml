@@ -9,15 +9,9 @@
         <item>Metric</item>
         <item>Imperial</item>
     </string-array>
-
     <string name="temp_value">%1$d°</string>
     <string name="humidity_value">%1$s</string>
     <string name="wind_speed_value">%1$d %2$s</string>
     <string name="visibility_value">%1$d км</string>
     <string name="pressure_value">%1$d гпа</string>
-
-    <!--    <string name="item_album_description">%1$s %2$s tracks: %3$s</string>-->
-    <!--    <string name="album_description">%1$s  %3$s</string>-->
-    <!--    <string name="album_price">%1$s %2$s</string>-->
-
 </resources>

@@ -11,10 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.data.common.NoNetworkException
 import com.data.common.Result
 import com.data.model.City
-import com.domain.usecases.RefreshDataUC
 import com.weather.R
-import com.weather.common.adapters.RvDailyWeatherAdapter
-import com.weather.common.adapters.RvHourlyWeatherAdapter
+import com.weather.common.adapters.RecyclerDailyAdapter
+import com.weather.common.adapters.RecyclerHourlyAdapter
 import com.weather.databinding.FragmentCityItemBinding
 import com.weather.viewmodel.CityItemViewModel
 import com.weather.viewmodel.ViewModelFactory
@@ -27,7 +26,7 @@ class CityItemFragment : BaseFragment() {
         ViewModelFactory(
             this::class.java.simpleName,
             requireActivity().application,
-            City.createCityByRegex(requireArguments().getString(ARG_CITY_REGEX)!!)
+            City.createCityByString(requireArguments().getString(ARG_CITY_REGEX)!!)
         )
     }
 
@@ -58,20 +57,20 @@ class CityItemFragment : BaseFragment() {
 
     private fun initComponents() {
         initSwipe()
-        initHourlyListRecycler()
-        initDailyListRecycler()
+        initHourlyRecycler()
+        initDailyRecycler()
 
     }
 
     private fun initSwipe() {
-        swipe_city_item_to_refresh_weather_data.setOnRefreshListener {
+        swipe_city_item_refresh_data.setOnRefreshListener {
             model.refreshData()
         }
     }
 
-    private fun initHourlyListRecycler() {
-        with(rv_item_hourly) {
-            adapter = RvHourlyWeatherAdapter()
+    private fun initHourlyRecycler() {
+        with(recycler_city_item_hourly_data) {
+            adapter = RecyclerHourlyAdapter()
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             setHasFixedSize(true)
@@ -79,9 +78,9 @@ class CityItemFragment : BaseFragment() {
     }
 
 
-    private fun initDailyListRecycler() {
-        with(rv_item_daily) {
-            adapter = RvDailyWeatherAdapter()
+    private fun initDailyRecycler() {
+        with(recycler_city_item_daily_data) {
+            adapter = RecyclerDailyAdapter()
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
         }

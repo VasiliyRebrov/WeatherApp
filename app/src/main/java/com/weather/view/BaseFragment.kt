@@ -21,14 +21,14 @@ import com.weather.viewmodel.ViewModelFactory
 abstract class BaseFragment : Fragment() {
     protected var _binding: ViewDataBinding? = null
 
-    /**исп. между onCreateView() & onDestroyView()*/
+    /**исп. между [onCreateView] & [onDestroyView]*/
     protected val binding get() = _binding!!
 
     val sharedModel: MainViewModel by activityViewModels {
         ViewModelFactory(MainActivity::class.java.simpleName, requireActivity().application)
     }
 
-    /** Сделай приведение в субклассе к нужному типу субклассу BaseViewModel*/
+    /** Сделай приведение в субклассе к нужному типу субкласса [BaseViewModel]*/
     open val model: BaseViewModel by viewModels {
         ViewModelFactory(this::class.java.simpleName, requireActivity().application)
     }
@@ -61,18 +61,18 @@ abstract class BaseFragment : Fragment() {
      * Переопределяя, необходимо сохранить вызов базовой реализации*/
     protected open fun initObservers() {
         viewLifecycleOwner.initBaseObservers(model)
-        sharedModel.localCitiesLD.observe(viewLifecycleOwner, localCitiesObserver)
+        sharedModel.localCitiesByIdLD.observe(viewLifecycleOwner, localCitiesObserver)
         model.errorEvent.observe(viewLifecycleOwner, errorEventObserver)
     }
 
-    /** Наблюдатель локальных городов*/
+    /** [localCitiesObserver] - базовая реализация надлюдателя локальных городов.
+     * Переопредели, если необходимо реагировать на изменения списка*/
     open val localCitiesObserver: (Result<List<City>>) -> Unit = {}
 
     /**
      * [errorEventObserver] - базовая реализация обработки событий ошибок.
      * По умолчанию каждая ошибка вызывает [Toast].
-     * Переопредели, конкретизируя каждый кейс
-     * */
+     * Переопредели, конкретизируя конкретный кейс*/
     protected open val errorEventObserver = Observer<Result.Error> {
         Toast.makeText(requireContext(), it.exception.cause!!.message, Toast.LENGTH_SHORT).show()
     }

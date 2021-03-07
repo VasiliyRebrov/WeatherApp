@@ -10,61 +10,59 @@
             type="com.weather.viewmodel.AddCityViewModel" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.AddCityFragment">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar_main"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tb_add_city"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:layout_height="?attr/actionBarSize"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/tb_add_city"
+            <EditText
+                android:id="@+id/et_add_city_find_by_name"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlways">
+                android:hint="City"
+                android:imeOptions="actionSearch"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:lines="1"
+                android:singleLine="true" />
+        </androidx.appcompat.widget.Toolbar>
 
-                <EditText
-                    android:id="@+id/et_add_city_find_by_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:imeOptions="actionSearch"
-                    android:importantForAutofill="no"
-                    android:inputType="text"
-                    android:lines="1"
-                    android:singleLine="true" />
-
-
-            </androidx.appcompat.widget.Toolbar>
-
-            <Button
-                android:id="@+id/but_add_city_find_by_location"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="определить город" />
-
-
-        </com.google.android.material.appbar.AppBarLayout>
+        <Button
+            android:id="@+id/but_add_city_by_loc"
+            style="@style/CustomButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/accent_but"
+            android:scaleType="fitXY"
+            android:text="Add current location"
+            android:textAppearance="@style/CustomButtonStyle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tb_add_city" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/text_main_title_status"
+                android:id="@+id/tv_add_city_msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="start"
                 android:padding="8dp"
-                android:text="@{viewmodel.baseUCLD}" />
+                android:text="@{viewmodel.baseUseCaseLD}" />
 
             <Button
                 android:id="@+id/but_add_city_retry"
@@ -74,18 +72,19 @@
                 android:onClick="@{()->viewmodel.retry()}"
                 android:text="retry"
                 android:visibility="gone"
-                app:update="@{viewmodel.baseUCLD}" />
+                app:update="@{viewmodel.baseUseCaseLD}" />
         </LinearLayout>
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_add_city_results"
+            android:id="@+id/recycler_add_city_result"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
+            android:layout_height="wrap_content"
             android:background="@color/colorBlack"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:update228="@{viewmodel.findCityByNameUCLD}" />
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/but_add_city_by_loc"
+            app:update_remote_rv="@{viewmodel.findCityByNameUseCaseLD}" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

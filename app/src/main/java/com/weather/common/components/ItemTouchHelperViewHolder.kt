@@ -1,19 +1,8 @@
 package com.weather.common.components
 
-/**
- * интерфейс полезен в первую очередь при использовании анимаций
- * */
-interface ItemTouchHelperViewHolder {
-    /**
-     * вызывается при активации элемента
-     * например, при активации перетаскивания или смахивания
-     * */
-    fun onItemSelected()
 
-    /**
-     * вызывается при отпускании view-компонента списка
-     * например, после перетаскивания или смахивания
-     * */
+interface ItemTouchHelperViewHolder {
+    fun onItemSelected()
     fun onItemClear()
 
 }

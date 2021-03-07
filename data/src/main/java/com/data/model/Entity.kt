@@ -43,8 +43,13 @@ data class City(
     }
 
 
+    override fun toString() = component1().toString() + SEPARATOR + component2() +
+            SEPARATOR + component3() + SEPARATOR + component4() + SEPARATOR + component5() +
+            SEPARATOR + component6() + SEPARATOR + component7() + SEPARATOR + component8() +
+            SEPARATOR + component9() + SEPARATOR + component10()
+
     companion object {
-        fun createCityByRegex(cityRegex: String) = with(cityRegex.split(SEPARATOR)) {
+        fun createCityByString(cityRegex: String) = with(cityRegex.split(SEPARATOR)) {
             City(
                 this[0].toInt(), this[1], this[2], this[3], this[4],
                 this[5], this[6], this[7], this[8], this[9].toInt()
@@ -52,11 +57,6 @@ data class City(
         }
     }
 }
-
-fun City.toRegex() = component1().toString() + SEPARATOR + component2() +
-        SEPARATOR + component3() + SEPARATOR + component4() + SEPARATOR + component5() +
-        SEPARATOR + component6() + SEPARATOR + component7() + SEPARATOR + component8() +
-        SEPARATOR + component9() + SEPARATOR + component10()
 
 @Entity(tableName = "weather_data")
 data class WeatherData(

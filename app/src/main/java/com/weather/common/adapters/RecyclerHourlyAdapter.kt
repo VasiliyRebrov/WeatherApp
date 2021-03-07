@@ -5,19 +5,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.data.model.HourlyWeather
-import com.weather.databinding.CardHourlyWeatherItemBinding
+import com.weather.databinding.CardHourlyItemBinding
 import kotlin.math.roundToInt
 
-class RvHourlyWeatherAdapter : RecyclerView.Adapter<RvHourlyWeatherAdapter.ViewHolder>() {
+class RecyclerHourlyAdapter : RecyclerView.Adapter<RecyclerHourlyAdapter.ViewHolder>() {
     val hourlyPresList = mutableListOf<HourlyWeather>()
 
-    class ViewHolder(val binding: CardHourlyWeatherItemBinding) :
+    class ViewHolder(val binding: CardHourlyItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(hourly: HourlyWeather) {
-            binding.tvDateCardHourly.text = hourly.dt
-            if (hourly.pop > 0) binding.tvPopCardHourly.text = "${hourly.pop}%"
-            binding.tvTempCardHourly.text = "${hourly.temp.roundToInt()}°"
-            binding.imgCardHourly.setImageResource(hourly.icon)
+            binding.tvCardHourlyItemDate.text = hourly.dt
+            if (hourly.pop > 0) binding.tvCardHourlyItemPop.text = "${hourly.pop}%"
+            binding.tvCardHourlyItemTemp.text = "${hourly.temp.roundToInt()}°"
+            binding.imgCardHourlyItemStatus.setImageResource(hourly.icon)
             binding.root.setOnClickListener {
                 Toast.makeText(it.context, "KEK", Toast.LENGTH_SHORT).show()
             }
@@ -27,8 +27,8 @@ class RvHourlyWeatherAdapter : RecyclerView.Adapter<RvHourlyWeatherAdapter.ViewH
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val itemBinding: CardHourlyWeatherItemBinding =
-            CardHourlyWeatherItemBinding.inflate(layoutInflater, parent, false)
+        val itemBinding: CardHourlyItemBinding =
+            CardHourlyItemBinding.inflate(layoutInflater, parent, false)
         return ViewHolder(itemBinding)
     }
 

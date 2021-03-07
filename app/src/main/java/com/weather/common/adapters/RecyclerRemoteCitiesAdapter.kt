@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.data.model.City
 import com.weather.databinding.CardRemoteCitiesItemBinding
 
-class RvRemoteCitiesAdapter(private val listener: Listener) :
-    RecyclerView.Adapter<RvRemoteCitiesAdapter.ViewHolder>() {
+class RecyclerRemoteCitiesAdapter(private val listener: Listener) :
+    RecyclerView.Adapter<RecyclerRemoteCitiesAdapter.ViewHolder>() {
     private val cities = mutableListOf<City>()
 
     fun interface Listener {
@@ -34,7 +34,7 @@ class RvRemoteCitiesAdapter(private val listener: Listener) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(cities[position])
-        holder.binding.imageRemoteCitiesAdd.setOnClickListener {
+        holder.binding.imgCardRemoteCitiesItemAdd.setOnClickListener {
             listener.addCity(cities[position])
         }
     }

@@ -13,10 +13,10 @@
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_city_item_to_refresh_weather_data"
+        android:id="@+id/swipe_city_item_refresh_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:progress="@{viewmodel.baseUCLD}">
+        app:progress="@{viewmodel.baseUseCaseLD}">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -27,8 +27,8 @@
                 android:layout_height="wrap_content">
 
                 <include
-                    android:id="@+id/layout_item_current"
-                    layout="@layout/layout_current_weather_top"
+                    android:id="@+id/layout_city_item_current_data"
+                    layout="@layout/layout_current_data_top"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     app:layout_constraintDimensionRatio="1:1"
@@ -38,30 +38,30 @@
                     app:viewmodel="@{viewmodel}" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_item_hourly"
+                    android:id="@+id/recycler_city_item_hourly_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/layout_item_current"
-                    app:update="@{viewmodel.hourlyLD}" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_city_item_current_data"
+                    app:update_hourly_rv="@{viewmodel.hourlyLD}" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_item_daily"
+                    android:id="@+id/recycler_city_item_daily_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rv_item_hourly"
-                    app:update111="@{viewmodel.dailyLD}" />
+                    app:layout_constraintTop_toBottomOf="@id/recycler_city_item_hourly_data"
+                    app:update_daily_rv="@{viewmodel.dailyLD}" />
 
                 <GridLayout
-                    android:id="@+id/grid_item_current"
+                    android:id="@+id/grid_city_item_current_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:columnCount="3"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_item_daily"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_city_item_daily_data"
                     app:update="@{viewmodel.currentLD}">
 
                     <include

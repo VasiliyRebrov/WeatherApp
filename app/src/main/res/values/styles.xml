@@ -28,7 +28,10 @@
         <item name="android:textColor">@color/colorHint</item>
     </style>
 
-    <!--    <style name="PageParagraphCustomText" parent="@android:style/TextAppearance">-->
-    <!--        <item name="android:textSize">14sp</item>-->
-    <!--    </style>-->
+    <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
 </resources>

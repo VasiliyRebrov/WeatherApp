@@ -6,9 +6,9 @@ import androidx.lifecycle.Observer
 import com.data.common.Result
 import com.data.model.City
 import com.data.repo.BaseRepo
-import com.domain.usecases.GetCitiesUC
-import com.domain.usecases.RefreshDataUC
-import com.domain.usecases.RefreshWeatherParams
+import com.domain.usecases.GetCitiesUseCase
+import com.domain.usecases.RefreshDataUseCase
+import com.domain.usecases.RefreshWeatherUseCaseParams
 import com.weather.common.entities.Config.Companion.getUnitMeasurePref
 import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.map
@@ -19,49 +19,29 @@ class MainViewModel(application: Application, repo: BaseRepo) : BaseViewModel(ap
     private val actualCities = mutableListOf<City>()
     var focusedCityPos = 0
 
-    override fun onCleared() {
-        localCitiesLD.removeObserver(observer)
-        super.onCleared()
-    }
-    /**
-     * в начале вернет по умолчанию Loading благодаря stateFlow
-     * stateFlow здесь фильтрует на уникальное значение. Единственный полезный для этого случай
-     * - пересортировка.
-     * Когда она происходит - меняется поле pos. Но его не охватывают проверки equals, а также
-     * здесь список сортируется по id(в usecase). Это значит, про при пересортировке мы получаем
-     * одинаковый список. stateFlow его не примет, и следовательно, наблюдатели не сработают
-     *
-     */
-
-    /** полученный список городов сортируется по id.*/
-    /** сортировка по id позволяет исключить изменения, после юзкейса пересортировки,
-     * когда меняется поле pos */
-
-    /** Get local cities*/
-    private val getCitiesUC by lazy { GetCitiesUC(repo) }
+    /** Get local cities use case*/
+    private val getCitiesUseCase = GetCitiesUseCase(repo)
 
     /**
-     * [localCitiesLD] по умолчанию [Result.Loading]. Не может быть [null]
+     * [localCitiesByIdLD] Не может быть [null]. По умолчанию [Result.Loading].
+     * Полученный список сортируется по [City.cityId].
+     * [StateFlow] пропускает только уникальное значение, что гарантирует получение списка на удаление\добавление только при его фактическом изменении.
+     * События, фактически не меняющие список, такие как пересорировка - они не придут сюда, тк при этом меняется поле [City.position],которое не охватывается [equals]
      * */
-    val localCitiesLD = getCitiesUC(Unit)
+    val localCitiesByIdLD = getCitiesUseCase(Unit)
         .map {
-            return@map if (it is Result.Success && it.data.isNotEmpty()) {
+            return@map if (it is Result.Success && it.data.isNotEmpty())
                 Result.Success(it.data.sortedBy { city -> city.cityId })
-            } else it
+            else it
         }.stateIn(viewModelScope, Eagerly, Result.Loading).asLiveData()
 
     private val observer =
         Observer<Result<List<City>>> { localCities -> observeCities(localCities) }
 
     init {
-        localCitiesLD.observeForever(observer)
+        localCitiesByIdLD.observeForever(observer)
     }
 
-    /**
-     * метод будет вызван только когда содержание списка изменилось (добавление/удаление)
-     * не будет вызван, когда была пересортировка элементов
-     * также будет вызван с Loading при инициализации
-     * */
     private fun observeCities(localCities: Result<List<City>>) {
         if (localCities is Result.Success) {
             val (newCities, oldCities) = defineDifference(localCities.data)
@@ -80,24 +60,30 @@ class MainViewModel(application: Application, repo: BaseRepo) : BaseViewModel(ap
     }
 
     private fun refreshData(newCities: List<City>, oldCities: List<City>) {
-        val params = RefreshWeatherParams(
+        val params = RefreshWeatherUseCaseParams(
             getApplication<Application>().getUnitMeasurePref(),
             currentLang,
             newCities,
             oldCities,
         )
-        launchUseCase(refreshDataUC, params) {
-            _refreshDataUCLD.value = it
+        launchUseCase(refreshDataUseCase, params) {
+            _refreshDataUseCaseLD.value = it
         }
     }
 
-    /** Refresh data*/
-    private val refreshDataUC by lazy { RefreshDataUC(repo) }
-    private val _refreshDataUCLD = MutableLiveData<Result<String>>()
-    val refreshDataUCLD: LiveData<Result<String>> = _refreshDataUCLD
+    /** Refresh data use case*/
+    private val refreshDataUseCase = RefreshDataUseCase(repo)
+    private val _refreshDataUseCaseLD = MutableLiveData<Result<String>>()
+    val refreshDataUseCaseLD: LiveData<Result<String>> = _refreshDataUseCaseLD
 
+    /** Others*/
     override val useCases = mutableMapOf<String, LiveData<*>>().apply {
-        put(refreshDataUC.javaClass.simpleName, refreshDataUCLD)
-        put(getCitiesUC.javaClass.simpleName, localCitiesLD)
+        put(refreshDataUseCase.javaClass.simpleName, refreshDataUseCaseLD)
+        put(getCitiesUseCase.javaClass.simpleName, localCitiesByIdLD)
     } as Map<String, LiveData<Result<*>>>
+
+    override fun onCleared() {
+        localCitiesByIdLD.removeObserver(observer)
+        super.onCleared()
+    }
 }

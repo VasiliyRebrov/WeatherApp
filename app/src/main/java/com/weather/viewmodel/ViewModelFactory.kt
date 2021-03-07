@@ -12,30 +12,14 @@ class ViewModelFactory(
     private val city: City? = null
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T = when (viewClassName) {
-        "MainActivity" -> MainViewModel(
-            application,
-            BaseRepo(application)
-        )
-        "GeneralFragment" -> GeneralViewModel(
-            application,
-            BaseRepo(application)
-        )
-        "CityItemFragment" -> CityItemViewModel(
-            application,
-            city!!,
-            CityItemRepo(application)
-        )
+        "MainActivity" -> MainViewModel(application, BaseRepo(application))
+        "GeneralFragment" -> GeneralViewModel(application, BaseRepo(application))
+        "CityItemFragment" -> CityItemViewModel(application, city!!, CityItemRepo(application))
+        "AddCityFragment" -> AddCityViewModel(application, AddCityRepo(application))
+        "SettingsFragment" -> SettingsViewModel(application, SettingsRepo(application))
         "CitiesManagerFragment" -> CitiesManagerViewModel(
             application,
             CitiesManagerRepo(application)
-        )
-        "AddCityFragment" -> AddCityViewModel(
-            application,
-            AddCityRepo(application)
-        )
-        "SettingsFragment" -> SettingsViewModel(
-            application,
-            SettingsRepo(application)
         )
         else -> throw Exception()
     } as T

@@ -19,7 +19,7 @@
         tools:context=".view.MainActivity">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar_main"
+            android:id="@+id/appbar_cities_manager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -35,9 +35,9 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_local_cities"
+            android:id="@+id/recycler_cities_manager_local_cities"
             android:layout_width="match_parent"
-            app:update2="@{viewmodel.cityCurrentWeatherRelationListLiveData}"
+            app:update="@{viewmodel.getCityDataListUseCaseLD}"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
    />

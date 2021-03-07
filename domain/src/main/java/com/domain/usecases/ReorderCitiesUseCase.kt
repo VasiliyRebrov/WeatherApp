@@ -9,10 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
 /**
- * [ReorderCitiesUC] делает пересортировку локальных городов, путем редактирования их полей [City.position]
+ * [ReorderCitiesUseCase] делает пересортировку локальных городов, путем редактирования их полей [City.position]
  * Возвращает [Int] количество редактированных городов
  * */
-class ReorderCitiesUC(
+class ReorderCitiesUseCase(
     private val repo: CitiesManagerRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : FlowUseCase<List<City>, Int>(coroutineDispatcher) {

@@ -15,17 +15,17 @@
         app:update="@{viewmodel.currentLD}">
 
         <TextView
-            android:id="@+id/tv_current_weather_temp"
+            android:id="@+id/tv_current_data_top_temp"
             style="@style/MainCustomText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="--"
-            app:layout_constraintBottom_toTopOf="@+id/tv_current_weather_status"
+            app:layout_constraintBottom_toTopOf="@+id/tv_current_data_top_status"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/tv_current_weather_status"
+            android:id="@+id/tv_current_data_top_status"
             style="@style/TitlesCustomText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,11 +35,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_current_weather_feels"
+            android:id="@+id/tv_current_data_top_feels"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_current_weather_status" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_current_data_top_status" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

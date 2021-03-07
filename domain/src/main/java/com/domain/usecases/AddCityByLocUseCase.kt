@@ -8,19 +8,19 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
-data class AddCityByLocUCParams(
+data class AddCityByLocUseCaseParams(
     val loc: Location,
     val lang: String
 )
 
 /**
- * [AddCityByLocUC] вызывается для поиска городов по данным [Location] и добавления ближайшего.
+ * [AddCityByLocUseCase] вызывается для поиска городов по данным [Location] и добавления ближайшего.
  * Возвращает [Long] id внесенного города
  * */
-class AddCityByLocUC(
+class AddCityByLocUseCase(
     private val repo: AddCityRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : FlowUseCase<AddCityByLocUCParams, Long>(coroutineDispatcher) {
-    override fun execute(params: AddCityByLocUCParams): Flow<Result<Long>> =
+) : FlowUseCase<AddCityByLocUseCaseParams, Long>(coroutineDispatcher) {
+    override fun execute(params: AddCityByLocUseCaseParams): Flow<Result<Long>> =
         repo.addCityByLoc(params.loc, params.lang)
 }

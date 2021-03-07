@@ -44,7 +44,6 @@ class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
         viewHolder.itemView.alpha = ALPHA_FULL
-
         if (viewHolder is ItemTouchHelperViewHolder) {
             (viewHolder as ItemTouchHelperViewHolder).onItemClear()
         }

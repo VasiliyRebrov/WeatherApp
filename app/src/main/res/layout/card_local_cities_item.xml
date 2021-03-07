@@ -15,7 +15,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/img_card_city_icon"
+                android:id="@+id/img_card_local_cities_item_status"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:scaleType="fitXY"
@@ -25,32 +25,32 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_card_city_temp"
+                android:id="@+id/tv_card_local_cities_item_temp"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="--"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toStartOf="@+id/img_card_city_icon"
+                app:layout_constraintEnd_toStartOf="@id/img_card_local_cities_item_status"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_card_city_name"
+                android:id="@+id/tv_card_local_cities_item_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:lines="1"
-                app:layout_constraintEnd_toStartOf="@+id/tv_card_city_temp"
+                app:layout_constraintEnd_toStartOf="@+id/tv_card_local_cities_item_temp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_card_city_region"
+                android:id="@+id/tv_card_local_cities_item_region"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:lines="1"
-                app:layout_constraintEnd_toStartOf="@+id/tv_card_city_temp"
+                app:layout_constraintEnd_toStartOf="@+id/tv_card_local_cities_item_temp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_card_city_name" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_card_local_cities_item_name" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

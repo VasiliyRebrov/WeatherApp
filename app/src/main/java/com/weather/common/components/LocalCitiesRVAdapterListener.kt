@@ -7,19 +7,10 @@ import com.data.model.City
  * интерфейс для взаимодействия RecyclerView адаптера и View
  * */
 interface LocalCitiesRVAdapterListener {
-
     fun onStartDrag(viewHolder: RecyclerView.ViewHolder?)
     fun onStartSwipe(viewHolder: RecyclerView.ViewHolder?)
 
-    /**
-     * у удаляем конкретный город  (в будущем будут города)
-     * */
-    fun deleteCity(city: City)
-
-    /**
-     * отправляем список с городами, чьи позиции были изменены
-     * */
-    fun reorderCities(reorderedCities: List<City>)
-
+    fun onDeleteCity(city: City)
+    fun onReorderCities(reorderedCities: List<City>)
     fun onItemClick(position: Int)
 }

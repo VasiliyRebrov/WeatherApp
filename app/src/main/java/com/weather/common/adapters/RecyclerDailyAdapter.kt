@@ -4,28 +4,28 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.data.model.DailyWeather
-import com.weather.databinding.CardDailyWeatherItemBinding
+import com.weather.databinding.CardDailyItemBinding
 import kotlin.math.roundToInt
 
 
-class RvDailyWeatherAdapter : RecyclerView.Adapter<RvDailyWeatherAdapter.ViewHolder>() {
+class RecyclerDailyAdapter : RecyclerView.Adapter<RecyclerDailyAdapter.ViewHolder>() {
     val dailyList = mutableListOf<DailyWeather>()
 
-    class ViewHolder(val binding: CardDailyWeatherItemBinding) :
+    class ViewHolder(val binding: CardDailyItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(daily: DailyWeather) {
-            binding.tvCardDailyDate.text = daily.dt
-            binding.imgCardDailyStatus.setImageResource(daily.icon)
-            binding.tvCardDailyMinTemp.text = "${daily.tempMin.roundToInt()} °"
-            binding.tvCardDailyMaxTemp.text = "${daily.tempMax.roundToInt()} °"
+            binding.tvCardDailyItemDate.text = daily.dt
+            binding.imgCardDailyItemStatus.setImageResource(daily.icon)
+            binding.tvCardDailyItemMinTemp.text = "${daily.tempMin.roundToInt()} °"
+            binding.tvCardDailyItemMaxTemp.text = "${daily.tempMax.roundToInt()} °"
             binding.executePendingBindings()
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val itemBinding: CardDailyWeatherItemBinding =
-            CardDailyWeatherItemBinding.inflate(layoutInflater, parent, false)
+        val itemBinding: CardDailyItemBinding =
+            CardDailyItemBinding.inflate(layoutInflater, parent, false)
         return ViewHolder(itemBinding)
     }
 

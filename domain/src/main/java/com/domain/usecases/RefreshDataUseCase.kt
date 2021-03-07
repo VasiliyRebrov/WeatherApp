@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
-data class RefreshWeatherParams(
+data class RefreshWeatherUseCaseParams(
     val unitMeasurePref: String,
     val lang: String,
     val newCities: List<City>,
@@ -16,13 +16,13 @@ data class RefreshWeatherParams(
 )
 
 /**
- * [RefreshDataUC] обновляет погодные данные
+ * [RefreshDataUseCase] обновляет погодные данные
  * */
-class RefreshDataUC(
+class RefreshDataUseCase(
     private val repo: BaseRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : FlowUseCase<RefreshWeatherParams, String>(coroutineDispatcher) {
-    override fun execute(params: RefreshWeatherParams): Flow<Result<String>> =
+) : FlowUseCase<RefreshWeatherUseCaseParams, String>(coroutineDispatcher) {
+    override fun execute(params: RefreshWeatherUseCaseParams): Flow<Result<String>> =
         repo.refreshData(
             params.newCities,
             params.oldCities,

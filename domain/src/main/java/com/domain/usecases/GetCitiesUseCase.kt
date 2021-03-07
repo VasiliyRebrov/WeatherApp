@@ -9,9 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
 /**
- * [GetCitiesUC] возвращает [Flow], дающий список локальных городов
+ * [GetCitiesUseCase] возвращает [Flow], дающий список локальных городов
  * */
-class GetCitiesUC(
+class GetCitiesUseCase(
     private val repo: BaseRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : FlowUseCase<Unit, List<City>>(coroutineDispatcher) {

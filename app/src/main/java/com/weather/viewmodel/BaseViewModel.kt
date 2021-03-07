@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 abstract class BaseViewModel(application: Application) : AndroidViewModel(application) {
-    /** [currentLang] дает текущую конфиг языка*/
+    /** [currentLang] дает текущий конфиг языка*/
     val currentLang: String
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             LocaleList.getDefault().get(0).language
@@ -22,10 +22,10 @@ abstract class BaseViewModel(application: Application) : AndroidViewModel(applic
     /** [useCases] - это контейнер всех ливдат текущего субкласса, которые обрабатывают юзкейсы.*/
     abstract val useCases: Map<String, LiveData<Result<*>>>
 
-    /**
-     * [baseUCLD] - принимает всез начения [useCases]. Обращайся сюда, если результат [LiveData] являет состояние
+    /** [baseUseCaseLD] - принимает всез начения [useCases].
+     * Обращайся сюда, если результат [LiveData] являет состояние.
      */
-    val baseUCLD: LiveData<Result<*>> by lazy {
+    val baseUseCaseLD: LiveData<Result<*>> by lazy {
         MediatorLiveData<Result<*>>().apply {
             useCases.forEach { entry ->
                 addSource(entry.value) { result ->
@@ -36,14 +36,13 @@ abstract class BaseViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    /**
-     * [_errorEvent] - принимает все значения [useCases], где результат [Result.Error].
-     * Обращайся сюда, если результат [LiveData] являет событие
-     * */
+    /** [_errorEvent] - принимает все значения [useCases], где результат [Result.Error].
+     * Обращайся сюда, если результат [LiveData] являет событие.
+     */
     private val _errorEvent by lazy { SingleLiveEvent<Result.Error>() }
     val errorEvent: LiveData<Result.Error> by lazy { _errorEvent }
 
-    /** [launchUseCase] - метод для запуска юз-кейсов, релазаций [FlowUseCase]*/
+    /** [launchUseCase] - метод для запуска юз-кейсов-релазаций [FlowUseCase]*/
     protected fun <P, R> launchUseCase(
         useCase: FlowUseCase<P, R>,
         parameters: P,

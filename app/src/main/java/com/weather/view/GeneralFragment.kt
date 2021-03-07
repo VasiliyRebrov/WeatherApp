@@ -1,27 +1,19 @@
 package com.weather.view
 
+import android.database.DataSetObserver
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager.widget.ViewPager
 import com.data.common.Result
 import com.data.model.City
-import com.google.android.material.tabs.TabLayoutMediator
 import com.weather.R
-import com.weather.common.adapters.ViewPagerAdapter
-import com.weather.common.components.awaitLayoutChange
+import com.weather.common.adapters.PagerAdapter
 import com.weather.databinding.FragmentGeneralBinding
-import com.weather.databinding.FragmentGeneralBindingImpl
-import com.weather.viewmodel.AddCityViewModel
-import com.weather.viewmodel.BaseViewModel
 import com.weather.viewmodel.GeneralViewModel
-import com.weather.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_general.*
-import kotlinx.coroutines.launch
 
 class GeneralFragment : BaseFragment() {
     override val model: GeneralViewModel
@@ -85,24 +77,39 @@ class GeneralFragment : BaseFragment() {
 
     private fun initPager() {
         with(pager_general) {
-            val adapter = ViewPagerAdapter(childFragmentManager)
+            val adapter = PagerAdapter(childFragmentManager)
             this.adapter = adapter
-//            tab_general.setupWithViewPager(this)
-//            offscreenPageLimit = 10
-//            registerOnPageChangeCallback(object :
-//                ViewPager2.OnPageChangeCallback() {
-//                override fun onPageSelected(position: Int) {
-//                    if (position != 0) sharedModel.focusedCityPos = position
-//                    tb_general.title = adapter.getFocusedCityName(position)
-//                }
-//            })
-//            TabLayoutMediator(tab_general, pager_general) { _, _ -> }.attach()
-//            lifecycleScope.launch {
-//                pager_general.awaitLayoutChange {
-//                    pager_general.currentItem = sharedModel.focusedCityPos
-//                }
-//            }
+            tab_general.setupWithViewPager(this)
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    sharedModel.focusedCityPos = adapter.cities[position].position
+                    updateTitle(adapter.cities)
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+
+            })
+            adapter.registerDataSetObserver(object : DataSetObserver() {
+                override fun onChanged() {
+                    pager_general.currentItem = sharedModel.focusedCityPos
+                    updateTitle(adapter.cities)
+                }
+            })
+
         }
+    }
+
+    fun updateTitle(cities: List<City>) {
+        (requireActivity() as AppCompatActivity).supportActionBar!!.title =
+            cities[sharedModel.focusedCityPos].name
     }
 
     override fun onDestroyView() {

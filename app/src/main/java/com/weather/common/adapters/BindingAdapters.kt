@@ -11,50 +11,85 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.widget.ViewPager2
 import com.data.common.*
 import com.data.model.*
 import com.weather.R
 import com.weather.common.entities.Config.Companion.getWindUnits
-import kotlinx.android.synthetic.main.layout_current_weather_top.view.*
+import kotlinx.android.synthetic.main.layout_current_data_top.view.*
 import kotlinx.android.synthetic.main.layout_grid_current_item.view.*
 import kotlin.math.roundToInt
 
-
-@JvmName("update1")
 @BindingAdapter("app:update")
-fun update(view: RecyclerView, result: Result<List<HourlyWeather>>?) {
+fun updateGeneralPager(view: ViewPager, result: Result<List<City>>?) {
     result?.let {
-        Log.d("qwerty228", it.toString())
-        if (it is Result.Success) (view.adapter as RvHourlyWeatherAdapter).updateList(it.data)
+        if (it is Result.Success && it.data.isNotEmpty()) {
+            (view.adapter as PagerAdapter).updateList(it.data)
+        }
     }
 }
 
-@BindingAdapter("app:update111")
-fun update111(view: RecyclerView, result: Result<List<DailyWeather>>?) {
-    result?.let {
-        if (it is Result.Success) (view.adapter as RvDailyWeatherAdapter).updateList(it.data)
-    }
-}
-
-/**
- * если Success - список точно не пуст. Это проверяется еще в Retrofit-util.
- * Если список оказывается пуст - вернется Error
- * */
-@BindingAdapter("app:update228")
-fun update228(view: RecyclerView, result: Result<List<City>>) {
+/** если [Result.Success] - список точно не пуст. Это проверяется еще в Retrofit-util.*/
+@BindingAdapter("app:update_remote_rv")
+fun updateRemoteRecycler(view: RecyclerView, result: Result<List<City>>) {
     if (result is Result.Success) {
         view.visibility = View.VISIBLE
-        (view.adapter as RvRemoteCitiesAdapter).updateList(result.data)
+        (view.adapter as RecyclerRemoteCitiesAdapter).updateList(result.data)
     } else view.visibility = View.GONE
 }
 
-//изначально всегда придет null, даже если в LD не может храниться null
-//дело в отсутствии привязки к лд в начале
 @BindingAdapter("app:update")
-fun update(view: GridLayout, result: Result<CurrentWeather>?) {
+fun updateCurrentTop(view: ConstraintLayout, result: Result<CurrentWeather>?) {
+    result?.let {
+        if (it is Result.Success) {
+            with(it.data) {
+                view.tv_current_data_top_temp.text = "${temp.roundToInt()}°"
+                view.tv_current_data_top_feels.text = "ощущается как ${feels_like.roundToInt()}"
+                view.tv_current_data_top_status.text = description
+            }
+        }
+    }
+}
+
+@BindingAdapter("app:update_hourly_rv")
+fun updateHourlyRecycler(view: RecyclerView, result: Result<List<HourlyWeather>>?) {
+    result?.let {
+        Log.d("qwerty228", it.toString())
+        if (it is Result.Success) (view.adapter as RecyclerHourlyAdapter).updateList(it.data)
+    }
+}
+
+@BindingAdapter("app:update_daily_rv")
+fun updateDailyRecycler(view: RecyclerView, result: Result<List<DailyWeather>>?) {
+    result?.let {
+        if (it is Result.Success) (view.adapter as RecyclerDailyAdapter).updateList(it.data)
+    }
+}
+
+@BindingAdapter("app:update")
+fun updateCitiesManagerRecycler(view: RecyclerView, result: Result<List<CityData>>?) {
+    result?.let {
+        if (it is Result.Success && it.data.isNotEmpty())
+            (view.adapter as RvLocalCitiesAdapter).updateList(it.data)
+    }
+}
+
+
+@BindingAdapter("app:update")
+fun update(view: Button, result: Result<*>?) {
+    result?.let {
+        view.visibility =
+            if (it is Result.Error && it.exception.cause is NoNetworkException)
+                View.VISIBLE
+            else
+                View.GONE
+    }
+}
+
+
+@BindingAdapter("app:update")
+fun updateGrid(view: GridLayout, result: Result<CurrentWeather>?) {
     fun View.initCell(value: String, name: String) {
-        this.img_grid_item.setImageResource(R.drawable._10d)
+        this.img_grid_item_type.setImageResource(R.drawable._10d)
         this.tv_grid_item_value.text = value
         this.tv_grid_item_name.text = name
     }
@@ -66,7 +101,6 @@ fun update(view: GridLayout, result: Result<CurrentWeather>?) {
                     "Относительная влажность"
                 )
                 view[1].initCell(uvi.toString(), "УФ индекс")
-                Log.d("cvcvcv", wind_speed.toString())
                 view[2].initCell(
                     view.resources.getString(
                         R.string.wind_speed_value,
@@ -91,121 +125,27 @@ fun update(view: GridLayout, result: Result<CurrentWeather>?) {
         }
     }
 }
-//cont.text_album_item_description.text = cont.resources.getString(
-//R.string.item_album_description, convertTime(album.releaseDate),
-//TEXT_SEPARATOR, album.trackCount
-//)
 
-//Влажность	* %
-//Уф-индекс 	*
-//
-//Скорость ветра	 * м/сек или мили/час
-//
-//точка росы	* %
-//Видимость	* км
-//Давление 		* гпа
-
-
-//android:id="@+id/tv_current_weather_temp"
-//android:id="@+id/tv_current_weather_status"
-//android:id="@+id/tv_current_weather_feels"
-@BindingAdapter("app:update")
-fun update(view: ConstraintLayout, result: Result<CurrentWeather>?) {
+@BindingAdapter("app:progress")
+fun progress(view: SwipeRefreshLayout, result: Result<*>?) {
     result?.let {
-        if (it is Result.Success) {
-            with(it.data) {
-                view.tv_current_weather_temp.text = "${temp.roundToInt()}°"
-                view.tv_current_weather_feels.text = "ощущается как ${feels_like.roundToInt()}"
-                view.tv_current_weather_status.text = description
-            }
-        }
+        view.isRefreshing = result is Result.Loading
     }
 }
 
-/**
- * если Success - список может быть пуст. (предположение)
- * */
-@BindingAdapter("app:update")
-fun update(view: ViewPager, result: Result<List<City>>?) {
-    result?.let {
-        if (it is Result.Success && it.data.isNotEmpty()) {
-            (view.adapter as ViewPagerAdapter).updateList(it.data)
-        }
-    }
-}
-
-/**
- * в начале приходит null
- * если Success - список может быть пуст, добавлена проверка
- * */
-@BindingAdapter("app:update2")
-fun update2(view: RecyclerView, result: Result<List<CityData>>?) {
-    result?.let {
-        if (it is Result.Success && it.data.isNotEmpty())
-            (view.adapter as RvLocalCitiesAdapter).updateList(it.data)
-    }
-}
-
-/**
- * result - это baseLD, он медиатор, и он будет null до тех пор, пока какаой-либо из юзкейсов
- * не выполнится. Здесь не попадался null, это потому, что юзкейс по считыванию EditText
- * активируется быстро. Быстрее, чем TextView начинает обращаться к BaseLD.
- * Но на всякий случай указал возможность null.
- * В будущем, возможно, будет лучше механизм baseLD
- * */
 @BindingAdapter("android:text")
 fun setText(view: TextView, result: Result<*>?) {
-//    view.visibility = if (result is Result.Success) View.GONE else View.VISIBLE
-
     view.text = when {
         (result is Result.Loading) -> "Поиск..."
         (result is Result.Error) -> {
-            if (result.exception.cause is NetworkProviderDisabledException || result.exception.cause is CityAlreadyExistException)
+            if (result.exception.cause is NetworkProviderDisabledException
+                ||
+                result.exception.cause is CityAlreadyExistException
+            )
                 INVALID_ARGS_MSG
             else
                 result.exception.cause!!.message
         }
         else -> ""
-    }
-
-
-//    if (result is Result.Success)
-//        view.visibility = View.GONE
-//    else if (result is Result.Loading) {
-//        view.visibility = View.VISIBLE
-//        view.text = "Поиск..."
-//    } else if (result is Result.Error) {
-//        if (result.exception.cause !is NetworkProviderDisabledException && result.exception.cause !is CityAlreadyExistException) {
-//            view.visibility = View.VISIBLE
-//            view.text = result.exception.cause!!.message
-//        }
-//        if (result.exception.cause is CityAlreadyExistException) {
-//            view.visibility = View.VISIBLE
-//            view.text = INVALID_ARGS_MSG
-//        }
-//    }
-}
-
-
-@BindingAdapter("app:update")
-fun update(view: Button, result: Result<*>?) {
-    result?.let {
-        view.visibility =
-            if (it is Result.Error && it.exception.cause is NoNetworkException) View.VISIBLE else View.GONE
-    }
-}
-
-/**
- * result - это baseLD, он медиатор, и он будет null до тех пор, пока какаой-либо из юзкейсов
- * не выполнится
- * Здесь изначально result - null. И до тех пор, пока юзкейс - swipeToRefresh Weather Data не будет
- * выполнен.
- * В будущем, возможно, будет лучше механизм baseLD
- * */
-@BindingAdapter("app:progress")
-fun progress(view: SwipeRefreshLayout, result: Result<*>?) {
-    result?.let {
-        view.isRefreshing = result is Result.Loading
-
     }
 }

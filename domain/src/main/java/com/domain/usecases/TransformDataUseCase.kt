@@ -8,10 +8,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
 /**
- * [TransformDataUC] преобразует локальные данные, редактируя их значения
+ * [TransformDataUseCase] преобразует локальные данные, редактируя их значения
  * относительно нового установленного значения единиц измерения
  * */
-class TransformDataUC(
+class TransformDataUseCase(
     private val repo: SettingsRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : FlowUseCase<String, Int>(coroutineDispatcher) {

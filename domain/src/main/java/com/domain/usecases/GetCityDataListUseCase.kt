@@ -9,9 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
 /**
- * [GetCityDataListUC] возвращает [Flow], дающий список локальных городов и их погодные данные
+ * [GetCityDataListUseCase] возвращает [Flow], дающий список локальных городов и их погодные данные
  * */
-class GetCityDataListUC(
+class GetCityDataListUseCase(
     private val repo: CitiesManagerRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : FlowUseCase<Unit, List<CityData>>(coroutineDispatcher) {

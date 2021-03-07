@@ -1,6 +1,5 @@
 package com.domain.usecases
 
-import android.location.Location
 import com.data.common.Result
 import com.data.model.City
 import com.data.repo.AddCityRepo
@@ -10,10 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
 /**
- * [AddCityUC] вызывается для добавления города.
+ * [AddCityUseCase] вызывается для добавления города.
  * Возвращает [Long] id внесенного города
  * */
-class AddCityUC(
+class AddCityUseCase(
     private val repo: AddCityRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : FlowUseCase<City, Long>(coroutineDispatcher) {

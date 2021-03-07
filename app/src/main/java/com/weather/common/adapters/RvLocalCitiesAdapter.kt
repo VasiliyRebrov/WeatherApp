@@ -12,34 +12,29 @@ import com.weather.common.components.ItemTouchHelperAdapter
 import com.weather.common.components.ItemTouchHelperViewHolder
 import com.weather.common.components.LocalCitiesDiffUtilCallback
 import com.weather.common.components.LocalCitiesRVAdapterListener
-import com.weather.databinding.CardLicalCitiesItemBinding
+import com.weather.databinding.CardLocalCitiesItemBinding
 import java.util.*
 import kotlin.math.roundToInt
 
 class RvLocalCitiesAdapter(private val listener: LocalCitiesRVAdapterListener) :
     RecyclerView.Adapter<RvLocalCitiesAdapter.ViewHolder>(), ItemTouchHelperAdapter {
-
     private val citiesList = mutableListOf<CityData>()
-
-    //    var lastAction: ItemTouchAction = ItemTouchAction.DEFAULT
     private var blockcount = 0
 
-    inner class ViewHolder(val binding: CardLicalCitiesItemBinding) :
+    inner class ViewHolder(val binding: CardLocalCitiesItemBinding) :
         RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
         fun bind(data: CityData) {
             binding.root.setBackgroundColor(binding.root.context.resources.getColor(R.color.colorAccent))
-            binding.tvCardCityName.text = data.city.name
-            binding.tvCardCityRegion.text = "${data.city.country} | ${data.city.region}"
+            binding.tvCardLocalCitiesItemName.text = data.city.name
+            binding.tvCardLocalCitiesItemRegion.text = "${data.city.country} | ${data.city.region}"
             data.weatherData?.let {
-                binding.tvCardCityTemp.text =
+                binding.tvCardLocalCitiesItemTemp.text =
                     "${it.currentWeather.temp.roundToInt()} °"
             }
 
-            val resId = data.weatherData?.currentWeather?.icon
-                ?: binding.root.context.createDrawablePath("50n")
-            binding.imgCardCityIcon.setImageResource(resId)
-
-//            holder.binding.root.setOnClickListener { listener.onCitySelected(citiesList[position].city.position) }
+            data.weatherData?.currentWeather?.icon?.let {
+                binding.imgCardLocalCitiesItemStatus.setImageResource(it)
+            }
 
             binding.root.setOnClickListener { listener.onItemClick(data.city.position) }
             binding.executePendingBindings()
@@ -50,7 +45,7 @@ class RvLocalCitiesAdapter(private val listener: LocalCitiesRVAdapterListener) :
             with(getReorderedCities()) {
                 if (isNotEmpty()) {
                     blockcount++
-                    listener.reorderCities(this)
+                    listener.onReorderCities(this)
                 }
             }
         }
@@ -79,7 +74,7 @@ class RvLocalCitiesAdapter(private val listener: LocalCitiesRVAdapterListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val itemBinding: CardLicalCitiesItemBinding = CardLicalCitiesItemBinding.inflate(
+        val itemBinding: CardLocalCitiesItemBinding = CardLocalCitiesItemBinding.inflate(
             layoutInflater,
             parent,
             false
@@ -105,7 +100,7 @@ class RvLocalCitiesAdapter(private val listener: LocalCitiesRVAdapterListener) :
         citiesList.removeAt(position)
         notifyItemRemoved(position)
         blockcount += 2
-        listener.deleteCity(city.city)
+        listener.onDeleteCity(city.city)
     }
 
     fun updateList(newList: List<CityData>) {  //сделать DiffUtil

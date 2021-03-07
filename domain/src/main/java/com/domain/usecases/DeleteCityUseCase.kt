@@ -9,12 +9,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
 /**
- * [DeleteCityUC] вызывается для удаления городов.
+ * [DeleteCityUseCase] вызывается для удаления городов.
  * Возвращает [Int] количество удаленных городов.
  * (сейчас функционал рассчитан лишь на один, в будущем юз-кейс будет расчитан на множественное
  * удаление одной транзакцией и переименован в DeleteCitiesUC)
  * */
-class DeleteCityUC(
+class DeleteCityUseCase(
     private val repo: CitiesManagerRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : FlowUseCase<City, Int>(coroutineDispatcher) {

@@ -6,19 +6,19 @@ import com.domain.usecases.base.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-data class FindCityByNameUCParams(
+data class FindCityByNameUseCaseParams(
     val name: String,
     val lang: String
 )
 
 /**
- * [FindCityByNameUC] возвращает список городов найденных по названию
+ * [FindCityByNameUseCase] возвращает список городов найденных по названию
  * */
-class FindCityByNameUC(
+class FindCityByNameUseCase(
     private val repo: AddCityRepo,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : UseCase<FindCityByNameUCParams, List<City>>(coroutineDispatcher) {
-    override suspend fun execute(params: FindCityByNameUCParams): List<City> =
+) : UseCase<FindCityByNameUseCaseParams, List<City>>(coroutineDispatcher) {
+    override suspend fun execute(params: FindCityByNameUseCaseParams): List<City> =
         repo.loadCitiesByName(params.name, params.lang)
 }
 

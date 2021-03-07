@@ -1,7 +1,6 @@
 package com.weather.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.data.common.Result
 import com.data.model.*
@@ -9,35 +8,29 @@ import com.data.repo.CityItemRepo
 import com.domain.usecases.*
 import com.weather.common.entities.Config.Companion.getUnitMeasurePref
 
-class CityItemViewModel(
-    application: Application,
-    private val city: City,
-    repo: CityItemRepo
-) : BaseViewModel(application) {
-
-
-    /** Refresh data*/
-    private val refreshDataUC by lazy { RefreshDataUC(repo) }
-    private val _refreshDataUCLD = MutableLiveData<Result<String>>()
-    val refreshDataUCLD: LiveData<Result<String>> = _refreshDataUCLD
+class CityItemViewModel(application: Application, private val city: City, repo: CityItemRepo) :
+    BaseViewModel(application) {
+    /** Refresh data use case*/
+    private val refreshDataUseCase = RefreshDataUseCase(repo)
+    private val _refreshDataUseCaseLD = MutableLiveData<Result<String>>()
+    val refreshDataUseCaseLD: LiveData<Result<String>> = _refreshDataUseCaseLD
 
     fun refreshData() {
-        val params = RefreshWeatherParams(
+        val params = RefreshWeatherUseCaseParams(
             getApplication<Application>().getUnitMeasurePref(),
             currentLang,
             listOf(city)
         )
-        launchUseCase(refreshDataUC, params) {
-            _refreshDataUCLD.value = it
+        launchUseCase(refreshDataUseCase, params) {
+            _refreshDataUseCaseLD.value = it
         }
     }
 
-    /** Get local data*/
-    private val getDataUC = GetDataUC(repo)
-    private val _getDataUCLD = getDataUC(city.cityId).asLiveData()
-    val getDataUCLD: LiveData<Result<WeatherData>> = _getDataUCLD
+    /** Get local data use case*/
+    private val getDataUseCase = GetDataUseCase(repo)
+    private val getDataUseCaseLD = getDataUseCase(city.cityId).asLiveData()
 
-    val currentLD = Transformations.map(getDataUCLD) {
+    val currentLD = Transformations.map(getDataUseCaseLD) {
         return@map (
                 if (it is Result.Success)
                     Result.Success(it.data.currentWeather)
@@ -45,7 +38,7 @@ class CityItemViewModel(
                 ) as Result<CurrentWeather>
     }
 
-    val hourlyLD = Transformations.map(getDataUCLD) {
+    val hourlyLD = Transformations.map(getDataUseCaseLD) {
         return@map (
                 if (it is Result.Success)
                     Result.Success(it.data.hourlyList)
@@ -54,7 +47,7 @@ class CityItemViewModel(
                 )
                 as Result<List<HourlyWeather>>
     }
-    val dailyLD = Transformations.map(getDataUCLD) {
+    val dailyLD = Transformations.map(getDataUseCaseLD) {
         return@map (
                 if (it is Result.Success)
                     Result.Success(it.data.dailyList)
@@ -64,9 +57,10 @@ class CityItemViewModel(
                 as Result<List<DailyWeather>>
     }
 
+    /** Others*/
     override val useCases = mutableMapOf<String, LiveData<*>>().apply {
-        put(getDataUC.javaClass.simpleName, getDataUCLD)
-        put(refreshDataUC.javaClass.simpleName, refreshDataUCLD)
+        put(getDataUseCase.javaClass.simpleName, getDataUseCaseLD)
+        put(refreshDataUseCase.javaClass.simpleName, refreshDataUseCaseLD)
     } as Map<String, LiveData<Result<*>>>
 
 }

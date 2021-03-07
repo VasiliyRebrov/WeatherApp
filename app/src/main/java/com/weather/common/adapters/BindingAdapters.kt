@@ -53,7 +53,6 @@ fun updateCurrentTop(view: ConstraintLayout, result: Result<CurrentWeather>?) {
 @BindingAdapter("app:update_hourly_rv")
 fun updateHourlyRecycler(view: RecyclerView, result: Result<List<HourlyWeather>>?) {
     result?.let {
-        Log.d("qwerty228", it.toString())
         if (it is Result.Success) (view.adapter as RecyclerHourlyAdapter).updateList(it.data)
     }
 }

@@ -24,7 +24,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
-            android:scaleType="fitXY" />
+            android:scaleType="center" />
 
         <TextView
             android:id="@+id/tv_card_hourly_item_pop"

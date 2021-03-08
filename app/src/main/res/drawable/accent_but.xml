@@ -4,7 +4,7 @@
         android:radius="4dp"
         />
     <solid
-        android:color="#212121"
+        android:color="#000000"
         />
 
     <stroke

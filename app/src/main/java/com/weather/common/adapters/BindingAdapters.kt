@@ -88,7 +88,7 @@ fun update(view: Button, result: Result<*>?) {
 @BindingAdapter("app:update")
 fun updateGrid(view: GridLayout, result: Result<CurrentWeather>?) {
     fun View.initCell(value: String, name: String) {
-        this.img_grid_item_type.setImageResource(R.drawable._10d)
+        this.img_grid_item_type.setImageResource(R.drawable._50d)
         this.tv_grid_item_value.text = value
         this.tv_grid_item_name.text = name
     }
